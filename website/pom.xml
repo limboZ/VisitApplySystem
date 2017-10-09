@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>VisitApplySystem</artifactId>
+        <groupId>cn.com.scal</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>website</artifactId>
+
+    <properties>
+        <components-version>1.0</components-version>
+    </properties>
+    <profiles>
+        <profile>
+            <id>development</id>
+            <properties>
+                <package.environment>development</package.environment>
+                <finalVersion>${lastVersion}-SNAPSHOT</finalVersion>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>cn.com.scal.components</groupId>
+                    <artifactId>components</artifactId>
+                    <version>${components-version}-SNAPSHOT</version>
+                    <type>jar</type>
+                </dependency>
+            </dependencies>
+
+        </profile>
+        <profile>
+            <id>product</id>
+            <properties>
+                <package.environment>product</package.environment>
+                <finalVersion>${lastVersion}</finalVersion>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>cn.com.scal.components</groupId>
+                    <artifactId>components</artifactId>
+                    <version>${components-version}-SNAPSHOT</version>
+                    <type>jar</type>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <package.environment>test</package.environment>
+                <finalVersion>${lastVersion}-SNAPSHOT</finalVersion>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>cn.com.scal.components</groupId>
+                    <artifactId>components</artifactId>
+                    <version>${components-version}-SNAPSHOT</version>
+                    <type>jar</type>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>
