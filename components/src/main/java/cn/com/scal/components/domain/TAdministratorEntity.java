@@ -18,6 +18,7 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
     private String f1;
     private String f2;
 
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
