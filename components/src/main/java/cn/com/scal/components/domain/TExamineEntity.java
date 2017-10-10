@@ -1,6 +1,7 @@
 package cn.com.scal.components.domain;
 
 import cn.com.scal.components.enums.ExamineResultEnum;
+import cn.com.scal.components.enums.ExamineTypeEnum;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -12,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_examine", schema = "visit_apply", catalog = "")
 public class TExamineEntity extends Base<TExamineEntity>{
     private int id;
-    private String examineType;
+    private ExamineTypeEnum examineType;
     private Integer examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
@@ -50,11 +51,12 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     @Basic
     @Column(name = "examine_type")
-    public String getExamineType() {
+    @Enumerated(EnumType.STRING)
+    public ExamineTypeEnum getExamineType() {
         return examineType;
     }
 
-    public void setExamineType(String examineType) {
+    public void setExamineType(ExamineTypeEnum examineType) {
         this.examineType = examineType;
     }
 
