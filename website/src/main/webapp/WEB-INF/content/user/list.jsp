@@ -123,34 +123,34 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td class="tDate">
-                                        2017-09-23
-                                    </td>
-                                    <td class="tTime">
-                                        上午
-                                    </td>
-                                    <td>
-                                        今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tDate">
-                                        2017-09-23
-                                    </td>
-                                    <td class="tTime">
-                                        上午
-                                    </td>
-                                    <td>
-                                        1234567890 * 1024
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>
-                                    </td>
-                                </tr>
+                                <%--<tr>--%>
+                                    <%--<td class="tDate">--%>
+                                        <%--2017-09-23--%>
+                                    <%--</td>--%>
+                                    <%--<td class="tTime">--%>
+                                        <%--上午--%>
+                                    <%--</td>--%>
+                                    <%--<td>--%>
+                                        <%--今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...--%>
+                                    <%--</td>--%>
+                                    <%--<td>--%>
+                                        <%--<button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
+                                    <%--</td>--%>
+                                <%--</tr>--%>
+                                <%--<tr>--%>
+                                    <%--<td class="tDate">--%>
+                                        <%--2017-09-23--%>
+                                    <%--</td>--%>
+                                    <%--<td class="tTime">--%>
+                                        <%--下午--%>
+                                    <%--</td>--%>
+                                    <%--<td>--%>
+                                        <%--1234567890 * 1024--%>
+                                    <%--</td>--%>
+                                    <%--<td>--%>
+                                        <%--<button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
+                                    <%--</td>--%>
+                                <%--</tr>--%>
                                 </tbody>
                             </table>
                             <%--<button type="button" class="btn btn-primary ">新增行程</button>--%>
@@ -209,6 +209,7 @@
             var time = $('#time').val();
             var detail = $('#detail').val();
             var message = '';
+            var flag = true;
             if(isEmpty(date)){
                 message += '请填写日期!';
             }
@@ -223,14 +224,29 @@
                 if(detail.length > 1000){
                     alert('出访总结最多1000字！');
                 }else {
-                    var op = '<tr><td class="tDate">' + date + '</td>';
-                    op += '<td class="tTime">' + time + '</td>';
-                    op += '<td>' + detail + '</td>';
-                    op += '<td><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button></td>';
-                    $('#summaryList').append(op);
-                    $('#date').val('');
-                    $('#time').val('');
-                    $('#detail').val('');
+                    //判断该时间是否已存在相应的总结
+                    $('.sortSummary').find('.tDate').each(function () {
+                        var obj = $(this);
+                        if(obj.text() == date){
+                            obj.parent().find('.tTime').each(function () {
+                                if($(this).text() == time){
+                                    alert('该时间的总结已填写！');
+                                    flag = false;
+                                    return false;
+                                }
+                            })
+                        }
+                    })
+                    if(flag){
+                        var op = '<tr><td class="tDate">' + date + '</td>';
+                        op += '<td class="tTime">' + time + '</td>';
+                        op += '<td>' + detail + '</td>';
+                        op += '<td><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button></td>';
+                        $('#summaryList').append(op);
+                        $('#date').val('');
+                        $('#time').val('');
+                        $('#detail').val('');
+                    }
                 }
             }else {
                 alert(message);
