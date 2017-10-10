@@ -3,6 +3,7 @@ package cn.com.scal.components.dto.front.domain;
 import java.util.Date;
 
 public class ExamineProgress {
+    private Integer id;
     private String advise;
     private String ret;
     private String examinePeopleName;
@@ -10,6 +11,14 @@ public class ExamineProgress {
     private Date passTime;
 
     public ExamineProgress() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getAdvise() {

@@ -1,12 +1,21 @@
 package cn.com.scal.components.dto.front.domain;
 
 public class TeamMate {
+    private Integer id;
     private Integer employeeId;
     private String employeeName;
     private String employeeDept;
     private String employeePost;
 
     public TeamMate() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getEmployeeId() {

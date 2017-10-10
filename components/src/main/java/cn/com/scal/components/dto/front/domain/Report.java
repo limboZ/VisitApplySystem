@@ -3,11 +3,20 @@ package cn.com.scal.components.dto.front.domain;
 import java.util.Date;
 
 public class Report {
+    private Integer id;
     private String content;
     private Date reportDate;
     private String reportSlot;
 
     public Report() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getContent() {

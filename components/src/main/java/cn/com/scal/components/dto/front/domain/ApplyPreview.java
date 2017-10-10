@@ -3,6 +3,7 @@ package cn.com.scal.components.dto.front.domain;
 import java.util.Date;
 
 public class ApplyPreview {
+    private Integer id;
     private String teamName;
     private Date applyCreateTime;
     private String applyExamineStatus;
@@ -10,6 +11,14 @@ public class ApplyPreview {
     private String reportExamineStatus;
 
     public ApplyPreview() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTeamName() {

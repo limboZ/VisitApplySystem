@@ -1,10 +1,19 @@
 package cn.com.scal.components.dto.front.domain;
 
 public class Destination {
+    private Integer id;
     private String nation;
     private String destination;
 
     public Destination() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNation() {

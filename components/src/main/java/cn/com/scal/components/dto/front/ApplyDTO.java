@@ -9,6 +9,7 @@ import java.util.Date;
  * 用于接收前端填写的出访申请
  */
 public class ApplyDTO {
+    private Integer id;
     private String commissionType;
     private Date startTime;
     private Date endTime;
@@ -18,6 +19,14 @@ public class ApplyDTO {
     private TeamMate[] teamMates;
 
     public ApplyDTO() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getCommissionType() {
