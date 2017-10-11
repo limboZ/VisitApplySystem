@@ -13,6 +13,7 @@ public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {
     private String examinePeopleName;
     private String examinePeoplePost;
     private Integer order;
+    private String examineResult;
     private ExamineResultEnum result;
     private String advise;
     private Date passTime;
@@ -77,6 +78,14 @@ public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    public String getExamineResult() {
+        return examineResult;
+    }
+
+    public void setExamineResult(String examineResult) {
+        this.examineResult = examineResult;
     }
 
     public ExamineResultEnum getResult() {
