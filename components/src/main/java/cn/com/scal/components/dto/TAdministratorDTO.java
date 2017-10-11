@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 public class TAdministratorDTO extends BaseDTO<TAdministratorDTO, TAdministratorEntity> {
     private int id;
+    private String employeeNum;
     private String name;
     private String dept;
     private String post;
@@ -21,6 +22,14 @@ public class TAdministratorDTO extends BaseDTO<TAdministratorDTO, TAdministrator
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getEmployeeNum() {
+        return employeeNum;
+    }
+
+    public void setEmployeeNum(String employeeNum) {
+        this.employeeNum = employeeNum;
     }
 
     public String getName() {

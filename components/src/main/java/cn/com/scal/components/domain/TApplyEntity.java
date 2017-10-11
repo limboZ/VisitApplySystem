@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class TApplyEntity extends Base<TApplyEntity>{
     private int id;
     private String teamName;
-    private Integer applyUserId;
+    private String applyUserId;
     private String commissionType;
     private Date startTime;
     private Date endTime;
@@ -48,11 +48,11 @@ public class TApplyEntity extends Base<TApplyEntity>{
 
     @Basic
     @Column(name = "apply_user_id")
-    public Integer getApplyUserId() {
+    public String getApplyUserId() {
         return applyUserId;
     }
 
-    public void setApplyUserId(Integer applyUserId) {
+    public void setApplyUserId(String applyUserId) {
         this.applyUserId = applyUserId;
     }
 

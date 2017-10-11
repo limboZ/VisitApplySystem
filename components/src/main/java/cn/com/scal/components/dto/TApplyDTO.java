@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 public class TApplyDTO extends BaseDTO<TApplyDTO, TApplyEntity> {
     private int id;
     private String teamName;
-    private Integer applyUserId;
+    private String applyUserId;
     private String commissionType;
     private Date startTime;
     private Date endTime;
@@ -37,11 +37,11 @@ public class TApplyDTO extends BaseDTO<TApplyDTO, TApplyEntity> {
         this.teamName = teamName;
     }
 
-    public Integer getApplyUserId() {
+    public String getApplyUserId() {
         return applyUserId;
     }
 
-    public void setApplyUserId(Integer applyUserId) {
+    public void setApplyUserId(String applyUserId) {
         this.applyUserId = applyUserId;
     }
 

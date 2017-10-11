@@ -9,6 +9,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_administrator", schema = "visit_apply", catalog = "")
 public class TAdministratorEntity extends Base<TAdministratorEntity>{
     private int id;
+    private String employeeNum;
     private String name;
     private String dept;
     private String post;
@@ -28,6 +29,16 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Basic
+    @Column(name = "employee_num")
+    public String getEmployeeNum() {
+        return employeeNum;
+    }
+
+    public void setEmployeeNum(String employeeNum) {
+        this.employeeNum = employeeNum;
     }
 
     @Basic

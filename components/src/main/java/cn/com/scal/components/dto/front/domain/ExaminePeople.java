@@ -2,7 +2,7 @@ package cn.com.scal.components.dto.front.domain;
 
 public class ExaminePeople {
     private Integer id;
-    private Integer examinePeopleId;
+    private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
     private int order;
@@ -18,11 +18,11 @@ public class ExaminePeople {
         this.id = id;
     }
 
-    public Integer getExaminePeopleId() {
+    public String getExaminePeopleId() {
         return examinePeopleId;
     }
 
-    public void setExaminePeopleId(Integer examinePeopleId) {
+    public void setExaminePeopleId(String examinePeopleId) {
         this.examinePeopleId = examinePeopleId;
     }
 

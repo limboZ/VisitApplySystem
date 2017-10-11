@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class TExamineEntity extends Base<TExamineEntity>{
     private int id;
     private ExamineTypeEnum examineType;
-    private Integer examinePeopleId;
+    private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
     private Integer order;
@@ -62,11 +62,11 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     @Basic
     @Column(name = "examine_people_id")
-    public Integer getExaminePeopleId() {
+    public String getExaminePeopleId() {
         return examinePeopleId;
     }
 
-    public void setExaminePeopleId(Integer examinePeopleId) {
+    public void setExaminePeopleId(String examinePeopleId) {
         this.examinePeopleId = examinePeopleId;
     }
 

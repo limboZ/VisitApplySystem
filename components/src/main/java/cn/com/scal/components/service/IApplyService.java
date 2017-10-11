@@ -6,13 +6,13 @@ import cn.com.scal.components.dto.front.ApplyDTO;
 import cn.com.scal.components.dto.front.ApplyDetailDTO;
 import cn.com.scal.components.dto.front.ApplyPreviewListDTO;
 
-public interface IApplyService extends ICommonService<TApplyEntity, TApplyDTO, Integer> {
+public interface IApplyService {
     /**
      * 从ApplyEntity中取出某一个人的所有申请信息
      * @param applyUserId   登陆者的工号
      * @return  要在前端展示的信息的实体
      */
-    ApplyPreviewListDTO getApplyPreviewList(Integer applyUserId);
+    ApplyPreviewListDTO getApplyPreviewList(String applyUserId);
 
     /**
      * 获取某条申请的详细信息，包括申请的基本信息、目的地、成员、申请审批流信息、总结审批流信息

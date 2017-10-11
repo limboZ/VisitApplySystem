@@ -2,7 +2,7 @@ package cn.com.scal.components.dto.front.domain;
 
 public class TeamMate {
     private Integer id;
-    private Integer employeeId;
+    private String employeeId;
     private String employeeName;
     private String employeeDept;
     private String employeePost;
@@ -18,11 +18,11 @@ public class TeamMate {
         this.id = id;
     }
 
-    public Integer getEmployeeId() {
+    public String getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(Integer employeeId) {
+    public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
 

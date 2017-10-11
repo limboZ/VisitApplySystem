@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {
     private int id;
     private String examineType;
-    private Integer examinePeopleId;
+    private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
     private Integer order;
@@ -47,11 +47,11 @@ public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {
         this.examineType = examineType;
     }
 
-    public Integer getExaminePeopleId() {
+    public String getExaminePeopleId() {
         return examinePeopleId;
     }
 
-    public void setExaminePeopleId(Integer examinePeopleId) {
+    public void setExaminePeopleId(String examinePeopleId) {
         this.examinePeopleId = examinePeopleId;
     }
 
