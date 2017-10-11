@@ -87,7 +87,7 @@
                                 </li>
                             <%--</c:if>--%>
                             <%--<c:if test="${sessionScope.current_user.role == 'MANAGER'}">--%>
-                                <li class="manager">
+                                <li class="manage">
                                     <a><i class="fa fa-gears"></i> 出访管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li class="home"><a href="${ctx}/manager/list">申请审核</a></li>

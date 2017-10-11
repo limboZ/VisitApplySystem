@@ -52,7 +52,7 @@
                         </td>
                         <td>
                             <a href="${ctx}/user/show" class="btn btn-xs btn-primary">详情</a>
-                            <a href="#" class="btn btn-xs btn-info">编辑</a>
+                            <%--<a href="${ctx}/user/edit" class="btn btn-xs btn-info">编辑</a>--%>
                             <a href="#" class="btn btn-xs btn-success">提交审批</a>
                         </td>
                     </tr>
@@ -68,7 +68,7 @@
                         </td>
                         <td>
                             <a href="#" class="btn btn-xs btn-primary">详情</a>
-                            <a href="#" class="btn btn-xs btn-info">编辑</a>
+                            <%--<a href="#" class="btn btn-xs btn-info">编辑</a>--%>
                             <a href="#" class="btn btn-xs btn-success">提交审批</a>
                         </td>
                     </tr>

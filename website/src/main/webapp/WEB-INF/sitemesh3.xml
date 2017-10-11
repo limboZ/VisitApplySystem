@@ -2,10 +2,11 @@
 <sitemesh>
     <mapping path="*" decorator="/WEB-INF/template/template.jsp"/>
     <!--不被装饰的页面-->
-    <mapping path="/" exclue="true"/>
     <mapping path="*/login" exclue="true"/>
     <mapping path="/logout" exclue="true"/>
     <mapping path="/unauth" exclue="true"/>
     <mapping path="/content/login.jsp" exclue="true"/>
+    <mapping path="/leader/show" exclue="true"/>
+
 </sitemesh>
 

@@ -16,10 +16,11 @@
     <div class="x_title">
         <h2>出访团组信息</h2>
         <div class="pull-right">
-            <button type="button" class="btn btn-primary">编辑</button>
-            <button type="button" class="btn btn-primary">保存</button>
-            <button type="button" class="btn btn-primary">保存并提交审批</button>
+            <a href="${ctx}/user/edit" class="btn btn-info">编辑</a>
+            <%--<button type="button" class="btn btn-primary">保存</button>--%>
+            <button type="button" class="btn btn-success">提交审批</button>
             <button type="button" class="btn btn-primary">打印表单</button>
+            <button type="button" class="btn btn-warning" onclick="history.back()">返回</button>
         </div>
         <div class="clearfix"></div>
     </div>
@@ -172,5 +173,11 @@
         </div>
     </div>
 </div>
+<script src="${ctx}/assets/build/js/jquery.min.js"></script>
+<script>
+    $('.normal').addClass('active');
+    $('.normal ul').show();
+    $('.normal ul .home').addClass('current-page');
+</script>
 </body>
 </html>

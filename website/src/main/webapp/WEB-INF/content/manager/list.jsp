@@ -45,6 +45,7 @@
                 <td>
                     <a href="${ctx}/manager/show" class="btn btn-xs btn-primary">详情</a>
                     <button type="button" class="btn btn-danger btn-xs delete">删除</button>
+                    <a href="${ctx}/leader/show" class="btn btn-xs btn-info">领导审批</a>
                 </td>
             </tr>
             <tr>

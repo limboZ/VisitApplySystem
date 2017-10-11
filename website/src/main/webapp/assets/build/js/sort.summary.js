@@ -1,6 +1,10 @@
 /**
  * Created by limboZ on 2017/10/9.
  * 监听表格append事件，根据日期排序
+ * 使用方法：将表格的赋予sortSummary类，表格的tbody中存储多行数据，每行tr中日期赋tDate类，时间赋tTime类
+ * 实现思路：每添加一行数据时，监听表格tbody中的行插入操作，取出当前所有行，得到每行的tdate、tTime值，将之转换为时间；
+ *          然后对多行数据进行时间排序，最后清空表格的tbody，将排序过的数据append到tbody中
+ * 注意事项：每次方法执行前，为防止递归，需先将绑定事件unbind，函数完成之后再将事件bind
  */
 function sort(obj) {
     obj.unbind();

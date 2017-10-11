@@ -1,37 +1,25 @@
 <%--
   Created by IntelliJ IDEA.
   User: limboZ
-  Date: 2017/9/29
-  Time: 15:26
+  Date: 2017/10/11
+  Time: 08:44
   To change this template use File | Settings | File Templates.
+  领导通过OA中的url跳转至本页面，对出访申请和出访总结进行审批
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="/WEB-INF/content/taglib.jsp" %>
 <html>
 <head>
-    <title>出访申请详情</title>
+    <title>领导审批</title>
+    <!-- Bootstrap -->
+    <link href="${ctx}/assets/build/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <%--<link href="${ctx}/assets/build/css/custom.min.css" rel="stylesheet">--%>
+    <!-- 自定义css样式，满足某些特定需求 -->
+    <link href="${ctx}/assets/build/css/mine.css" rel="stylesheet">
 </head>
 <body>
-<div class="x_panel">
-    <div class="x_title">
-        <h2>出访团组信息</h2>
-        <div class="pull-right">
-            <a href="${ctx}/manager/edit" class="btn btn-info">编辑</a>
-            <%--<button type="button" class="btn btn-primary">保存</button>--%>
-            <button type="button" class="btn btn-success">提交审批</button>
-            <button type="button" class="btn btn-primary">打印表单</button>
-            <button type="button" onclick="history.back()" class="btn btn-warning">返回</button>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="x_content">
-        <div class="bg-danger">
-            1.出访申请审批环节 ,管理员在提交审批前可以对出访申请中的内容进行编辑和选择流程,提交审批后则不能修改<br>
-              出访记录审批环节,管理员在提交审批前对出访记录的环节进行编辑和选择流程,提交审批后则不能修改
-            <br/>
-        </div>
-        <div class="bg-info">
-        </div>
+    <div>
         <table class="table table-th table-bordered">
             <tbody>
             <tr>
@@ -53,7 +41,7 @@
         </table>
         <div class="panel panel-default">
             <div class="panel-heading" data-toggle="collapse" id="destination"  href="#destinationC" aria-expanded="true" aria-controls="destinationC">
-            <h4 class="panel-title">目的地信息</h4>
+                <h4 class="panel-title">目的地信息</h4>
             </div>
             <div class="panel-body" id="destinationC" role="tabpanel" aria-labelledby="destination">
                 <table class="table table-th table-bordered" style="width: 60%">
@@ -106,60 +94,60 @@
             <div class="panel-body" id="applyProcessC" role="tabpanel" aria-labelledby="applyProcess">
                 <table class="table table-th " id="applyCheckTable">
                     <thead>
-                        <tr>
-                            <th>OA号</th>
-                            <th>姓名</th>
-                            <th>职位</th>
-                            <%--<th>操作</th>--%>
-                        </tr>
+                    <tr>
+                        <th>OA号</th>
+                        <th>姓名</th>
+                        <th>职位</th>
+                        <%--<th>操作</th>--%>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>007955</td>
-                            <td>张三</td>
-                            <td>经理</td>
-                            <%--<td>--%>
-                                <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
-                                <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i>下移</button>--%>
-                                <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
-                            <%--</td>--%>
-                        </tr>
-                        <tr>
-                            <td>007955</td>
-                            <td>李四</td>
-                            <td>部门领导</td>
-                            <%--<td>--%>
-                                <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
-                                <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i>下移</button>--%>
-                                <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
-                            <%--</td>--%>
-                        </tr>
-                        <tr>
-                            <td>007955</td>
-                            <td>王五</td>
-                            <td>部门领导</td>
-                            <%--<td>--%>
-                                <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
-                                <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i>下移</button>--%>
-                                <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
-                            <%--</td>--%>
-                        </tr>
+                    <tr>
+                        <td>007955</td>
+                        <td>张三</td>
+                        <td>经理</td>
+                        <%--<td>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i>下移</button>--%>
+                        <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
+                        <%--</td>--%>
+                    </tr>
+                    <tr>
+                        <td>007955</td>
+                        <td>李四</td>
+                        <td>部门领导</td>
+                        <%--<td>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i>下移</button>--%>
+                        <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
+                        <%--</td>--%>
+                    </tr>
+                    <tr>
+                        <td>007955</td>
+                        <td>王五</td>
+                        <td>部门领导</td>
+                        <%--<td>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i>下移</button>--%>
+                        <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
+                        <%--</td>--%>
+                    </tr>
                     </tbody>
                     <tfoot>
-                        <tr id="checkForm">
-                            <td>
-                                <input type="text" class="form-control empNo" >
-                            </td>
-                            <td>
-                                <input type="text" class="form-control userName" >
-                            </td>
-                            <td>
-                                <input type="text" class="form-control job" >
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-success" id="addCheck">添加</button>
-                            </td>
-                        </tr>
+                    <tr id="checkForm">
+                        <td>
+                            <input type="text" class="form-control empNo" >
+                        </td>
+                        <td>
+                            <input type="text" class="form-control userName" >
+                        </td>
+                        <td>
+                            <input type="text" class="form-control job" >
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-success" id="addCheck">添加</button>
+                        </td>
+                    </tr>
                     </tfoot>
                 </table>
                 <%--<button type="button" class="btn btn-info" id="toAddChecker">新增审批人员</button>--%>
@@ -215,8 +203,8 @@
                             今天去了日本东京，看了富士山脚下的樱花...
                         </td>
                         <%--<td>--%>
-                            <%--<button type="button"  class="btn btn-info btn-xs">编辑</button>--%>
-                            <%--<button type="button"  class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
+                        <%--<button type="button"  class="btn btn-info btn-xs">编辑</button>--%>
+                        <%--<button type="button"  class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
                         <%--</td>--%>
                     </tr>
                     <tr>
@@ -230,8 +218,8 @@
                             1234567890 * 1024
                         </td>
                         <%--<td>--%>
-                            <%--<button type="button"  class="btn btn-info btn-xs">编辑</button>--%>
-                            <%--<button type="button"  class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
+                        <%--<button type="button"  class="btn btn-info btn-xs">编辑</button>--%>
+                        <%--<button type="button"  class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
                         <%--</td>--%>
                     </tr>
                     </tbody>
@@ -267,12 +255,12 @@
             <div class="panel-body" id="summaryProcessC" role="tabpanel" aria-labelledby="summaryProcess">
                 <table class="table table-th" id="summaryCheckTable">
                     <thead>
-                        <tr>
-                            <th>OA号</th>
-                            <th>姓名</th>
-                            <th>职位</th>
-                            <%--<th>操作</th>--%>
-                        </tr>
+                    <tr>
+                        <th>OA号</th>
+                        <th>姓名</th>
+                        <th>职位</th>
+                        <%--<th>操作</th>--%>
+                    </tr>
                     </thead>
                     <tbody>
                     <tr>
@@ -280,9 +268,9 @@
                         <td>张三</td>
                         <td>经理</td>
                         <%--<td>--%>
-                            <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
-                            <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i> 下移</button>--%>
-                            <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i> 下移</button>--%>
+                        <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
                         <%--</td>--%>
                     </tr>
                     <tr>
@@ -290,9 +278,9 @@
                         <td>李四</td>
                         <td>部门领导</td>
                         <%--<td>--%>
-                            <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
-                            <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i> 下移</button>--%>
-                            <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i> 下移</button>--%>
+                        <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
                         <%--</td>--%>
                     </tr>
                     <tr>
@@ -300,9 +288,9 @@
                         <td>王五</td>
                         <td>部门领导</td>
                         <%--<td>--%>
-                            <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
-                            <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i> 下移</button>--%>
-                            <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveBefore"><i class="fa fa-chevron-up"></i>上移</button>--%>
+                        <%--<button type="button" class="btn btn-default btn-xs moveAfter"><i class="fa fa-chevron-down"></i> 下移</button>--%>
+                        <%--<button type="button" class="btn btn-danger btn-xs remove">删除</button>--%>
                         <%--</td>--%>
                     </tr>
                     </tbody>
@@ -351,7 +339,6 @@
             </div>
         </div>
     </div>
-</div>
 <%--遮罩背景层--%>
 <div id="warning" class="loading-div">
     <div class="inner">

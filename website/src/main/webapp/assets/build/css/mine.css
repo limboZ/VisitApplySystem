@@ -30,3 +30,7 @@
     left: 49%;
     top:40%;
 }
+
+.input_noclass{
+    padding: 0 5px;
+}
