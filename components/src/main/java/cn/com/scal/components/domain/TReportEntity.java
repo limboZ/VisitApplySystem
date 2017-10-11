@@ -12,7 +12,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_report", schema = "visit_apply", catalog = "")
 public class TReportEntity extends Base<TReportEntity>{
     private int id;
-    private Integer creatorId;
+    private String creatorId;
     private String content;
     private Date reportDate;
     private ReportSlotEnum reportSlot;
@@ -46,11 +46,11 @@ public class TReportEntity extends Base<TReportEntity>{
 
     @Basic
     @Column(name = "creator_id")
-    public Integer getCreatorId() {
+    public String getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(Integer creatorId) {
+    public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
     }
 

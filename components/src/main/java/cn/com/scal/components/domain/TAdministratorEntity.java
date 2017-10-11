@@ -9,6 +9,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_administrator", schema = "visit_apply", catalog = "")
 public class TAdministratorEntity extends Base<TAdministratorEntity>{
     private int id;
+    private String employeeNum;
     private String name;
     private String dept;
     private String post;
@@ -28,6 +29,16 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Basic
+    @Column(name = "employee_num")
+    public String getEmployeeNum() {
+        return employeeNum;
+    }
+
+    public void setEmployeeNum(String employeeNum) {
+        this.employeeNum = employeeNum;
     }
 
     @Basic
@@ -110,6 +121,7 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
         this.f2 = f2;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -118,6 +130,7 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
         TAdministratorEntity that = (TAdministratorEntity) o;
 
         if (id != that.id) return false;
+        if (employeeNum != null ? !employeeNum.equals(that.employeeNum) : that.employeeNum != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (dept != null ? !dept.equals(that.dept) : that.dept != null) return false;
         if (post != null ? !post.equals(that.post) : that.post != null) return false;
@@ -125,14 +138,13 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
         if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
         if (dataMark != null ? !dataMark.equals(that.dataMark) : that.dataMark != null) return false;
         if (f1 != null ? !f1.equals(that.f1) : that.f1 != null) return false;
-        if (f2 != null ? !f2.equals(that.f2) : that.f2 != null) return false;
-
-        return true;
+        return f2 != null ? f2.equals(that.f2) : that.f2 == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
+        result = 31 * result + (employeeNum != null ? employeeNum.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (dept != null ? dept.hashCode() : 0);
         result = 31 * result + (post != null ? post.hashCode() : 0);

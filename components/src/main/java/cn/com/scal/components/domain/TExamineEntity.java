@@ -14,10 +14,11 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class TExamineEntity extends Base<TExamineEntity>{
     private int id;
     private ExamineTypeEnum examineType;
-    private Integer examinePeopleId;
+    private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
     private Integer order;
+    private String examineResult;
     private ExamineResultEnum result;
     private String advise;
     private Date passTime;
@@ -62,11 +63,11 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     @Basic
     @Column(name = "examine_people_id")
-    public Integer getExaminePeopleId() {
+    public String getExaminePeopleId() {
         return examinePeopleId;
     }
 
-    public void setExaminePeopleId(Integer examinePeopleId) {
+    public void setExaminePeopleId(String examinePeopleId) {
         this.examinePeopleId = examinePeopleId;
     }
 
@@ -98,6 +99,16 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    @Basic
+    @Column(name = "examine_result")
+    public String getExamineResult() {
+        return examineResult;
+    }
+
+    public void setExamineResult(String examineResult) {
+        this.examineResult = examineResult;
     }
 
     @Basic
@@ -189,7 +200,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
         TExamineEntity that = (TExamineEntity) o;
 
         if (id != that.id) return false;
-        if (examineType != null ? !examineType.equals(that.examineType) : that.examineType != null) return false;
+        if (examineType != that.examineType) return false;
         if (examinePeopleId != null ? !examinePeopleId.equals(that.examinePeopleId) : that.examinePeopleId != null)
             return false;
         if (examinePeopleName != null ? !examinePeopleName.equals(that.examinePeopleName) : that.examinePeopleName != null)
@@ -197,7 +208,9 @@ public class TExamineEntity extends Base<TExamineEntity>{
         if (examinePeoplePost != null ? !examinePeoplePost.equals(that.examinePeoplePost) : that.examinePeoplePost != null)
             return false;
         if (order != null ? !order.equals(that.order) : that.order != null) return false;
-        if (result != null ? !result.equals(that.result) : that.result != null) return false;
+        if (examineResult != null ? !examineResult.equals(that.examineResult) : that.examineResult != null)
+            return false;
+        if (result != that.result) return false;
         if (advise != null ? !advise.equals(that.advise) : that.advise != null) return false;
         if (passTime != null ? !passTime.equals(that.passTime) : that.passTime != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
@@ -216,6 +229,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
         result1 = 31 * result1 + (examinePeopleName != null ? examinePeopleName.hashCode() : 0);
         result1 = 31 * result1 + (examinePeoplePost != null ? examinePeoplePost.hashCode() : 0);
         result1 = 31 * result1 + (order != null ? order.hashCode() : 0);
+        result1 = 31 * result1 + (examineResult != null ? examineResult.hashCode() : 0);
         result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
         result1 = 31 * result1 + (advise != null ? advise.hashCode() : 0);
         result1 = 31 * result1 + (passTime != null ? passTime.hashCode() : 0);

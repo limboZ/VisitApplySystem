@@ -9,7 +9,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_team", schema = "visit_apply", catalog = "")
 public class TTeamEntity extends Base<TTeamEntity>{
     private int id;
-    private Integer employeeId;
+    private String employeeId;
     private String employeeName;
     private String employeeDept;
     private String employeePost;
@@ -43,11 +43,11 @@ public class TTeamEntity extends Base<TTeamEntity>{
 
     @Basic
     @Column(name = "employee_id")
-    public Integer getEmployeeId() {
+    public String getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(Integer employeeId) {
+    public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
 

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {
     private int id;
-    private Integer creatorId;
+    private String creatorId;
     private String content;
     private Date reportDate;
     private ReportSlotEnum reportSlot;
@@ -35,11 +35,11 @@ public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {
         this.id = id;
     }
 
-    public Integer getCreatorId() {
+    public String getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(Integer creatorId) {
+    public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
     }
 
