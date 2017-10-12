@@ -320,11 +320,14 @@
                     data:JSON.stringify(applyDto),
                     dataype:'json',
                     contentType:"application/json",
-                    success:function () {
-
+                    success:function (data) {
+                        alert(data.tip);
+                        if(data.code == 0){
+                            location.href = '${ctx}/user/list';
+                        }
                     },
                     error:function () {
-
+                        alert('连接服务器失败！');
                     }
                 });
             }else {
