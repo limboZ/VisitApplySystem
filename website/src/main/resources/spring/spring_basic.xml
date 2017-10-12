@@ -61,7 +61,7 @@
     </bean>
 
     <bean id="oaDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="${jdbc.driverClassName}"/>
+        <property name="driverClass" value="${oa.driverClassName}"/>
         <property name="jdbcUrl" value="${oa.url}"/>
         <property name="user" value="${oa.username}"/>
         <property name="password" value="${oa.password}"/>

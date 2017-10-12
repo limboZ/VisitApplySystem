@@ -448,6 +448,14 @@
             <artifactId>sitemesh</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>6.2.1.jre7</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
