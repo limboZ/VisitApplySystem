@@ -13,7 +13,6 @@ import cn.com.scal.components.enums.ApplyStatusEnum;
 import cn.com.scal.components.exception.OtherException;
 import cn.com.scal.components.service.impl.CommonServiceImpl;
 import cn.com.scal.components.utils.DateUtil;
-import cn.com.scal.components.utils.ErrorMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,11 +59,11 @@ public class UserController {
 
             // 拼接出访的团队名字:首个团员的部门名称+首个团员名字+等x人赴+所有目的地国家(多个国家以、隔开)+任务类型+出访申请 例如:信息服务部冯涛等2人赴美国、加拿大国际会议出访申请
             String teamName = "" + applyDTO.getTeamMates()[0].getEmployeeDept() + applyDTO.getTeamMates()[0].getEmployeeName() + "等" + applyDTO.getTeamMates().length + "人赴";
-            if(applyDTO.getDestinations().length == 1){
+            if (applyDTO.getDestinations().length == 1) {
                 teamName = teamName + applyDTO.getDestinations()[0].getNation();
-            }else if(applyDTO.getDestinations().length == 2){
+            } else if (applyDTO.getDestinations().length == 2) {
                 teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[0].getNation();
-            }else if(applyDTO.getDestinations().length == 2){
+            } else if (applyDTO.getDestinations().length == 2) {
                 teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[1].getNation() + "、" + applyDTO.getDestinations()[2].getNation();
             }
             teamName = teamName + applyDTO.getCommissionType() + "出访申请";
@@ -77,18 +76,20 @@ public class UserController {
             tApplyEntity.setReason(applyDTO.getReason());
             tApplyEntity.setApplyStatus(ApplyStatusEnum.WAITING);
             tApplyEntity.setCreateTime(DateUtil.getCurrentTime());
+            tApplyEntity.setUpdateTime(DateUtil.getCurrentTime());
             tApplyEntity.setDataMark("1");
 
             ArrayList<TDestinationEntity> tDestinationEntities = new ArrayList<>();
-            for (int i = 0; i < applyDTO.getDestinations().length; i++){
+            for (int i = 0; i < applyDTO.getDestinations().length; i++) {
                 Destination destination = applyDTO.getDestinations()[i];
-                tDestinationEntities.add(new TDestinationEntity(i, destination.getNation(), destination.getDestination(), DateUtil.getCurrentTime(), "1"));
+                tDestinationEntities.add(new TDestinationEntity(i, destination.getNation(), destination.getDestination(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
             }
             ArrayList<TTeamEntity> tTeamEntities = new ArrayList<>();
-            for (int i = 0; i < applyDTO.getTeamMates().length; i++){
+            for (int i = 0; i < applyDTO.getTeamMates().length; i++) {
                 TeamMate teamMate = applyDTO.getTeamMates()[i];
-                tTeamEntities.add(new TTeamEntity(i,teamMate.getEmployeeId(), teamMate.getEmployeeName(), teamMate.getEmployeeDept(),teamMate.getEmployeePost(), DateUtil.getCurrentTime(), "1"));
+                tTeamEntities.add(new TTeamEntity(i, teamMate.getEmployeeId(), teamMate.getEmployeeName(), teamMate.getEmployeeDept(), teamMate.getEmployeePost(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
             }
+
 
             tApplyEntity.setDestinationEntities(tDestinationEntities);
             tApplyEntity.settTeamEntities(tTeamEntities);

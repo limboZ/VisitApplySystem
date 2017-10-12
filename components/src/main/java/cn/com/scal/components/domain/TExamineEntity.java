@@ -17,7 +17,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
     private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
-    private Integer order;
+    private Integer orders;
     private String examineResult;
     private ExamineResultEnum result;
     private String advise;
@@ -40,7 +40,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
     }
 
     private TApplyEntity applyId;
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "apply_id")
     public TApplyEntity getApplyId(){
         return applyId;
@@ -92,13 +92,13 @@ public class TExamineEntity extends Base<TExamineEntity>{
     }
 
     @Basic
-    @Column(name = "order")
-    public Integer getOrder() {
-        return order;
+    @Column(name = "orders")
+    public Integer getOrders() {
+        return orders;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setOrders(Integer orders) {
+        this.orders = orders;
     }
 
     @Basic
@@ -207,7 +207,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
             return false;
         if (examinePeoplePost != null ? !examinePeoplePost.equals(that.examinePeoplePost) : that.examinePeoplePost != null)
             return false;
-        if (order != null ? !order.equals(that.order) : that.order != null) return false;
+        if (orders != null ? !orders.equals(that.orders) : that.orders != null) return false;
         if (examineResult != null ? !examineResult.equals(that.examineResult) : that.examineResult != null)
             return false;
         if (result != that.result) return false;
@@ -228,7 +228,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
         result1 = 31 * result1 + (examinePeopleId != null ? examinePeopleId.hashCode() : 0);
         result1 = 31 * result1 + (examinePeopleName != null ? examinePeopleName.hashCode() : 0);
         result1 = 31 * result1 + (examinePeoplePost != null ? examinePeoplePost.hashCode() : 0);
-        result1 = 31 * result1 + (order != null ? order.hashCode() : 0);
+        result1 = 31 * result1 + (orders != null ? orders.hashCode() : 0);
         result1 = 31 * result1 + (examineResult != null ? examineResult.hashCode() : 0);
         result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
         result1 = 31 * result1 + (advise != null ? advise.hashCode() : 0);

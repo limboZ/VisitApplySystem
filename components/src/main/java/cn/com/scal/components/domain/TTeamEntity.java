@@ -18,29 +18,31 @@ public class TTeamEntity extends Base<TTeamEntity>{
     private String dataMark;
     private String f1;
     private String f2;
-    private Integer order;
+    private Integer orders;
 
     public TTeamEntity() {
     }
 
-    public TTeamEntity(Integer order, String employeeId, String employeeName, String employeeDept, String employeePost, Timestamp createTime, String dataMark) {
-        this.order = order;
+    public TTeamEntity(Integer orders, String employeeId, String employeeName, String employeeDept, String employeePost, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+        this.orders = orders;
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.employeeDept = employeeDept;
         this.employeePost = employeePost;
         this.createTime = createTime;
+        this.updateTime = updateTime;
         this.dataMark = dataMark;
+        this.applyId = applyId;
     }
 
     @Basic
-    @Column(name = "order")
-    public Integer getOrder() {
-        return order;
+    @Column(name = "orders")
+    public Integer getOrders() {
+        return orders;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setOrders(Integer orders) {
+        this.orders = orders;
     }
 
     @Id

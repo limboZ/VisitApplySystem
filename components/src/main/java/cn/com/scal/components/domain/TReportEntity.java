@@ -46,7 +46,7 @@ public class TReportEntity extends Base<TReportEntity>{
     }
 
     private TApplyEntity applyId;
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "apply_id")
     public TApplyEntity getApplyId(){
         return applyId;

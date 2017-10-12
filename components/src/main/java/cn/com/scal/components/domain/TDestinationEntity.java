@@ -9,7 +9,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_destination", schema = "visit_apply", catalog = "")
 public class TDestinationEntity extends Base<TDestinationEntity>{
     private int id;
-    private Integer order;
+    private Integer orders;
     private String nation;
     private String destination;
     private Timestamp createTime;
@@ -21,12 +21,14 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     public TDestinationEntity() {
     }
 
-    public TDestinationEntity(Integer order, String nation, String destination, Timestamp createTime, String dataMark) {
-        this.order = order;
+    public TDestinationEntity(Integer orders, String nation, String destination, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+        this.orders = orders;
         this.nation = nation;
         this.destination = destination;
         this.createTime = createTime;
+        this.updateTime = updateTime;
         this.dataMark = dataMark;
+        this.applyId = applyId;
     }
 
     @Id
@@ -52,13 +54,13 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     }
 
     @Basic
-    @Column(name = "order")
-    public Integer getOrder() {
-        return order;
+    @Column(name = "orders")
+    public Integer getOrders() {
+        return orders;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setOrders(Integer orders) {
+        this.orders = orders;
     }
 
     @Basic
@@ -139,7 +141,7 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
         TDestinationEntity that = (TDestinationEntity) o;
 
         if (id != that.id) return false;
-        if (order != null ? !order.equals(that.order) : that.order != null) return false;
+        if (orders != null ? !orders.equals(that.orders) : that.orders != null) return false;
         if (nation != null ? !nation.equals(that.nation) : that.nation != null) return false;
         if (destination != null ? !destination.equals(that.destination) : that.destination != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
@@ -153,7 +155,7 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (order != null ? order.hashCode() : 0);
+        result = 31 * result + (orders != null ? orders.hashCode() : 0);
         result = 31 * result + (nation != null ? nation.hashCode() : 0);
         result = 31 * result + (destination != null ? destination.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
