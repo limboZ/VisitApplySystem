@@ -30,6 +30,7 @@ public class OAController {
             api.setCode(Api.ERROR_CODE);
             api.setTip(ErrorMessage.ERROR);
             api.setData(e.getMessage());
+            return api;
         }
         if(teamMate == null){
             api.setCode(Api.ERROR_CODE);
@@ -38,4 +39,5 @@ public class OAController {
         }
         return api;
     }
+
 }

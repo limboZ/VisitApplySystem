@@ -6,13 +6,17 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component("OADao")
+@Repository("OADao")
+@Transactional(propagation = Propagation.MANDATORY)
 public class OADaoImpl implements IOADao {
     private SessionFactory sessionFactory;
+
     @Autowired
     public OADaoImpl(@Qualifier("oaSessionFactory") SessionFactory factory) {
         this.sessionFactory = factory;

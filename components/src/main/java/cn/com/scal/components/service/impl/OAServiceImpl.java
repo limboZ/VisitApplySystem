@@ -4,10 +4,13 @@ import cn.com.scal.components.dao.IOADao;
 import cn.com.scal.components.dto.front.domain.TeamMate;
 import cn.com.scal.components.service.IOAService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+@Transactional
 @Service("OAService")
 public class OAServiceImpl implements IOAService {
     @Resource(name = "OADao")
