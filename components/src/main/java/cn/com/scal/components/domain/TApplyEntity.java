@@ -3,7 +3,7 @@ package cn.com.scal.components.domain;
 import cn.com.scal.components.enums.ApplyStatusEnum;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 

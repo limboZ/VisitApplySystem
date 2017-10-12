@@ -4,7 +4,7 @@ import cn.com.scal.components.enums.ExamineResultEnum;
 import cn.com.scal.components.enums.ExamineTypeEnum;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 
 import static javax.persistence.GenerationType.IDENTITY;

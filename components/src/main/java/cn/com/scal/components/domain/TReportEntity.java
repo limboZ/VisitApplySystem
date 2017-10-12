@@ -4,7 +4,7 @@ import cn.com.scal.components.enums.ReportEnum;
 import cn.com.scal.components.enums.ReportSlotEnum;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 
 import static javax.persistence.GenerationType.IDENTITY;
