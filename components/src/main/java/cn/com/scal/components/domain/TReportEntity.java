@@ -1,5 +1,6 @@
 package cn.com.scal.components.domain;
 
+import cn.com.scal.components.enums.ReportEnum;
 import cn.com.scal.components.enums.ReportSlotEnum;
 
 import javax.persistence.*;
@@ -19,8 +20,19 @@ public class TReportEntity extends Base<TReportEntity>{
     private Timestamp createTime;
     private Timestamp updateTime;
     private String dataMark;
+    private ReportEnum reportType;
     private String f1;
     private String f2;
+
+    @Basic
+    @Column(name = "report_type")
+    public ReportEnum getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(ReportEnum reportType) {
+        this.reportType = reportType;
+    }
 
     @Id
     @Column(name = "id")

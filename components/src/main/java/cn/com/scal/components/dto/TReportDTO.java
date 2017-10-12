@@ -18,6 +18,15 @@ public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {
     private String f1;
     private String f2;
     private int applyId;
+    private String reportType;
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
 
     public int getApplyId() {
         return applyId;

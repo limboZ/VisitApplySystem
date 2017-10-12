@@ -7,6 +7,15 @@ public class Report {
     private String content;
     private Date reportDate;
     private String reportSlot;
+    private String reportType;
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
 
     public Report() {
     }

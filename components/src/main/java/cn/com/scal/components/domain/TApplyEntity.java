@@ -5,6 +5,7 @@ import cn.com.scal.components.enums.ApplyStatusEnum;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -24,6 +25,40 @@ public class TApplyEntity extends Base<TApplyEntity>{
     private String dataMark;
     private String f1;
     private String f2;
+
+    private List<TDestinationEntity> destinationEntities;
+    private List<TReportEntity> reportEntities;
+    private List<TExamineEntity> examineEntities;
+
+
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY)
+    public List<TDestinationEntity> getDestinationEntities() {
+        return destinationEntities;
+    }
+
+    public void setDestinationEntities(List<TDestinationEntity> destinationEntities) {
+        this.destinationEntities = destinationEntities;
+    }
+
+
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY)
+    public List<TReportEntity> getReportEntities() {
+        return reportEntities;
+    }
+
+    public void setReportEntities(List<TReportEntity> reportEntities) {
+        this.reportEntities = reportEntities;
+    }
+
+
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY)
+    public List<TExamineEntity> getExamineEntities() {
+        return examineEntities;
+    }
+
+    public void setExamineEntities(List<TExamineEntity> examineEntities) {
+        this.examineEntities = examineEntities;
+    }
 
     @Id
     @Column(name = "id")

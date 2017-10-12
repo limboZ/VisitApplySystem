@@ -14,4 +14,18 @@ public enum ApplyStatusEnum {
     public void setText(String text) {
         this.text = text;
     }
+
+    public static ApplyStatusEnum EnumFormText(String text) throws Exception {
+
+        ApplyStatusEnum[] enums = ApplyStatusEnum.values();
+        for (ApplyStatusEnum enumo : enums) {
+
+            if(enumo.getText().equals(text)){
+                return enumo;
+            }
+        }
+
+        throw new Exception("类型未找到！");
+
+    }
 }

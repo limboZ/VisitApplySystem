@@ -32,6 +32,7 @@ public class UserController {
     private final String LIST = "/user/list";
     private final String ADD = "/user/add";
     private final String SHOW = "/user/show";
+    private final String EDIT = "/user/edit";
 
     @RequestMapping("/list")
     public String list(HttpServletRequest request, CurrentUser user, Model model)throws Exception{
@@ -41,13 +42,23 @@ public class UserController {
     }
 
     @RequestMapping("/add")
-    public String add(@RequestBody ApplyDTO applyDTO, HttpServletRequest request, Model model)throws Exception{
-        applyService.setNewApply(applyDTO);
+    public String add(Model model)throws Exception{
         return ADD;
+    }
+
+    @RequestMapping("/creat")
+    public String ceate(@RequestBody ApplyDTO applyDTO, HttpServletRequest request, Model model)throws Exception{
+        applyService.setNewApply(applyDTO);
+        return LIST;
     }
 
     @RequestMapping("/show")
     public String show(HttpServletRequest request,Model model)throws Exception{
         return SHOW;
+    }
+
+    @RequestMapping("/edit")
+    public String edit(HttpServletRequest request,Model model)throws Exception{
+        return EDIT;
     }
 }

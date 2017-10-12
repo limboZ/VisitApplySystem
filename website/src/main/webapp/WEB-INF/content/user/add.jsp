@@ -34,20 +34,15 @@
             </div>
             <form class="form-horizontal form-label-left">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%--<div class="panel panel-success">--%>
-                        <%--<div class="panel-heading" role="tab" data-toggle="collapse" id="message"  href="#messageC" aria-expanded="true" aria-controls="messageC">--%>
-                            <%--<h4 class="panel-title">出访团组基本信息</h4>--%>
-                        <%--</div>--%>
-                        <%--<div class="panel-body"  id="messageC" role="tabpanel" aria-labelledby="message">--%>
                             <div class="form-group">
                                 <label class="control-label col-sm-2 col-xs-12">任务类型<span class="required">*</span>
                                 </label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select class="form-control" id="type" name="type" required>
                                         <option value="">请选择</option>
-                                        <%--<c:forEach items="${taskSources}" var="taskSource">--%>
-                                            <%--<option value="${taskSource.id}">${taskSource.name}</option>--%>
-                                        <%--</c:forEach>--%>
+                                        <c:forEach var="item" items="">
+                                            <option value=""></option>
+                                        </c:forEach>
                                         <option>飞机接机</option>
                                         <option>商务洽谈</option>
                                     </select>
@@ -74,33 +69,12 @@
                                 </div>
                             </div>
                         <div class="ln_solid"></div>
-                        <%--</div>--%>
-                    <%--</div>--%>
-                    <%--<div class="panel panel-success">--%>
-                        <%--<div class="panel-heading" data-toggle="collapse" id="destination"  href="#destinationC" aria-expanded="true" aria-controls="destinationC">--%>
-                            <%--<h4 class="panel-title">出访团组目的地信息</h4>--%>
-                        <%--</div>--%>
-                        <%--<div class="panel-body" id="destinationC" role="tabpanel" aria-labelledby="destination">--%>
                             <div class="form-group">
                                 <label class="control-label col-sm-2 col-xs-12">目的地<span class="required">*</span>
                                 </label>
                                 <div class="col-sm-8 col-xs-12">
                                     <table class="table table-th" id="destinationList">
                                         <tbody>
-                                            <%--<tr>--%>
-                                                <%--<th>国家</th>--%>
-                                                <%--<td class="nation">美国</td>--%>
-                                                <%--<th>城市</th>--%>
-                                                <%--<td class="city">xx市</td>--%>
-                                                <%--<td><button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button></td>--%>
-                                            <%--</tr>--%>
-                                            <%--<tr>--%>
-                                                <%--<th>国家</th>--%>
-                                                <%--<td class="nation">加拿大</td>--%>
-                                                <%--<th>城市</th>--%>
-                                                <%--<td class="city">xx市</td>--%>
-                                                <%--<td><button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button></td>--%>
-                                            <%--</tr>--%>
                                             <tr id="nationForm">
                                                 <th>国家</th>
                                                 <td>
@@ -120,43 +94,12 @@
                                 </div>
                             </div>
                         <div class="ln_solid"></div>
-                        <%--</div>--%>
-                    <%--</div>--%>
-                    <%--<div class="panel panel-success">--%>
-                        <%--<div class="panel-heading" data-toggle="collapse" id="visitors"  href="#visitorsC" aria-expanded="true" aria-controls="visitorsC">--%>
-                            <%--<h4 class="panel-title">出访团组人员信息</h4>--%>
-                        <%--</div>--%>
-                        <%--<div class="panel-body" id="visitorsC" role="tabpanel" aria-labelledby="visitors">--%>
                             <div class="form-group">
                                 <label class="control-label col-sm-2 col-xs-12">出访人员<span class="required">*</span>
                                 </label>
                                 <div class="col-sm-10 col-xs-12">
                                     <table class="table table-th" id="visitorList">
                                         <tbody>
-                                        <%--<tr>--%>
-                                            <%--<th>工号</th>--%>
-                                            <%--<td>007955</td>--%>
-                                            <%--<th>姓名</th>--%>
-                                            <%--<td>猴小翔</td>--%>
-                                            <%--<th>部门</th>--%>
-                                            <%--<td>信息服务部</td>--%>
-                                            <%--<th>职位</th>--%>
-                                            <%--<td>软件研发经理</td>--%>
-                                            <%--<td>--%>
-                                                <%--<button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button>--%>
-                                            <%--</td>--%>
-                                        <%--</tr>--%>
-                                        <%--<tr>--%>
-                                            <%--<th>工号</th>--%>
-                                            <%--<td>015074</td>--%>
-                                            <%--<th>姓名</th>--%>
-                                            <%--<td>邹江华</td>--%>
-                                            <%--<th>部门</th>--%>
-                                            <%--<td>信息服务部</td>--%>
-                                            <%--<th>职位</th>--%>
-                                            <%--<td>软件研发员</td>--%>
-                                            <%--<td><button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button></td>--%>
-                                        <%--</tr>--%>
                                         <tr id="visitorForm">
                                             <th>工号</th>
                                             <td>
@@ -308,7 +251,6 @@
         //点击提交，组装数据到后台
         $('#createButton').click(function () {
             $('#warning').show();
-
         });
     </script>
 </body>

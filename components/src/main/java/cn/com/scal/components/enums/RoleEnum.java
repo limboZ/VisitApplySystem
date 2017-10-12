@@ -16,4 +16,17 @@ public enum RoleEnum {
         return text;
     }
 
+    public static RoleEnum EnumFormText(String text) throws Exception {
+
+        RoleEnum[] enums = RoleEnum.values();
+        for (RoleEnum enumo : enums) {
+
+            if(enumo.getText().equals(text)){
+                return enumo;
+            }
+        }
+
+        throw new Exception("类型未找到！");
+
+    }
 }

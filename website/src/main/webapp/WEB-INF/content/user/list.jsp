@@ -40,6 +40,23 @@
                     </tr>
                 </thead>
                 <tbody>
+                <c:forEach items="${applyPreviewList.applyPreviews}" var="item" varStatus="no">
+                    <tr>
+                        <td>${no.count}</td>
+                        <td>${item.teamName}</td>
+                        <td>${item.applyCreateTime}</td>
+                        <td>${item.applyExamineStatus}</td>
+                        <td>${item.isFilledReport}</td>
+                        <td>${item.reportExamineStatus}</td>
+                        <td>
+                            <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#summary">填写</button>
+                        </td>
+                        <td>
+                            <a href="${ctx}/user/show" class="btn btn-xs btn-primary">详情</a>
+                            <a href="#" class="btn btn-xs btn-success">提交审批</a>
+                        </td>
+                    </tr>
+                </c:forEach>
                     <tr>
                         <td>1</td>
                         <td>关于邹江华等2人去美国、加拿大的出国申请</td>
@@ -88,6 +105,11 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="8">
+                        <tags:pagination pagination="${pageCommand}" currentPage="${currentPage}" count="${count}" />
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -118,41 +140,24 @@
                                 <tr>
                                     <th width="12%">日期</th>
                                     <th width="12%">时间</th>
-                                    <th>出访总结</th>
+                                    <th>行程描述</th>
                                     <th width="12%">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <%--<tr>--%>
-                                    <%--<td class="tDate">--%>
-                                        <%--2017-09-23--%>
-                                    <%--</td>--%>
-                                    <%--<td class="tTime">--%>
-                                        <%--上午--%>
-                                    <%--</td>--%>
-                                    <%--<td>--%>
-                                        <%--今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...今天去了日本东京，看了富士山脚下的樱花...--%>
-                                    <%--</td>--%>
-                                    <%--<td>--%>
-                                        <%--<button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
-                                    <%--</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                    <%--<td class="tDate">--%>
-                                        <%--2017-09-23--%>
-                                    <%--</td>--%>
-                                    <%--<td class="tTime">--%>
-                                        <%--下午--%>
-                                    <%--</td>--%>
-                                    <%--<td>--%>
-                                        <%--1234567890 * 1024--%>
-                                    <%--</td>--%>
-                                    <%--<td>--%>
-                                        <%--<button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>--%>
-                                    <%--</td>--%>
-                                <%--</tr>--%>
+                                    <c:forEach items="" var="item">
+                                        <tr>
+                                            <td class="tDate"></td>
+                                            <td class="tTime"></td>
+                                            <td class="tDetail"></td>
+                                            <td>
+                                                <button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
                                 </tbody>
                             </table>
+                            <button class="btn btn-info" id="addButton">新增行程</button>
                             <%--<button type="button" class="btn btn-primary ">新增行程</button>--%>
                             <div id="add">
                                 <h2>新增行程</h2>
@@ -177,21 +182,31 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-sm-2 col-xs-12">出访总结<span class="required">*</span>
+                                        <label class="control-label col-sm-2 col-xs-12">行程描述<span class="required">*</span>
                                         </label>
                                         <div class="col-sm-8 col-xs-12">
-                                           <textarea rows="10" class="form-control" id="detail"></textarea>
+                                           <textarea rows="4" class="form-control" id="detail"></textarea>
                                         </div>
                                     </div>
                                     <div class="ln_solid"></div>
                                     <button type="button" id="addVisit" class="btn btn-success pull-right">新增</button>
                                 </form>
                             </div>
+                            <div class="ln_solid"></div>
+                            <form class="form-horizontal form-label-left">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2 col-xs-12">出访总结<span class="required">*</span>
+                                    </label>
+                                    <div class="col-sm-8 col-xs-12">
+                                        <textarea rows="10" class="form-control" id="summaryC" maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info">保存</button>
+                    <button type="button" class="btn btn-info" id="submitSummary">保存</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -200,6 +215,7 @@
     <script src="${ctx}/assets/build/js/jquery.min.js"></script>
     <script src="${ctx}/assets/build/js/sort.summary.js"></script>
     <script>
+        $('#add').hide();
         $('#addApply').click(function () {
             window.location.href = '${ctx}/user/add';
         });
@@ -217,7 +233,7 @@
                 message += '请填写时间！';
             }
             if(isEmpty(detail)){
-                message += '请填写出访总结！';
+                message += '请填写行程描述！';
             }
             if(isEmpty(message)){
                 //判断出访总结是否超过1000字
@@ -230,7 +246,7 @@
                         if(obj.text() == date){
                             obj.parent().find('.tTime').each(function () {
                                 if($(this).text() == time){
-                                    alert('该时间的总结已填写！');
+                                    alert('该时间的描述已填写！');
                                     flag = false;
                                     return false;
                                 }
@@ -240,22 +256,56 @@
                     if(flag){
                         var op = '<tr><td class="tDate">' + date + '</td>';
                         op += '<td class="tTime">' + time + '</td>';
-                        op += '<td>' + detail + '</td>';
+                        op += '<td class="tDetail">' + detail + '</td>';
                         op += '<td><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button></td>';
                         $('#summaryList').append(op);
                         $('#date').val('');
                         $('#time').val('');
                         $('#detail').val('');
+                        $('#add').hide();
                     }
                 }
             }else {
                 alert(message);
             }
-        })
+        });
         //移除一条总结
         $('body').on('click','.remove',function () {
             $(this).parents('tr:first').remove();
-        })
+        });
+        //提交总结
+        $('#submitSummary').click(function () {
+           //遍历所有总结
+            var summary = $('#summaryC').val();
+            //存储行程
+            var tripList = [];
+            if(isEmpty(summary)){
+                alert('请填写出访总结！');
+            }else {
+                if(summary.length > 1000){
+                    alert('出访总结不能超过1000字！');
+                }else {
+                    var list = $('#summaryList tbody tr');
+                    if(list.length > 0){
+                        $(list).each(function () {
+                            var one = {};
+                            one.date = $(this).find('.tDate').text();
+                            one.time = $(this).find('.tTime').text();
+                            one.detail = $(this).find('.tDetail').text();
+                            tripList.push(one);
+                        });
+//                        console.log(tripList);
+                        //ajax提交数据
+
+                    }else {
+                        alert('请填写出访行程！');
+                    }
+                }
+            }
+        });
+        $('#addButton').click(function () {
+           $('#add').show();
+        });
     </script>
 </body>
 </html>

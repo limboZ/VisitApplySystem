@@ -14,4 +14,18 @@ public enum ExamineResultEnum {
     public void setText(String text) {
         this.text = text;
     }
+
+    public static ExamineResultEnum EnumFormText(String text) throws Exception {
+
+        ExamineResultEnum[] enums = ExamineResultEnum.values();
+        for (ExamineResultEnum enumo : enums) {
+
+            if(enumo.getText().equals(text)){
+                return enumo;
+            }
+        }
+
+        throw new Exception("类型未找到！");
+
+    }
 }

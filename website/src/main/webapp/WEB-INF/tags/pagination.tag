@@ -10,7 +10,7 @@
         pagination.setPageUrl(request.getQueryString());
         pagination.setCurrentPage(currentPage);
 %>
-<div class="paging">
+<div class="paging pull-right">
 
     <a href="?<%=pagination.generateUrl(pagination.getPreviousPageNumber())%>" class="btn btn-default">&laquo;前一页</a>
     <%

@@ -1,9 +1,13 @@
 package cn.com.scal.components.enums;
 
-public enum ReportSlotEnum {
-    MORNING("早上"), AFTERNOON("下午");
+/**
+ * Created by limboZ on 2017/10/12.
+ */
+public enum ReportEnum {
+
+    TRIP("行程"),FINAL("总结");
     private String text;
-    ReportSlotEnum(String text){
+    ReportEnum(String text){
         this.text = text;
     }
 
@@ -15,10 +19,10 @@ public enum ReportSlotEnum {
         this.text = text;
     }
 
-    public static ReportSlotEnum EnumFormText(String text) throws Exception {
+    public static ReportEnum EnumFormText(String text) throws Exception {
 
-        ReportSlotEnum[] enums = ReportSlotEnum.values();
-        for (ReportSlotEnum enumo : enums) {
+        ReportEnum[] enums = ReportEnum.values();
+        for (ReportEnum enumo : enums) {
 
             if(enumo.getText().equals(text)){
                 return enumo;
@@ -29,3 +33,4 @@ public enum ReportSlotEnum {
 
     }
 }
+
