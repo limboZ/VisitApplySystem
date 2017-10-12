@@ -15,4 +15,6 @@ public class ErrorMessage {
     public static final String ERROR_PARAM = "参数错误";
     public static final String NO_FILE = "文件不存在";
     public static final String SQL_CHARACT = "请不要使用敏感字符";
+    public static final String ERROR_NO_DATA = "数据库里面没有出访类型的数据";
+
 }

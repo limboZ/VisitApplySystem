@@ -18,6 +18,30 @@ public class TTeamEntity extends Base<TTeamEntity>{
     private String dataMark;
     private String f1;
     private String f2;
+    private Integer order;
+
+    public TTeamEntity() {
+    }
+
+    public TTeamEntity(Integer order, String employeeId, String employeeName, String employeeDept, String employeePost, Timestamp createTime, String dataMark) {
+        this.order = order;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.employeeDept = employeeDept;
+        this.employeePost = employeePost;
+        this.createTime = createTime;
+        this.dataMark = dataMark;
+    }
+
+    @Basic
+    @Column(name = "order")
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
 
     @Id
     @Column(name = "id")
@@ -31,7 +55,7 @@ public class TTeamEntity extends Base<TTeamEntity>{
     }
 
     private TApplyEntity applyId;
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "apply_id")
     public TApplyEntity getApplyId(){
         return applyId;

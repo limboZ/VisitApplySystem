@@ -18,6 +18,17 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     private String f1;
     private String f2;
 
+    public TDestinationEntity() {
+    }
+
+    public TDestinationEntity(Integer order, String nation, String destination, Timestamp createTime, String dataMark) {
+        this.order = order;
+        this.nation = nation;
+        this.destination = destination;
+        this.createTime = createTime;
+        this.dataMark = dataMark;
+    }
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
@@ -30,7 +41,7 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     }
 
     private TApplyEntity applyId;
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "apply_id")
     public TApplyEntity getApplyId(){
         return applyId;

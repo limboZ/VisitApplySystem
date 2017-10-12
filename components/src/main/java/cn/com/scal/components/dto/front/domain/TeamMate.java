@@ -10,6 +10,14 @@ public class TeamMate {
     public TeamMate() {
     }
 
+    public TeamMate(Integer id, String employeeId, String employeeName, String employeeDept, String employeePost) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.employeeDept = employeeDept;
+        this.employeePost = employeePost;
+    }
+
     public Integer getId() {
         return id;
     }

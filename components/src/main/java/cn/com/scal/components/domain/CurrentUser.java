@@ -11,6 +11,7 @@ public class CurrentUser {
     private String empNo;
     private String userName;
     private String password;
+    private String deptName;
     private RoleEnum role =  RoleEnum.USER ;
     private String tele;
     private String email;
@@ -33,6 +34,14 @@ public class CurrentUser {
 
     public String getEmpNo() {
         return empNo;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     public void setEmpNo(String empNo) {

@@ -27,11 +27,12 @@ public class TApplyEntity extends Base<TApplyEntity>{
     private String f2;
 
     private List<TDestinationEntity> destinationEntities;
+    private List<TTeamEntity> tTeamEntities;
     private List<TReportEntity> reportEntities;
     private List<TExamineEntity> examineEntities;
 
 
-    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<TDestinationEntity> getDestinationEntities() {
         return destinationEntities;
     }
@@ -40,8 +41,16 @@ public class TApplyEntity extends Base<TApplyEntity>{
         this.destinationEntities = destinationEntities;
     }
 
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    public List<TTeamEntity> gettTeamEntities() {
+        return tTeamEntities;
+    }
 
-    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY)
+    public void settTeamEntities(List<TTeamEntity> tTeamEntities) {
+        this.tTeamEntities = tTeamEntities;
+    }
+
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<TReportEntity> getReportEntities() {
         return reportEntities;
     }
@@ -51,7 +60,7 @@ public class TApplyEntity extends Base<TApplyEntity>{
     }
 
 
-    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<TExamineEntity> getExamineEntities() {
         return examineEntities;
     }
