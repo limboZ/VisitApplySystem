@@ -62,9 +62,9 @@
 
     <bean id="oaDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
-        <property name="jdbcUrl" value="${jdbc.url}"/>
-        <property name="user" value="${jdbc.username}"/>
-        <property name="password" value="${jdbc.password}"/>
+        <property name="jdbcUrl" value="${oa.url}"/>
+        <property name="user" value="${oa.username}"/>
+        <property name="password" value="${oa.password}"/>
         <property name="initialPoolSize" value="${jdbc.initialPoolSize}"/>
         <property name="minPoolSize" value="${jdbc.minPoolSize}"/>
         <property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>
