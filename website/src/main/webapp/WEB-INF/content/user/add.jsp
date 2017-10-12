@@ -40,11 +40,10 @@
                                 <div class="col-sm-8 col-xs-12">
                                     <select class="form-control" id="type" name="type" required>
                                         <option value="">请选择</option>
-                                        <c:forEach var="item" items="">
-                                            <option value=""></option>
-                                        </c:forEach>
-                                        <option>飞机接机</option>
-                                        <option>商务洽谈</option>
+                                        <%--<c:forEach var="item" items="">--%>
+                                            <%--<option value=""></option>--%>
+                                        <%--</c:forEach>--%>
+                                        <%--<option value="飞机接机">飞机接机</option>--%>
                                     </select>
                                 </div>
                             </div>
@@ -65,7 +64,7 @@
                                 <label class="control-label col-sm-2 col-xs-12">出访事由<span class="required">*</span>
                                 </label>
                                 <div class="col-sm-8 col-xs-12">
-                                    <textarea rows="10" id="reason" class="form-control">最多1000字</textarea>
+                                    <textarea rows="10" id="reason" class="form-control" maxlength="1000"></textarea>
                                 </div>
                             </div>
                         <div class="ln_solid"></div>
@@ -75,6 +74,8 @@
                                 <div class="col-sm-8 col-xs-12">
                                     <table class="table table-th" id="destinationList">
                                         <tbody>
+                                        </tbody>
+                                        <tfoot>
                                             <tr id="nationForm">
                                                 <th>国家</th>
                                                 <td>
@@ -86,9 +87,10 @@
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-xs btn-primary " id="addDestination"><i class="fa fa-plus"></i> 添加</button>
+                                                    <button type="button" class="btn btn-warning btn-xs cancel">取消</button>
                                                 </td>
-                                            </tr>
-                                        </tbody>
+                                        </tr>
+                                        </tfoot>
                                     </table>
                                     <button type="button" id="toAddDestination" class="btn btn-info"><i class="fa fa-plus"></i> 新增目的地</button>
                                 </div>
@@ -100,20 +102,19 @@
                                 <div class="col-sm-10 col-xs-12">
                                     <table class="table table-th" id="visitorList">
                                         <tbody>
+                                        </tbody>
+                                        <tfoot>
                                         <tr id="visitorForm">
                                             <th>工号</th>
                                             <td>
-                                                <%--<input type="text" style="width:60px" id="empNo">--%>
                                                 <input type="text" id="empNo">
                                             </td>
                                             <th>姓名</th>
                                             <td>
-                                                <%--<input type="text" style="width:80px" id="userName">--%>
                                                 <input type="text" id="userName">
                                             </td>
                                             <th>部门</th>
                                             <td>
-                                                <%--<input type="text" style="width:120px" id="department">--%>
                                                 <input type="text" id="department">
                                             </td>
                                             </td>
@@ -121,11 +122,12 @@
                                             <td>
                                                 <input type="text" id="job">
                                             </td>
-                                            <td>
-                                                <button type="button" class="btn btn-xs btn-primary" id="addVisitor"><i class="fa fa-plus"></i> 添加</button>
+                                            <td width="120px;">
+                                                <button type="button" class="btn btn-xs btn-primary" id="addVisitor"> 添加</button>
+                                                <button type="button" class="btn btn-warning btn-xs cancel">取消</button>
                                             </td>
                                         </tr>
-                                        </tbody>
+                                        </tfoot>
                                     </table>
                                     <button type="button" class="btn btn-info" id="toAddVisitor"><i class="fa fa-plus"></i> 新增人员</button>
                                 </div>
@@ -159,6 +161,9 @@
             $('#visitorForm').show();
             $('#empNo').focus();
         })
+        $('.cancel').click(function () {
+            $(this).parents('tr:first').hide();
+        })
         //添加目的地
         $('#addDestination').click(function () {
             var city = $('#city').val();
@@ -173,12 +178,12 @@
                 var innerHtml = '';
                 innerHtml += '<tr>';
                 innerHtml += '<th>国家</th>';
-                innerHtml += '<td>' + nation + '</td>';
+                innerHtml += '<td class="nation">' + nation + '</td>';
                 innerHtml += '<th>城市</th>';
-                innerHtml += '<td>' + city + '</td>';
+                innerHtml += '<td class="city">' + city + '</td>';
                 innerHtml += '<td><button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button></td>';
                 innerHtml += '</tr>';
-                $('#destinationList tr:last').before(innerHtml);
+                $('#destinationList tbody').append(innerHtml);
                 $('#city').val('');
                 $('#nation').val('');
                 $('#nationForm').hide();
@@ -206,16 +211,16 @@
             if(message == ''){
                 $('#visitorForm').hide();
                 var option = '<tr><th>工号</th>';
-                option += '<td>' + empNo + '</td>';
+                option += '<td class="empNo">' + empNo + '</td>';
                 option += '<th>姓名</th>';
-                option += '<td>' + userName + '</td>';
+                option += '<td class="userName">' + userName + '</td>';
                 option += '<th>部门</th>';
-                option += '<td>' + department + '</td>';
+                option += '<td class="department">' + department + '</td>';
                 option += '<th>职位</th>';
-                option += '<td>' + job + '</td>';
+                option += '<td class="job">' + job + '</td>';
                 option += '<td><button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button></td>';
                 option += '</tr>';
-                $('#visitorForm').before(option);
+                $('#visitorList tbody').append(option);
                 $('#empNo').val('');
                 $('#userName').val('');
                 $('#department').val('');
@@ -250,7 +255,97 @@
         })
         //点击提交，组装数据到后台
         $('#createButton').click(function () {
-            $('#warning').show();
+            //验证数据的有效性
+            var type = $.trim($('#type').val());
+            var startDate = $.trim($('#startTime').val());
+            var endTime = $.trim($('#endTime').val());
+            var reason = $.trim($('#reason').val());
+            var destinations = $('#destinationList tbody tr');
+            var visitors = $('#visitorList tbody tr');
+            //存储提示信息
+            var message = '';
+            if(isEmpty(type)){
+                message += '请选择出访类型！';
+            }
+            if(isEmpty(startDate) || isEmpty(endTime)){
+                message += '请选择出访时间！';
+            }
+            if(isEmpty(reason)){
+                message += '请填写出访事由！';
+            }else {
+                if(reason.length > 1000){
+                    message += '出访事由最多为1000字！';
+                }
+            }
+            if(destinations.length == 0){
+                message += '请选择出访目的地！';
+            }
+            if(visitors.length == 0){
+                message += '请选择出访团组成员！';
+            }
+            if(isEmpty(message)){
+                //拼接出访信息传至后台
+                var applyDto = {};
+                applyDto.commissionType = type;
+                applyDto.startTime = startDate;
+                applyDto.endTime = endTime;
+                applyDto.reason = reason;
+                //拼接目的地
+                var destination = [];
+                $(destinations).each(function () {
+                    var item = {};
+                    item.nation = $(this).find('.nation').text();
+                    item.destination = $(this).find('.city').text();
+                    destination.push(item);
+                });
+                applyDto.destinations = destination;
+                //拼接出访人员
+                var visitor = [];
+                $(visitors).each(function () {
+                    var item = {};
+                    item.employeeId = $(this).find('.empNo').text();
+                    item.employeeName = $(this).find('.userName').text();
+                    item.employeeDept = $(this).find('.department').text();
+                    item.employeePost = $(this).find('.job').text();
+                    visitor.push(item);
+                });
+                applyDto.teamMates = visitor;
+                console.log(applyDto);
+                $('#warning').show();
+                //ajax提交数据
+                $.ajax({
+                    url:'${ctx}/user/creat',
+                    method:'post',
+//                    data:{applyDTO:JSON.stringify(applyDto)},
+                    data:JSON.stringify(applyDto),
+                    dataype:'json',
+                    contentType:"application/json",
+                    success:function () {
+
+                    },
+                    error:function () {
+
+                    }
+                });
+            }else {
+                alert(message);
+            }
+        });
+        //ajax获取所有任务类型
+        $.ajax({
+            url:'${ctx}/commissionTypes',
+            success:function (date) {
+                if(date.code == 0){
+                    if(data.data.length > 0){
+                        for(var i=0;i<data.data.length;i++){
+                            var option = '<option value="' + data.data[i].name + '">' + data.data[i].name + '</option>';
+                            $('#type').append(option);
+                        }
+                    }
+                }else {
+                    alert('任务类型拉取失败，请刷新页面后重试！');
+                }
+            }
         });
     </script>
 </body>
