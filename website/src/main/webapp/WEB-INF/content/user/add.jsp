@@ -314,7 +314,7 @@
                 $('#warning').show();
                 //ajax提交数据
                 $.ajax({
-                    url:'${ctx}/user/creat',
+                    url:'${ctx}/user/create',
                     method:'post',
 //                    data:{applyDTO:JSON.stringify(applyDto)},
                     data:JSON.stringify(applyDto),
@@ -334,11 +334,11 @@
         //ajax获取所有任务类型
         $.ajax({
             url:'${ctx}/commissionTypes',
-            success:function (date) {
-                if(date.code == 0){
+            success:function (data) {
+                if(data.code == 0){
                     if(data.data.length > 0){
                         for(var i=0;i<data.data.length;i++){
-                            var option = '<option value="' + data.data[i].name + '">' + data.data[i].name + '</option>';
+                            var option = '<option value="' + data.data[i].commissionType + '">' + data.data[i].commissionType + '</option>';
                             $('#type').append(option);
                         }
                     }
