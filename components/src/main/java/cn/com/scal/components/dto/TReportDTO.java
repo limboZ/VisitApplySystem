@@ -3,7 +3,7 @@ package cn.com.scal.components.dto;
 import cn.com.scal.components.domain.TReportEntity;
 import cn.com.scal.components.enums.ReportSlotEnum;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 
 public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {

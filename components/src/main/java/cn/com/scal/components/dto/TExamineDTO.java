@@ -3,7 +3,7 @@ package cn.com.scal.components.dto;
 import cn.com.scal.components.domain.TExamineEntity;
 import cn.com.scal.components.enums.ExamineResultEnum;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 
 public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {

@@ -3,7 +3,7 @@ package cn.com.scal.components.dto;
 import cn.com.scal.components.domain.TApplyEntity;
 import cn.com.scal.components.enums.ApplyStatusEnum;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 
 public class TApplyDTO extends BaseDTO<TApplyDTO, TApplyEntity> {
