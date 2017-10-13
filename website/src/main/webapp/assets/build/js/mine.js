@@ -40,3 +40,17 @@ function  DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2002-12-18格式
     iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24) ;   //把相差的毫秒数转换为天数
     return  iDays;
 }
+//通过oA号查询人员信息
+function getUserByOa(oa) {
+    if(!isEmpty(oa)){
+        $.ajax({
+            url:'${ctx}/oaPeopleInfo/' + oa,
+            async:false,
+            success:function (data) {
+                if(data.tip == 0){
+                    return data.data;
+                }
+            }
+        })
+    }
+}

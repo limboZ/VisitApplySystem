@@ -285,18 +285,37 @@
                 if(summary.length > 1000){
                     alert('出访总结不能超过1000字！');
                 }else {
+                    var content = {};
+                    content.content = summary;
+                    content.reportType = 'FINAL';
+                    tripList.push(content);
+                    //遍历行程
                     var list = $('#summaryList tbody tr');
                     if(list.length > 0){
                         $(list).each(function () {
                             var one = {};
-                            one.date = $(this).find('.tDate').text();
-                            one.time = $(this).find('.tTime').text();
-                            one.detail = $(this).find('.tDetail').text();
+                            one.reportDate = $(this).find('.tDate').text();
+                            one.reportSlot = $(this).find('.tTime').text();
+                            one.content = $(this).find('.tDetail').text();
+                            one.reportType = 'TRIP';
                             tripList.push(one);
                         });
 //                        console.log(tripList);
                         //ajax提交数据
+                        $.ajax({
+                            url:'${ctx}/',
+                            method:'post',
+                            data:{},
+                            success:function (data) {
+                                alert(data.tip);
+                                if(data.code == 0){
 
+                                }
+                            },
+                            error:function (data) {
+                                alert('连接服务器错误，请刷新页面后重试！');
+                            }
+                        });
                     }else {
                         alert('请填写出访行程！');
                     }

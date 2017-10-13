@@ -9,12 +9,12 @@
 <%@ include file="/WEB-INF/content/taglib.jsp" %>
 <html>
 <head>
-    <title>填写出访申请</title>
+    <title>新增出访申请</title>
 </head>
 <body>
     <div class="x_panel">
         <div class="x_title">
-            <h2>填写出访申请</h2>
+            <h2>新增出访申请</h2>
             <div class="pull-right">
                 <button type="button" class="btn btn-warning" onclick="history.back()">返回</button>
             </div>
@@ -85,7 +85,7 @@
                                                 <td>
                                                     <input type="text" id="city">
                                                 </td>
-                                                <td>
+                                                <td style="width:120px;">
                                                     <button type="button" class="btn btn-xs btn-primary " id="addDestination"><i class="fa fa-plus"></i> 添加</button>
                                                     <button type="button" class="btn btn-warning btn-xs cancel">取消</button>
                                                 </td>
@@ -105,7 +105,7 @@
                                         </tbody>
                                         <tfoot>
                                         <tr id="visitorForm">
-                                            <th>工号</th>
+                                            <th>OA号</th>
                                             <td>
                                                 <input type="text" id="empNo">
                                             </td>
@@ -197,7 +197,7 @@
             var job = $('#job').val();
             var message = '';
             if(empNo == ''){
-                message += '请输入工号！';
+                message += '请输入OA号！';
             }
             if(userName == ''){
                 message += '请输入姓名！';
@@ -210,7 +210,7 @@
             }
             if(message == ''){
                 $('#visitorForm').hide();
-                var option = '<tr><th>工号</th>';
+                var option = '<tr><th>OA号</th>';
                 option += '<td class="empNo">' + empNo + '</td>';
                 option += '<th>姓名</th>';
                 option += '<td class="userName">' + userName + '</td>';
@@ -238,10 +238,11 @@
             if(!isEmpty($(this).val())){
                 $('#warning').show();
                 //读取数据
-                setTimeout('$("#warning").hide();',2000);
-                $('#userName').val('黄龙翔');
-                $('#department').val('信息服务部');
-                $('#job').val('项目经理');
+                var user = getUserByOa($(this).val());
+                $('#userName').val(user.employeeName);
+                $('#department').val(user.employeeDept);
+                $('#job').val(user.employeePost);
+                $("#warning").hide();
             }
         });
         //当开始日期和结束日期选择完成之后，自动计算天数
@@ -325,9 +326,11 @@
                         if(data.code == 0){
                             location.href = '${ctx}/user/list';
                         }
+                        $('#warning').hide();
                     },
                     error:function () {
                         alert('连接服务器失败！');
+                        $('#warning').hide();
                     }
                 });
             }else {

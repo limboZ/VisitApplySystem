@@ -17,7 +17,6 @@
         <h2>出访团组信息</h2>
         <div class="pull-right">
             <a href="${ctx}/user/edit" class="btn btn-info">编辑</a>
-            <%--<button type="button" class="btn btn-primary">保存</button>--%>
             <button type="button" class="btn btn-success">提交审批</button>
             <button type="button" class="btn btn-primary">打印表单</button>
             <button type="button" class="btn btn-warning" onclick="history.back()">返回</button>
@@ -38,13 +37,13 @@
         <table class="table table-th table-bordered" style="width: 80%">
             <tbody>
                 <tr>
-                    <th>团组名称</th><td colspan="3">关于黄龙翔等5人去新加坡访问的申请</td>
+                    <th>团组名称</th><td colspan="3">${apply.teamName}</td>
                 </tr>
                 <tr>
-                    <th>团组申请人</th><td>黄龙翔</td>
+                    <th>团组申请人</th><td>${apply.applyUserId}</td>
                 </tr>
                 <tr>
-                    <th>任务类型</th><td>境外培训</td>
+                    <th>任务类型</th><td>${apply.commissionType}</td>
                 </tr>
                 <tr>
                     <th>预计出访时间</th><td colspan="3"> 2017-09-12 至 2017-10-09 , 共计 20 天</td>
@@ -109,6 +108,15 @@
             <div class="panel-body" id="applyCheckC" role="tabpanel" aria-labelledby="applyCheck">
                 <h3 class="red">审批中</h3>
                 <table class="table table-th ">
+                    <thead>
+                    <tr>
+                        <th>审批意见</th>
+                        <th>审批结果</th>
+                        <th>审批人</th>
+                        <th>审批状态</th>
+                        <th>审批日期</th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td>建议xxxxxxxxxx</td><td>统一</td><td>张三</td><td>审批通过</td><td>2017-10-02</td>
@@ -131,7 +139,15 @@
                 <h4 class="panel-title">出访总结</h4>
             </div>
             <div class="panel-body" id="summaryC" role="tabpanel" aria-labelledby="summary">
+                <h2 class="green">行程</h2>
                 <table class="table table-th table-bordered" style="width: 80%">
+                    <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>时间</th>
+                        <th>行程描述</th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td>2017-10-01</td>
@@ -145,6 +161,8 @@
                     </tr>
                     </tbody>
                 </table>
+                <h2 class="green">总结</h2>
+                <textarea class="form-control" rows="7" readonly>ss</textarea>
             </div>
         </div>
         <div class="panel panel-default">
@@ -154,6 +172,15 @@
             <div class="panel-body" id="summaryCheckC" role="tabpanel" aria-labelledby="summaryCheck">
                 <h3 class="red">审批中</h3>
                 <table class="table table-th ">
+                    <thead>
+                    <tr>
+                        <th>审批意见</th>
+                        <th>审批结果</th>
+                        <th>审批人</th>
+                        <th>审批状态</th>
+                        <th>审批日期</th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td>建议xxxxxxxxxx</td><td>统一</td><td>张三</td><td>审批通过</td><td>2017-10-02</td>

@@ -19,9 +19,15 @@
     <link href="${ctx}/assets/build/css/mine.css" rel="stylesheet">
     <%--//解决ie8兼容问题--%>
     <!--[if lt IE 9]>
-        <script src="https://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.js"></script>
+        <script src="${ctx}/assets/build/js/html5shiv.js"></script>
+        <script src="${ctx}/assets/build/js/respond.min.js"></script>
     <![endif]-->
+    <style>
+        tr{
+            height:30px;
+            border:2px solid #eee;
+        }
+    </style>
 </head>
 <body style="background: #EDEDED;">
     <div style="margin:30px auto;width:60%;background: white;padding: 20px;">
@@ -129,7 +135,7 @@
                 <table class="table table-striped sortSummary table-th" id="summaryList">
                     <thead>
                     <tr>
-                        <th width="12%">日期</th>
+                        <th width="18%">日期</th>
                         <th width="12%">时间</th>
                         <th>出访总结</th>
                     </tr>
