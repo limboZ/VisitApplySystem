@@ -111,4 +111,12 @@ public class UserController {
     public String edit(HttpServletRequest request, Model model) throws Exception {
         return EDIT;
     }
+
+    @RequestMapping(value = "/submitEdit", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpServletRequest request, Model model) throws Exception {
+        Api<Object> api = new Api<>();
+
+        return api;
+    }
 }

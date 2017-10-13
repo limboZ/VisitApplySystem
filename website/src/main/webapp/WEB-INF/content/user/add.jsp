@@ -236,20 +236,26 @@
         //自动从oa拉取出访人员数据
         $('#empNo').focusout(function () {
             if(!isEmpty($(this).val())){
+                var oa = $(this).val();
                 $('#warning').show();
                 //读取数据
                 $.ajax({
-                    url:'${ctx}/oaPeopleInfo/' + oa,
-                    async:false,
+                    <%--url:'${ctx}/oaPeopleInfo/' + oa,--%>
+                    url:'${ctx}/oaPeopleInfo/000103',
+                    method:'get',
                     success:function (data) {
-                        if(data.tip == 0){
+                        console.log(data);
+                        if(data.code == 0){
                             $('#userName').val(data.data.employeeName);
                             $('#department').val(data.data.employeeDept);
                             $('#job').val(data.data.employeePost);
                         }
+                        $("#warning").hide();
+                    },
+                    error:function () {
+                        $("#warning").hide();
                     }
                 })
-                $("#warning").hide();
             }
         });
         //当开始日期和结束日期选择完成之后，自动计算天数
