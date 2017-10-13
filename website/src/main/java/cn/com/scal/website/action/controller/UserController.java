@@ -153,8 +153,8 @@ public class UserController {
 
             applyDetailDTO.setDestinations(destinations);
             applyDetailDTO.setTeamMates(teamMates);
-            applyDetailDTO.setApplyExamineProgresses((ExamineProgress[])applyExamineProgresses.toArray());
-            applyDetailDTO.setApplyExamineProgresses((ExamineProgress[])reportExamineProgresses.toArray());
+            applyDetailDTO.setApplyExamineProgresses(applyExamineProgresses.toArray(new ExamineProgress[applyExamineProgresses.size()]));
+            applyDetailDTO.setApplyExamineProgresses(reportExamineProgresses.toArray(new ExamineProgress[reportExamineProgresses.size()]));
             applyDetailDTO.setReports(reports);
         }
 
