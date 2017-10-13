@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 /**
@@ -52,47 +53,11 @@ public class UserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> create(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> create(@RequestBody ApplyDTO applyDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
         Api<Object> api = new Api<>();
+        CurrentUser user = (CurrentUser)session.getAttribute("currentUser");
         try {
-            TApplyEntity tApplyEntity = new TApplyEntity();
-
-            // 拼接出访的团队名字:首个团员的部门名称+首个团员名字+等x人赴+所有目的地国家(多个国家以、隔开)+任务类型+出访申请 例如:信息服务部冯涛等2人赴美国、加拿大国际会议出访申请
-            String teamName = "" + applyDTO.getTeamMates()[0].getEmployeeDept() + applyDTO.getTeamMates()[0].getEmployeeName() + "等" + applyDTO.getTeamMates().length + "人赴";
-            if (applyDTO.getDestinations().length == 1) {
-                teamName = teamName + applyDTO.getDestinations()[0].getNation();
-            } else if (applyDTO.getDestinations().length == 2) {
-                teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[0].getNation();
-            } else if (applyDTO.getDestinations().length == 2) {
-                teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[1].getNation() + "、" + applyDTO.getDestinations()[2].getNation();
-            }
-            teamName = teamName + applyDTO.getCommissionType() + "出访申请";
-
-            tApplyEntity.setTeamName(teamName);
-            tApplyEntity.setApplyUserId(user.getEmpNo());
-            tApplyEntity.setCommissionType(applyDTO.getCommissionType());
-            tApplyEntity.setStartTime(applyDTO.getStartTime());
-            tApplyEntity.setEndTime(applyDTO.getEndTime());
-            tApplyEntity.setReason(applyDTO.getReason());
-            tApplyEntity.setApplyStatus(ApplyStatusEnum.WAITING);
-            tApplyEntity.setCreateTime(DateUtil.getCurrentTime());
-            tApplyEntity.setUpdateTime(DateUtil.getCurrentTime());
-            tApplyEntity.setDataMark("1");
-
-            ArrayList<TDestinationEntity> tDestinationEntities = new ArrayList<>();
-            for (int i = 0; i < applyDTO.getDestinations().length; i++) {
-                Destination destination = applyDTO.getDestinations()[i];
-                tDestinationEntities.add(new TDestinationEntity(i, destination.getNation(), destination.getDestination(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
-            }
-            ArrayList<TTeamEntity> tTeamEntities = new ArrayList<>();
-            for (int i = 0; i < applyDTO.getTeamMates().length; i++) {
-                TeamMate teamMate = applyDTO.getTeamMates()[i];
-                tTeamEntities.add(new TTeamEntity(i, teamMate.getEmployeeId(), teamMate.getEmployeeName(), teamMate.getEmployeeDept(), teamMate.getEmployeePost(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
-            }
-
-
-            tApplyEntity.setDestinationEntities(tDestinationEntities);
-            tApplyEntity.settTeamEntities(tTeamEntities);
+            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user);
 
             applyService.create(tApplyEntity);
         } catch (OtherException e) {
@@ -114,10 +79,59 @@ public class UserController {
 
     @RequestMapping(value = "/submitEdit", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
         Api<Object> api = new Api<>();
+        CurrentUser user = (CurrentUser)session.getAttribute("currentUser");
+        try {
+            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user);
+            applyService.createOrUpdate(tApplyEntity);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+        return api;
+    }
+
+    private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, CurrentUser user) {
         TApplyEntity tApplyEntity = new TApplyEntity();
 
-        return api;
+        // 拼接出访的团队名字:首个团员的部门名称+首个团员名字+等x人赴+所有目的地国家(多个国家以、隔开)+任务类型+出访申请 例如:信息服务部冯涛等2人赴美国、加拿大国际会议出访申请
+        String teamName = "" + applyDTO.getTeamMates()[0].getEmployeeDept() + applyDTO.getTeamMates()[0].getEmployeeName() + "等" + applyDTO.getTeamMates().length + "人赴";
+        if (applyDTO.getDestinations().length == 1) {
+            teamName = teamName + applyDTO.getDestinations()[0].getNation();
+        } else if (applyDTO.getDestinations().length == 2) {
+            teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[0].getNation();
+        } else if (applyDTO.getDestinations().length == 2) {
+            teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[1].getNation() + "、" + applyDTO.getDestinations()[2].getNation();
+        }
+        teamName = teamName + applyDTO.getCommissionType() + "出访申请";
+
+
+        tApplyEntity.setTeamName(teamName);
+        tApplyEntity.setApplyUserId(user.getEmpNo());
+        tApplyEntity.setCommissionType(applyDTO.getCommissionType());
+        tApplyEntity.setStartTime(applyDTO.getStartTime());
+        tApplyEntity.setEndTime(applyDTO.getEndTime());
+        tApplyEntity.setReason(applyDTO.getReason());
+        tApplyEntity.setApplyStatus(ApplyStatusEnum.WAITING);
+        tApplyEntity.setCreateTime(DateUtil.getCurrentTime());
+        tApplyEntity.setUpdateTime(DateUtil.getCurrentTime());
+        tApplyEntity.setDataMark("1");
+
+        ArrayList<TDestinationEntity> tDestinationEntities = new ArrayList<>();
+        for (int i = 0; i < applyDTO.getDestinations().length; i++) {
+            Destination destination = applyDTO.getDestinations()[i];
+            tDestinationEntities.add(new TDestinationEntity(i, destination.getNation(), destination.getDestination(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
+        }
+        ArrayList<TTeamEntity> tTeamEntities = new ArrayList<>();
+        for (int i = 0; i < applyDTO.getTeamMates().length; i++) {
+            TeamMate teamMate = applyDTO.getTeamMates()[i];
+            tTeamEntities.add(new TTeamEntity(i, teamMate.getEmployeeId(), teamMate.getEmployeeName(), teamMate.getEmployeeDept(), teamMate.getEmployeePost(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
+        }
+
+
+        tApplyEntity.setDestinationEntities(tDestinationEntities);
+        tApplyEntity.settTeamEntities(tTeamEntities);
+        return tApplyEntity;
     }
 }
