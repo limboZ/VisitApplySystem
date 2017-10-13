@@ -8,6 +8,7 @@ import cn.com.scal.components.dto.front.ApplyDTO;
 import cn.com.scal.components.dto.front.ApplyDetailDTO;
 import cn.com.scal.components.dto.front.domain.Destination;
 import cn.com.scal.components.dto.front.domain.ExamineProgress;
+import cn.com.scal.components.dto.front.domain.Report;
 import cn.com.scal.components.dto.front.domain.TeamMate;
 import cn.com.scal.components.enums.ApplyStatusEnum;
 import cn.com.scal.components.enums.ExamineTypeEnum;
@@ -136,13 +137,25 @@ public class UserController {
                 }
             }
 
+            Report[] reports = new Report[entity.getReportEntities().size()];
+            for(int i = 0; i < entity.getReportEntities().size(); i++){
+                TReportEntity tReportEntity = entity.getReportEntities().get(i);
+                Report report = new Report();
+                report.setId(tReportEntity.getId());
+                report.setContent(tReportEntity.getContent());
+                report.setReportDate(tReportEntity.getReportDate());
+                report.setReportSlot(tReportEntity.getReportSlot().name());
+                report.setReportType(tReportEntity.getReportType().name());
 
+                reports[i] = report;
+            }
 
 
             applyDetailDTO.setDestinations(destinations);
             applyDetailDTO.setTeamMates(teamMates);
             applyDetailDTO.setApplyExamineProgresses((ExamineProgress[])applyExamineProgresses.toArray());
             applyDetailDTO.setApplyExamineProgresses((ExamineProgress[])reportExamineProgresses.toArray());
+            applyDetailDTO.setReports(reports);
         }
 
         model.addAttribute("applyDetailDTO", applyDetailDTO);
