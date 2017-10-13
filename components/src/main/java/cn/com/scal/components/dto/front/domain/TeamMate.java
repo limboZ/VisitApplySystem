@@ -6,6 +6,7 @@ public class TeamMate {
     private String employeeName;
     private String employeeDept;
     private String employeePost;
+    private Integer orders;
 
     public TeamMate() {
     }
@@ -56,5 +57,13 @@ public class TeamMate {
 
     public void setEmployeePost(String employeePost) {
         this.employeePost = employeePost;
+    }
+
+    public Integer getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Integer orders) {
+        this.orders = orders;
     }
 }

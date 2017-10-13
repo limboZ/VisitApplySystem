@@ -5,7 +5,7 @@ public class ExaminePeople {
     private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
-    private int order;
+    private Integer order;
 
     public ExaminePeople() {
     }
@@ -42,11 +42,11 @@ public class ExaminePeople {
         this.examinePeoplePost = examinePeoplePost;
     }
 
-    public int getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
-    public void setOrder(int order) {
+    public void setOrder(Integer order) {
         this.order = order;
     }
 }

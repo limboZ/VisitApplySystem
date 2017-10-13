@@ -116,6 +116,7 @@ public class UserController {
     @ResponseBody
     public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpServletRequest request, Model model) throws Exception {
         Api<Object> api = new Api<>();
+        TApplyEntity tApplyEntity = new TApplyEntity();
 
         return api;
     }

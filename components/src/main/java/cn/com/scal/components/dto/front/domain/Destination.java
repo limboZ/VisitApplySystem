@@ -4,6 +4,7 @@ public class Destination {
     private Integer id;
     private String nation;
     private String destination;
+    private Integer orders;
 
     public Destination() {
     }
@@ -30,5 +31,13 @@ public class Destination {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public Integer getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Integer orders) {
+        this.orders = orders;
     }
 }
