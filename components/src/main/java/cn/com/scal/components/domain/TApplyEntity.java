@@ -1,6 +1,7 @@
 package cn.com.scal.components.domain;
 
 import cn.com.scal.components.enums.ApplyStatusEnum;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +16,7 @@ public class TApplyEntity extends Base<TApplyEntity>{
     private int id;
     private String teamName;
     private String applyUserId;
+    private String applyUserName;
     private String commissionType;
     private Date startTime;
     private Date endTime;
@@ -33,6 +35,8 @@ public class TApplyEntity extends Base<TApplyEntity>{
 
 
     @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("orders")
+    @Where(clause = "data_mark='1'")
     public List<TDestinationEntity> getDestinationEntities() {
         return destinationEntities;
     }
@@ -42,6 +46,8 @@ public class TApplyEntity extends Base<TApplyEntity>{
     }
 
     @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("orders")
+    @Where(clause = "data_mark='1'")
     public List<TTeamEntity> gettTeamEntities() {
         return tTeamEntities;
     }
@@ -51,6 +57,8 @@ public class TApplyEntity extends Base<TApplyEntity>{
     }
 
     @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("reportDate ASC, reportSlot DESC")
+    @Where(clause = "data_mark='1'")
     public List<TReportEntity> getReportEntities() {
         return reportEntities;
     }
@@ -61,6 +69,8 @@ public class TApplyEntity extends Base<TApplyEntity>{
 
 
     @OneToMany(mappedBy = "applyId",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("orders")
+    @Where(clause = "data_mark='1'")
     public List<TExamineEntity> getExamineEntities() {
         return examineEntities;
     }
@@ -98,6 +108,16 @@ public class TApplyEntity extends Base<TApplyEntity>{
 
     public void setApplyUserId(String applyUserId) {
         this.applyUserId = applyUserId;
+    }
+
+    @Basic
+    @Column(name = "apply_user_name")
+    public String getApplyUserName() {
+        return applyUserName;
+    }
+
+    public void setApplyUserName(String applyUserName) {
+        this.applyUserName = applyUserName;
     }
 
     @Basic

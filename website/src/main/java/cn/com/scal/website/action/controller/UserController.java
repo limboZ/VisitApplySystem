@@ -1,29 +1,28 @@
 package cn.com.scal.website.action.controller;
 
-import cn.com.scal.components.domain.CurrentUser;
-import cn.com.scal.components.domain.TApplyEntity;
-import cn.com.scal.components.domain.TDestinationEntity;
-import cn.com.scal.components.domain.TTeamEntity;
+import cn.com.scal.components.command.ApplyCommand;
+import cn.com.scal.components.domain.*;
 import cn.com.scal.components.dto.Api;
 import cn.com.scal.components.dto.TApplyDTO;
 import cn.com.scal.components.dto.front.ApplyDTO;
+import cn.com.scal.components.dto.front.ApplyDetailDTO;
 import cn.com.scal.components.dto.front.domain.Destination;
+import cn.com.scal.components.dto.front.domain.ExamineProgress;
 import cn.com.scal.components.dto.front.domain.TeamMate;
 import cn.com.scal.components.enums.ApplyStatusEnum;
+import cn.com.scal.components.enums.ExamineTypeEnum;
 import cn.com.scal.components.exception.OtherException;
 import cn.com.scal.components.service.impl.CommonServiceImpl;
 import cn.com.scal.components.utils.DateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by limboZ on 2017/9/28.
@@ -67,8 +66,86 @@ public class UserController {
         return api;
     }
 
-    @RequestMapping("/show")
-    public String show(HttpServletRequest request, Model model) throws Exception {
+    @RequestMapping("/show/{applyId}")
+    public String show(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
+        ApplyDetailDTO applyDetailDTO = new ApplyDetailDTO();
+
+        ApplyCommand applyCommand = new ApplyCommand();
+        applyCommand.setApplyId(applyId);
+        applyCommand.setDataMark("1");
+        List<TApplyEntity> applyEntities = applyService.query(applyCommand);
+
+        for(TApplyEntity entity: applyEntities){
+            applyDetailDTO.setId(entity.getId());
+            applyDetailDTO.setTeamName(entity.getTeamName());
+            applyDetailDTO.setApplyUserName(entity.getApplyUserName());
+            applyDetailDTO.setCommissionType(entity.getCommissionType());
+            applyDetailDTO.setStartTime(entity.getStartTime());
+            applyDetailDTO.setEndTime(entity.getEndTime());
+            applyDetailDTO.setReason(entity.getReason());
+
+            // 将目的地和队员信息取出
+            Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
+            for(int i = 0; i < entity.getDestinationEntities().size(); i ++){
+                TDestinationEntity tDestinationEntity = entity.getDestinationEntities().get(i);
+                Destination destination = new Destination();
+
+                destination.setId(tDestinationEntity.getId());
+                destination.setDestination(tDestinationEntity.getDestination());
+                destination.setNation(tDestinationEntity.getNation());
+
+                destinations[i] = destination;
+            }
+            TeamMate[] teamMates = new TeamMate[entity.gettTeamEntities().size()];
+            for(int i = 0; i < entity.gettTeamEntities().size(); i++){
+                TTeamEntity tTeamEntity = entity.gettTeamEntities().get(i);
+                TeamMate teamMate = new TeamMate();
+                teamMate.setId(tTeamEntity.getId());
+                teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
+                teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
+                teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
+                teamMate.setEmployeeDept(tTeamEntity.getEmployeePost());
+
+                teamMates[i] = teamMate;
+            }
+
+            ArrayList<ExamineProgress> applyExamineProgresses = new ArrayList<>();
+            ArrayList<ExamineProgress> reportExamineProgresses = new ArrayList<>();
+            for(int i = 0; i < entity.getExamineEntities().size(); i++){
+                TExamineEntity examineEntity = entity.getExamineEntities().get(i);
+                if(examineEntity.getExamineType().name().equals(ExamineTypeEnum.APPLY.name())){
+                    ExamineProgress progress = new ExamineProgress();
+                    progress.setId(examineEntity.getId());
+                    progress.setAdvise(examineEntity.getAdvise());
+                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
+                    progress.setPassTime(examineEntity.getPassTime());
+                    progress.setRet(examineEntity.getResult().name());
+                    progress.setResult(examineEntity.getExamineResult().name());
+
+                    applyExamineProgresses.add(progress);
+                }else if(examineEntity.getExamineType().name().equals(ExamineTypeEnum.REPORT.name())){
+                    ExamineProgress progress = new ExamineProgress();
+                    progress.setId(examineEntity.getId());
+                    progress.setAdvise(examineEntity.getAdvise());
+                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
+                    progress.setPassTime(examineEntity.getPassTime());
+                    progress.setRet(examineEntity.getResult().name());
+                    progress.setResult(examineEntity.getExamineResult().name());
+
+                    reportExamineProgresses.add(progress);
+                }
+            }
+
+
+
+
+            applyDetailDTO.setDestinations(destinations);
+            applyDetailDTO.setTeamMates(teamMates);
+            applyDetailDTO.setApplyExamineProgresses((ExamineProgress[])applyExamineProgresses.toArray());
+            applyDetailDTO.setApplyExamineProgresses((ExamineProgress[])reportExamineProgresses.toArray());
+        }
+
+        model.addAttribute("applyDetailDTO", applyDetailDTO);
         return SHOW;
     }
 
@@ -109,6 +186,7 @@ public class UserController {
 
         tApplyEntity.setTeamName(teamName);
         tApplyEntity.setApplyUserId(user.getEmpNo());
+        tApplyEntity.setApplyUserName(user.getUserName());
         tApplyEntity.setCommissionType(applyDTO.getCommissionType());
         tApplyEntity.setStartTime(applyDTO.getStartTime());
         tApplyEntity.setEndTime(applyDTO.getEndTime());
