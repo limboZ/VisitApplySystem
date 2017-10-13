@@ -1,5 +1,6 @@
 package cn.com.scal.components.domain;
 
+import cn.com.scal.components.enums.ApplyStatusEnum;
 import cn.com.scal.components.enums.ExamineResultEnum;
 import cn.com.scal.components.enums.ExamineTypeEnum;
 
@@ -18,8 +19,8 @@ public class TExamineEntity extends Base<TExamineEntity>{
     private String examinePeopleName;
     private String examinePeoplePost;
     private Integer orders;
-    private String examineResult;
-    private ExamineResultEnum result;
+    private ExamineResultEnum examineResult;
+    private ApplyStatusEnum result;
     private String advise;
     private Date passTime;
     private Timestamp createTime;
@@ -103,24 +104,26 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     @Basic
     @Column(name = "examine_result")
-    public String getExamineResult() {
+    @Enumerated(EnumType.STRING)
+    public ExamineResultEnum getExamineResult() {
         return examineResult;
     }
 
-    public void setExamineResult(String examineResult) {
+    public void setExamineResult(ExamineResultEnum examineResult) {
         this.examineResult = examineResult;
     }
 
     @Basic
     @Column(name = "result")
     @Enumerated(EnumType.STRING)
-    public ExamineResultEnum getResult() {
+    public ApplyStatusEnum getResult() {
         return result;
     }
 
-    public void setResult(ExamineResultEnum result) {
+    public void setResult(ApplyStatusEnum result) {
         this.result = result;
     }
+
 
     @Basic
     @Column(name = "advise")

@@ -1,7 +1,7 @@
 package cn.com.scal.components.enums;
 
 public enum ExamineResultEnum {
-    WAITING("待审批"), COMPLETE("审批通过");
+    PASS("同意"), REFUSE("不同意");
     private String text;
     ExamineResultEnum(String text){
         this.text = text;
