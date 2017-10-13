@@ -238,10 +238,17 @@
             if(!isEmpty($(this).val())){
                 $('#warning').show();
                 //读取数据
-                var user = getUserByOa($(this).val());
-                $('#userName').val(user.employeeName);
-                $('#department').val(user.employeeDept);
-                $('#job').val(user.employeePost);
+                $.ajax({
+                    url:'${ctx}/oaPeopleInfo/' + oa,
+                    async:false,
+                    success:function (data) {
+                        if(data.tip == 0){
+                            $('#userName').val(data.data.employeeName);
+                            $('#department').val(data.data.employeeDept);
+                            $('#job').val(data.data.employeePost);
+                        }
+                    }
+                })
                 $("#warning").hide();
             }
         });
