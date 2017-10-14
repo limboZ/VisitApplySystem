@@ -54,6 +54,7 @@ public class UserController {
 
     @RequestMapping("/list")
     public String list(HttpServletRequest request, CurrentUser user, Model model) throws Exception {
+//        applyService.query();
         return LIST;
     }
 
@@ -125,25 +126,16 @@ public class UserController {
             ArrayList<ExamineProgress> reportExamineProgresses = new ArrayList<>();
             for(int i = 0; i < entity.getExamineEntities().size(); i++){
                 TExamineEntity examineEntity = entity.getExamineEntities().get(i);
+                ExamineProgress progress = new ExamineProgress();
+                progress.setId(examineEntity.getId());
+                progress.setAdvise(examineEntity.getAdvise());
+                progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
+                progress.setPassTime(examineEntity.getPassTime());
+                progress.setRet(examineEntity.getResult().name());
+                progress.setResult(examineEntity.getExamineResult().name());
                 if(examineEntity.getExamineType().name().equals(ExamineTypeEnum.APPLY.name())){
-                    ExamineProgress progress = new ExamineProgress();
-                    progress.setId(examineEntity.getId());
-                    progress.setAdvise(examineEntity.getAdvise());
-                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
-                    progress.setPassTime(examineEntity.getPassTime());
-                    progress.setRet(examineEntity.getResult().name());
-                    progress.setResult(examineEntity.getExamineResult().name());
-
                     applyExamineProgresses.add(progress);
                 }else if(examineEntity.getExamineType().name().equals(ExamineTypeEnum.REPORT.name())){
-                    ExamineProgress progress = new ExamineProgress();
-                    progress.setId(examineEntity.getId());
-                    progress.setAdvise(examineEntity.getAdvise());
-                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
-                    progress.setPassTime(examineEntity.getPassTime());
-                    progress.setRet(examineEntity.getResult().name());
-                    progress.setResult(examineEntity.getExamineResult().name());
-
                     reportExamineProgresses.add(progress);
                 }
             }
