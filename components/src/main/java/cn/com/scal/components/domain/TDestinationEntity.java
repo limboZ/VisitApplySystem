@@ -21,7 +21,8 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     public TDestinationEntity() {
     }
 
-    public TDestinationEntity(Integer orders, String nation, String destination, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+    public TDestinationEntity(int id, Integer orders, String nation, String destination, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+        this.id = id;
         this.orders = orders;
         this.nation = nation;
         this.destination = destination;

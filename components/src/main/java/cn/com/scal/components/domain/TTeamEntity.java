@@ -23,7 +23,8 @@ public class TTeamEntity extends Base<TTeamEntity>{
     public TTeamEntity() {
     }
 
-    public TTeamEntity(Integer orders, String employeeId, String employeeName, String employeeDept, String employeePost, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+    public TTeamEntity(int id, Integer orders, String employeeId, String employeeName, String employeeDept, String employeePost, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+        this.id = id;
         this.orders = orders;
         this.employeeId = employeeId;
         this.employeeName = employeeName;
