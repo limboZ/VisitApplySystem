@@ -61,5 +61,6 @@ public class DateUtil {
     public static void main(String[] args) throws ParseException {
         System.out.println(DateUtil.getCurrentTime());
         System.out.println(DTFormatUtil.convertTimestampToStr(DateUtil.getCurrentTime()));
+        System.out.println(new Date());
     }
 }

@@ -20,6 +20,7 @@ public class DestinationDaoImpl implements IDestinationDao {
     @Override
     public void delete(String sql) {
         Query query = getCurrentSession().createSQLQuery(sql);
+        query.executeUpdate();
     }
 
     private Session getCurrentSession() {

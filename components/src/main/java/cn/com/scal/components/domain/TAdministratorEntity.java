@@ -8,7 +8,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "t_administrator", schema = "visit_apply", catalog = "")
 public class TAdministratorEntity extends Base<TAdministratorEntity>{
-    private int id;
+    private Integer id;
     private String employeeNum;
     private String name;
     private String dept;
@@ -23,11 +23,11 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

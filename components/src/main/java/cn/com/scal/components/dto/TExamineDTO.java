@@ -7,7 +7,7 @@ import java.util.Date;
 import java.sql.Timestamp;
 
 public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {
-    private int id;
+    private Integer id;
     private String examineType;
     private String examinePeopleId;
     private String examinePeopleName;
@@ -22,21 +22,21 @@ public class TExamineDTO extends BaseDTO<TExamineDTO, TExamineEntity> {
     private String dataMark;
     private String f1;
     private String f2;
-    private int applyId;
+    private Integer applyId;
 
-    public int getApplyId() {
+    public Integer getApplyId() {
         return applyId;
     }
 
-    public void setApplyId(int applyId) {
+    public void setApplyId(Integer applyId) {
         this.applyId = applyId;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

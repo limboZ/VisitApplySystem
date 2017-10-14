@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "t_apply", schema = "visit_apply", catalog = "")
 public class TApplyEntity extends Base<TApplyEntity>{
-    private int id;
+    private Integer id;
     private String teamName;
     private String applyUserId;
     private String applyUserName;
@@ -82,11 +82,11 @@ public class TApplyEntity extends Base<TApplyEntity>{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

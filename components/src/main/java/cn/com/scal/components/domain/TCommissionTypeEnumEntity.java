@@ -11,7 +11,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "t_commission_type_enum", schema = "visit_apply", catalog = "")
 @Where(clause = "data_mark='1'")
 public class TCommissionTypeEnumEntity extends Base<TCommissionTypeEnumEntity>{
-    private int id;
+    private Integer id;
     private String commissionType;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -22,11 +22,11 @@ public class TCommissionTypeEnumEntity extends Base<TCommissionTypeEnumEntity>{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

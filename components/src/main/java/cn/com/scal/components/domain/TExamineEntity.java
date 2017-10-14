@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "t_examine", schema = "visit_apply", catalog = "")
 public class TExamineEntity extends Base<TExamineEntity>{
-    private int id;
+    private Integer id;
     private ExamineTypeEnum examineType;
     private String examinePeopleId;
     private String examinePeopleName;
@@ -32,11 +32,11 @@ public class TExamineEntity extends Base<TExamineEntity>{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

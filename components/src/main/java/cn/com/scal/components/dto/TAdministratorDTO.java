@@ -5,7 +5,7 @@ import cn.com.scal.components.domain.TAdministratorEntity;
 import java.sql.Timestamp;
 
 public class TAdministratorDTO extends BaseDTO<TAdministratorDTO, TAdministratorEntity> {
-    private int id;
+    private Integer id;
     private String employeeNum;
     private String name;
     private String dept;
@@ -16,11 +16,11 @@ public class TAdministratorDTO extends BaseDTO<TAdministratorDTO, TAdministrator
     private String f1;
     private String f2;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -8,7 +8,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "t_destination", schema = "visit_apply", catalog = "")
 public class TDestinationEntity extends Base<TDestinationEntity>{
-    private int id;
+    private Integer id;
     private Integer orders;
     private String nation;
     private String destination;
@@ -21,7 +21,7 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     public TDestinationEntity() {
     }
 
-    public TDestinationEntity(int id, Integer orders, String nation, String destination, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
+    public TDestinationEntity(Integer id, Integer orders, String nation, String destination, Timestamp createTime, Timestamp updateTime, String dataMark, TApplyEntity applyId) {
         this.id = id;
         this.orders = orders;
         this.nation = nation;
@@ -35,11 +35,11 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

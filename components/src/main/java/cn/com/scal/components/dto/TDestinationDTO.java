@@ -5,7 +5,7 @@ import cn.com.scal.components.domain.TDestinationEntity;
 import java.sql.Timestamp;
 
 public class TDestinationDTO extends BaseDTO<TDestinationDTO, TDestinationEntity> {
-    private int id;
+    private Integer id;
     private Integer order;
     private String nation;
     private String destination;
@@ -14,21 +14,21 @@ public class TDestinationDTO extends BaseDTO<TDestinationDTO, TDestinationEntity
     private String dataMark;
     private String f1;
     private String f2;
-    private int applyId;
+    private Integer applyId;
 
-    public int getApplyId() {
+    public Integer getApplyId() {
         return applyId;
     }
 
-    public void setApplyId(int applyId) {
+    public void setApplyId(Integer applyId) {
         this.applyId = applyId;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

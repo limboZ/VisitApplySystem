@@ -4,17 +4,22 @@ import cn.com.scal.components.command.ApplyCommand;
 import cn.com.scal.components.domain.*;
 import cn.com.scal.components.dto.Api;
 import cn.com.scal.components.dto.TApplyDTO;
+import cn.com.scal.components.dto.TReportDTO;
 import cn.com.scal.components.dto.front.ApplyDTO;
 import cn.com.scal.components.dto.front.ApplyDetailDTO;
 import cn.com.scal.components.dto.front.ApplyPreviewListDTO;
+import cn.com.scal.components.dto.front.ReportDTO;
 import cn.com.scal.components.dto.front.domain.*;
 import cn.com.scal.components.enums.ApplyStatusEnum;
 import cn.com.scal.components.enums.ExamineTypeEnum;
 import cn.com.scal.components.enums.ReportEnum;
+import cn.com.scal.components.enums.ReportSlotEnum;
 import cn.com.scal.components.exception.OtherException;
 import cn.com.scal.components.service.IDestinationService;
+import cn.com.scal.components.service.IReportService;
 import cn.com.scal.components.service.ITeamService;
 import cn.com.scal.components.service.impl.CommonServiceImpl;
+import cn.com.scal.components.utils.DTFormatUtil;
 import cn.com.scal.components.utils.DateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,11 +43,18 @@ public class UserController {
     @Resource(name = "commonServiceImpl")
     private CommonServiceImpl<TApplyEntity, TApplyDTO, Integer> applyService;
 
+    @Resource(name = "commonServiceImpl")
+    private CommonServiceImpl<TReportEntity, TReportDTO, Integer> reportService;
+
     @Resource(name = "destinationService")
     private IDestinationService destinationService;
 
     @Resource(name = "teamService")
     private ITeamService teamService;
+
+    @Resource(name = "reportService")
+    private IReportService myReportService;
+
 
     //jsp页面路径定义区
     private final String LIST = "/user/list";
@@ -119,6 +132,7 @@ public class UserController {
 
     @RequestMapping("/add")
     public String add(Model model) throws Exception {
+
         return ADD;
     }
 
@@ -231,8 +245,96 @@ public class UserController {
         return SHOW;
     }
 
-    @RequestMapping("/edit")
-    public String edit(HttpServletRequest request, Model model) throws Exception {
+    @RequestMapping("/edit/{applyId}")
+    public String edit(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
+        ApplyDetailDTO applyDetailDTO = null;
+        try {
+            applyDetailDTO = new ApplyDetailDTO();
+
+            ApplyCommand applyCommand = new ApplyCommand();
+            applyCommand.setApplyId(applyId);
+            applyCommand.setDataMark("1");
+            List<TApplyEntity> applyEntities = applyService.query(applyCommand);
+
+            for (TApplyEntity entity : applyEntities) {
+                applyDetailDTO.setId(entity.getId());
+                applyDetailDTO.setTeamName(entity.getTeamName());
+                applyDetailDTO.setApplyUserName(entity.getApplyUserName());
+                applyDetailDTO.setCommissionType(entity.getCommissionType());
+                applyDetailDTO.setStartTime(entity.getStartTime());
+                applyDetailDTO.setEndTime(entity.getEndTime());
+                applyDetailDTO.setReason(entity.getReason());
+
+                // 将目的地和队员信息取出
+                Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
+                for (int i = 0; i < entity.getDestinationEntities().size(); i++) {
+                    TDestinationEntity tDestinationEntity = entity.getDestinationEntities().get(i);
+                    Destination destination = new Destination();
+
+                    destination.setId(tDestinationEntity.getId());
+                    destination.setDestination(tDestinationEntity.getDestination());
+                    destination.setNation(tDestinationEntity.getNation());
+
+                    destinations[i] = destination;
+                }
+                TeamMate[] teamMates = new TeamMate[entity.gettTeamEntities().size()];
+                for (int i = 0; i < entity.gettTeamEntities().size(); i++) {
+                    TTeamEntity tTeamEntity = entity.gettTeamEntities().get(i);
+                    TeamMate teamMate = new TeamMate();
+                    teamMate.setId(tTeamEntity.getId());
+                    teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
+                    teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
+                    teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
+                    teamMate.setEmployeeDept(tTeamEntity.getEmployeePost());
+
+                    teamMates[i] = teamMate;
+                }
+
+                ArrayList<ExamineProgress> applyExamineProgresses = new ArrayList<>();
+                ArrayList<ExamineProgress> reportExamineProgresses = new ArrayList<>();
+                for (int i = 0; i < entity.getExamineEntities().size(); i++) {
+                    TExamineEntity examineEntity = entity.getExamineEntities().get(i);
+                    ExamineProgress progress = new ExamineProgress();
+                    progress.setId(examineEntity.getId());
+                    progress.setAdvise(examineEntity.getAdvise());
+                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
+                    progress.setPassTime(examineEntity.getPassTime());
+                    progress.setRet(examineEntity.getResult().name());
+                    progress.setResult(examineEntity.getExamineResult().name());
+                    if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.APPLY.name())) {
+                        applyExamineProgresses.add(progress);
+                    } else if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.REPORT.name())) {
+                        reportExamineProgresses.add(progress);
+                    }
+                }
+
+                Report[] reports = new Report[entity.getReportEntities().size()];
+                for (int i = 0; i < entity.getReportEntities().size(); i++) {
+                    TReportEntity tReportEntity = entity.getReportEntities().get(i);
+                    Report report = new Report();
+                    report.setId(tReportEntity.getId());
+                    report.setContent(tReportEntity.getContent());
+                    report.setReportDate(tReportEntity.getReportDate());
+                    report.setReportSlot(tReportEntity.getReportSlot().name());
+                    report.setReportType(tReportEntity.getReportType().name());
+
+                    reports[i] = report;
+                }
+
+
+                applyDetailDTO.setDestinations(destinations);
+                applyDetailDTO.setTeamMates(teamMates);
+                applyDetailDTO.setApplyExamineProgresses(applyExamineProgresses.toArray(new ExamineProgress[applyExamineProgresses.size()]));
+                applyDetailDTO.setApplyExamineProgresses(reportExamineProgresses.toArray(new ExamineProgress[reportExamineProgresses.size()]));
+                applyDetailDTO.setReports(reports);
+            }
+        } catch (OtherException e) {
+            e.printStackTrace();
+            model.addAttribute("applyDetailDTO", applyDetailDTO);
+            return EDIT;
+        }
+
+        model.addAttribute("applyDetailDTO", applyDetailDTO);
         return EDIT;
     }
 
@@ -245,6 +347,19 @@ public class UserController {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
             TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, currentTime);
+
+            for(TDestinationEntity entity : tApplyEntity.getDestinationEntities()){
+                // 如果这条记录本身就存在于数据库中，那么就不要生成create_time
+                if(entity.getId() != null){
+                    entity.setCreateTime(null);
+                }
+            }
+            for(TTeamEntity entity : tApplyEntity.gettTeamEntities()){
+                // 如果这条记录本身就存在于数据库中，那么就不要生成create_time
+                if(entity.getId() != null){
+                    entity.setCreateTime(null);
+                }
+            }
             applyService.createOrUpdate(tApplyEntity);
 
             // 将要删除的申请的destination和teammates的datamark置为0
@@ -255,6 +370,48 @@ public class UserController {
             api.setCode(Api.ERROR_CODE);
             api.setTip(e.getMessage());
         }
+        return api;
+    }
+
+    @RequestMapping(value = "/submitReport", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitReport(@RequestBody ReportDTO reportDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+        Api<Object> api = new Api<>();
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        Timestamp currentTime = DateUtil.getCurrentTime();
+
+        try {
+            Integer applyId = reportDTO.getApplyId();
+            TApplyEntity applyEntity = new TApplyEntity();
+            applyEntity.setId(applyId);
+
+            Report[] reports = reportDTO.getReports();
+            for (Report report : reports) {
+                TReportEntity tReportEntity = new TReportEntity();
+                tReportEntity.setId(report.getId());
+                tReportEntity.setApplyId(applyEntity);
+                tReportEntity.setContent(report.getContent());
+                tReportEntity.setCreatorId(user.getEmpNo());
+                tReportEntity.setDataMark("1");
+                tReportEntity.setReportDate(DTFormatUtil.strToDate(DTFormatUtil.getCurrentDate(DTFormatUtil.SDF_YY_MM_DD)));
+                tReportEntity.setReportSlot(ReportSlotEnum.EnumFormText(report.getReportSlot()));
+                tReportEntity.setReportType(ReportEnum.EnumFormText(report.getReportType()));
+
+                if(tReportEntity.getId() != null){
+                    // 如果这个report本来就存在的话，就不更新create_time
+                    tReportEntity.setCreateTime(currentTime);
+                }
+                tReportEntity.setUpdateTime(currentTime);
+
+                reportService.createOrUpdate(tReportEntity);
+            }
+
+            myReportService.delete(applyId, currentTime);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+
         return api;
     }
 

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.sql.Timestamp;
 
 public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {
-    private int id;
+    private Integer id;
     private String creatorId;
     private String content;
     private Date reportDate;
@@ -17,7 +17,7 @@ public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {
     private String dataMark;
     private String f1;
     private String f2;
-    private int applyId;
+    private Integer applyId;
     private String reportType;
 
     public String getReportType() {
@@ -28,19 +28,19 @@ public class TReportDTO extends BaseDTO<TReportDTO, TReportEntity> {
         this.reportType = reportType;
     }
 
-    public int getApplyId() {
+    public Integer getApplyId() {
         return applyId;
     }
 
-    public void setApplyId(int applyId) {
+    public void setApplyId(Integer applyId) {
         this.applyId = applyId;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
