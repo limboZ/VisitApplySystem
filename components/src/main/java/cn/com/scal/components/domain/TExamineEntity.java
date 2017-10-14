@@ -19,8 +19,8 @@ public class TExamineEntity extends Base<TExamineEntity>{
     private String examinePeopleName;
     private String examinePeoplePost;
     private Integer orders;
-    private ExamineResultEnum examineResult;
-    private ApplyStatusEnum result;
+    private ExamineResultEnum examineResult;    // 领导审批的结果（同意， 不同意）
+    private ApplyStatusEnum result;     // 审批的状态（待审批，审批通过）
     private String advise;
     private Date passTime;
     private Timestamp createTime;

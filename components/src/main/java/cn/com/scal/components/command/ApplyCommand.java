@@ -5,10 +5,19 @@ import cn.com.scal.components.dto.TApplyDTO;
 import cn.com.scal.components.utils.StringUtil;
 
 public class ApplyCommand extends BaseCommand<TApplyEntity, TApplyDTO>{
+    private String applyUserId;
     private Integer applyId;
     private String dataMark;
 
     public ApplyCommand() {
+    }
+
+    public String getApplyUserId() {
+        return applyUserId;
+    }
+
+    public void setApplyUserId(String applyUserId) {
+        this.applyUserId = applyUserId;
     }
 
     public Integer getApplyId() {
@@ -30,6 +39,10 @@ public class ApplyCommand extends BaseCommand<TApplyEntity, TApplyDTO>{
     public String conditions() {
         StringBuffer queryHql = new StringBuffer();
         queryMap.clear();
+        if(!StringUtil.isEmpty(applyUserId)){
+            queryHql.append(" and ").append("apply_user_id = :applyUserId");
+            queryMap.put("applyUserId", applyUserId);
+        }
         if(applyId != null){
             queryHql.append(" and ").append("id = :applyId");
             queryMap.put("applyId", applyId);

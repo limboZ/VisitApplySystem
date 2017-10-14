@@ -21,7 +21,7 @@ public class TApplyEntity extends Base<TApplyEntity>{
     private Date startTime;
     private Date endTime;
     private String reason;
-    private ApplyStatusEnum applyStatus;
+    private ApplyStatusEnum applyStatus;  // 这条申请总的状态(草稿，待审批，审批中，审批通过)
     private Timestamp createTime;
     private Timestamp updateTime;
     private String dataMark;
