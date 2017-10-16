@@ -22,12 +22,12 @@
     </div>
     <div class="x_content">
         <form class="form-horizontal form-label-left">
-            <input type="hidden" id="applyId" value="${apply.id}" >
+            <input type="hidden" id="applyId" value="${applyDetailDTO.id}" >
             <div class="form-group">
                 <label class="control-label col-sm-2 col-xs-12">团组名称<span class="required">*</span>
                 </label>
                 <div class="col-sm-8 col-xs-12">
-                    <input type="text" id="name" value="${apply.teamName}" class="form-control" readonly >
+                    <input type="text" id="name" value="${applyDetailDTO.teamName}" class="form-control" readonly >
                 </div>
             </div>
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -45,8 +45,8 @@
                     </label>
                     <div class="col-sm-8 col-xs-12">
                         <div class="col-xs-8">
-                            <input type="text" class="Wdate datePicker" value="${apply.startTime}" id="startTime" readonly onFocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'endTime\')||\'2099-12-31\'}'})" required>  至
-                            <input type="text" class="Wdate datePicker" value="${apply.endTime}" id="endTime" readonly onFocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTime\')}',maxDate:'2099-12-31'})" required>
+                            <input type="text" class="Wdate datePicker" value="<fmt:formatDate value="${applyDetailDTO.startTime}" pattern="yyyy-MM-dd"></fmt:formatDate>" id="startTime" readonly onFocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'endTime\')||\'2099-12-31\'}'})" required>  至
+                            <input type="text" class="Wdate datePicker" value="<fmt:formatDate value="${applyDetailDTO.endTime}" pattern="yyyy-MM-dd"></fmt:formatDate>" id="endTime" readonly onFocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTime\')}',maxDate:'2099-12-31'})" required>
                         </div>
                         <div class="col-xs-4">
                             共计<input type="number" id="countdays" class="textInput" readonly style="width:60px;background-color: " >天
@@ -57,7 +57,7 @@
                     <label class="control-label col-sm-2 col-xs-12">出访事由<span class="required">*</span>
                     </label>
                     <div class="col-sm-8 col-xs-12">
-                        <textarea rows="10" id="reason" class="form-control" maxlength="1000">${apply.reason}</textarea>
+                        <textarea rows="10" id="reason" class="form-control" maxlength="1000">${applyDetailDTO.reason}</textarea>
                     </div>
                 </div>
                 <div class="ln_solid"></div>
@@ -67,7 +67,7 @@
                     <div class="col-sm-8 col-xs-12">
                         <table class="table table-th" id="destinationList">
                             <tbody>
-                                <c:forEach var="item" items="${apply.destinations}">
+                                <c:forEach var="item" items="${applyDetailDTO.destinations}">
                                     <tr>
                                         <th>国家</th><td class="nation">${item.nation}</td>
                                         <th>城市</th><td class="city">${item.destination}</td>
@@ -102,12 +102,12 @@
                     <div class="col-sm-10 col-xs-12">
                         <table class="table table-th" id="visitorList">
                             <tbody>
-                            <c:forEach items="${apply.teamMates}" var="item">
+                            <c:forEach items="${applyDetailDTO.teamMates}" var="item">
                                 <tr>
-                                    <th>OA号</th><td class="empNo"></td>
-                                    <th>姓名</th><td class="userName"></td>
-                                    <th>部门</th><td class="department"></td>
-                                    <th>职位</th><td class="job"></td>
+                                    <th>OA号</th><td class="empNo">${item.employeeId}</td>
+                                    <th>姓名</th><td class="userName">${item.employeeName}</td>
+                                    <th>部门</th><td class="department">${item.employeeDept}</td>
+                                    <th>职位</th><td class="job">${item.employeePost}</td>
                                     <td><button type="button" class="btn btn-xs btn-danger remove"><i class="fa fa-remove"></i></button></td>
                                 </tr>
                             </c:forEach>
@@ -145,7 +145,7 @@
             <%--</div>--%>
             <%--</div>--%>
             <div class="ln_solid"></div>
-            <button type="button" class="btn btn-success pull-right" id="createButton"><i class="fa fa-plus"></i>提交</button>
+            <button type="button" class="btn btn-success pull-right" id="createButton"><i class="fa fa-plus"></i>保存</button>
         </form>
     </div>
 </div><%--遮罩背景层--%>
@@ -155,6 +155,7 @@
     </div>
 </div>
 <script src="${ctx}/assets/build/js/jquery.min.js"></script>
+<script src="${ctx}/assets/build/js/mine.js"></script>
 <script>
     $('.normal').addClass('active');
     $('.normal ul').show();
@@ -325,7 +326,7 @@
             $('#warning').show();
             //ajax提交数据
             $.ajax({
-                url:'${ctx}/user/create',
+                url:'${ctx}/user/submitEdit',
                 method:'post',
 //                    data:{applyDTO:JSON.stringify(applyDto)},
                 data:JSON.stringify(applyDto),
@@ -334,7 +335,7 @@
                 success:function (data) {
                     alert(data.tip);
                     if(data.code == 0){
-                        location.href = '${ctx}/user/list';
+                        location.href = '${ctx}/user/show/${applyDetailDTO.id}';
                     }
                     $('#warning').hide();
                 },
@@ -358,16 +359,16 @@
                         $('#type').append(option);
                     }
                     //选中目前的任务类型
-                    var type = '${apply.commissionType}';
+                    var type = '${applyDetailDTO.commissionType}';
                     $('#type').val(type);
                 }
             }else {
-                alert('任务类型拉取失败，请刷新页面后重试！');
+                alert("任务类型拉取失败：" + data.tip);
             }
         }
     });
     //计算天数
-    var days = DateDiff($('#startTime').val(),$('#endTime').val());
+    var days = DateDiff($('#startTime').val(),$('#endTime').val()) + 1;
     $('#countdays').val(days);
 </script>
 </body>

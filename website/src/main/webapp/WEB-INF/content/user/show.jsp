@@ -12,18 +12,22 @@
     <title>出访申请详情</title>
 </head>
 <body>
+<style type="text/css" media=print>
+    .noprint{display : none }
+</style>
 <div class="x_panel">
     <div class="x_title">
         <h2>出访团组信息</h2>
         <div class="pull-right">
-            <a href="${ctx}/user/edit" class="btn btn-info">编辑</a>
-            <button type="button" class="btn btn-success">提交审批</button>
-            <button type="button" class="btn btn-primary">打印表单</button>
-            <button type="button" class="btn btn-warning" onclick="history.back()">返回</button>
+            <a href="${ctx}/user/edit/${applyDetailDTO.id}" class="btn btn-info noprint">编辑</a>
+            <button type="button" class="btn btn-success noprint">提交审批</button>
+            <button type="button" class="btn btn-primary noprint" id="print" >打印表单</button>
+            <button type="button" class="btn btn-primary noprint" id="printArea" >打印表单</button>
+            <button type="button" class="btn btn-warning noprint" onclick="history.back()">返回</button>
         </div>
         <div class="clearfix"></div>
     </div>
-    <div class="x_content">
+    <div class="x_content" id="content">
         <div class="bg-danger">
             1.审批流程：用户填写申请-总经办管理员在系统中审核-部门领导及公司领导审批流程只显示领导审批，不显示总经办审核<br/>
             2.出访申请审批环节 ,用户在总工部外事办提交审批前可以对出访申请中的内容进行编辑,总工部外事办提交审批后则不能修改<br/>
@@ -37,19 +41,19 @@
         <table class="table table-th table-bordered" style="width: 80%">
             <tbody>
                 <tr>
-                    <th>团组名称</th><td colspan="3">${apply.teamName}</td>
+                    <th width="20%">团组名称</th><td colspan="3">${applyDetailDTO.teamName}</td>
                 </tr>
                 <tr>
-                    <th>团组申请人</th><td>${apply.applyUserId}</td>
+                    <th width="20%">团组申请人</th><td>${applyDetailDTO.applyUserName}</td>
                 </tr>
                 <tr>
-                    <th>任务类型</th><td>${apply.commissionType}</td>
+                    <th width="20%">任务类型</th><td>${applyDetailDTO.commissionType}</td>
                 </tr>
                 <tr>
-                    <th>预计出访时间</th><td colspan="3"> 2017-09-12 至 2017-10-09 , 共计 20 天</td>
+                    <th width="20%">预计出访时间</th><td colspan="3"> <b id="startTime"><fmt:formatDate value="${applyDetailDTO.startTime}" pattern="yyyy-MM-dd"></fmt:formatDate></b> 至 <b id="endTime"><fmt:formatDate value="${applyDetailDTO.endTime}" pattern="yyyy-MM-dd"></fmt:formatDate></b> , 共计 <b id="days"></b> 天</td>
                 </tr>
                 <tr>
-                    <th>出访事由</th><td colspan="3">啊啊哈哈哈哈哈哈哈哈哈</td>
+                    <th width="20%">出访事由</th><td colspan="3">${applyDetailDTO.reason}</td>
                 </tr>
             </tbody>
         </table>
@@ -60,12 +64,11 @@
             <div class="panel-body" id="destinationC" role="tabpanel" aria-labelledby="destination">
                 <table class="table table-th table-bordered" style="width: 60%">
                     <tbody>
+                    <c:forEach items="${applyDetailDTO.destinations}" var="item">
                         <tr>
-                            <th>国家</th><td>美国</td><th>城市</th><td>华盛顿</td>
+                            <th>国家</th><td>${item.nation}</td><th>城市</th><td>${item.destination}</td>
                         </tr>
-                        <tr>
-                            <th>国家</th><td>日本</td><th>城市</th><td>东京</td>
-                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -77,30 +80,19 @@
             <div class="panel-body" id="visitorsC" role="tabpanel" aria-labelledby="visitors">
                 <table class="table table-th table-bordered" style="width: 80%">
                     <tbody>
-                    <tr>
-                        <th>工号</th>
-                        <td>007955</td>
-                        <th>姓名</th>
-                        <td>猴小翔</td>
-                        <th>部门</th>
-                        <td>信息服务部</td>
-                        <th>职位</th>
-                        <td>软件研发经理</td>
-                    </tr>
-                    <tr>
-                        <th>工号</th>
-                        <td>015074</td>
-                        <th>姓名</th>
-                        <td>邹江华</td>
-                        <th>部门</th>
-                        <td>信息服务部</td>
-                        <th>职位</th>
-                        <td>软件研发员</td>
-                    </tr>
+                    <c:forEach var="item" items="${applyDetailDTO.teamMates}">
+                        <tr>
+                            <th>工号</th><td>${item.employeeId}</td>
+                            <th>姓名</th><td>${item.employeeName}</td>
+                            <th>部门</th><td>${item.employeeDept}</td>
+                            <th>职位</th><td>${item.employeePost}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
+        <%--<c:if test="${applyDetailDTO}"></c:if>--%>
         <div class="panel panel-default">
             <div class="panel-heading" data-toggle="collapse" id="applyCheck"  href="#applyCheckC" aria-expanded="true" aria-controls="applyCheckC">
                 <h4 class="panel-title">出访申请审批</h4>
@@ -118,18 +110,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>建议xxxxxxxxxx</td><td>统一</td><td>张三</td><td>审批通过</td><td>2017-10-02</td>
-                    </tr>
-                    <tr>
-                        <td>建议xxxxxxxxxx</td><td>统一</td><td>张三</td><td>审批通过</td><td>2017-10-02</td>
-                    </tr>
-                    <tr>
-                        <td></td><td></td><td>张三</td><td>待审批</td><td></td>
-                    </tr>
-                    <tr>
-                        <td></td><td></td><td>张三</td><td>待审批</td><td></td>
-                    </tr>
+                    <c:forEach items="${applyDetailDTO.applyExamineProgresses}" var="item">
+                        <tr>
+                            <td>${item.advise}</td>
+                            <td>${item.ret}</td>
+                            <td>${item.examinePeopleName}</td>
+                            <td>${item.result}</td>
+                            <td>${item.passTime}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -149,20 +138,25 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2017-10-01</td>
-                        <td>上午</td>
-                        <td>今天去XXX，做了什么事</td>
-                    </tr>
-                    <tr>
-                        <td>2017-10-02</td>
-                        <td>下午</td>
-                        <td>今天去XXX，做了什么事</td>
-                    </tr>
+                    <c:forEach var="item" items="${applyDetailDTO.reports}">
+                        <c:if test="${item.reportType eq 'TRIP'}">
+                            <tr>
+                                <td>${item.reportDate}</td>
+                                <td>${item.reportSlot}</td>
+                                <td>${item.content}</td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
                     </tbody>
                 </table>
                 <h2 class="green">总结</h2>
-                <textarea class="form-control" rows="7" readonly>ss</textarea>
+                <textarea class="form-control" rows="7" readonly>
+                    <c:forEach var="item" items="${applyDetailDTO.reports}">
+                        <c:if test="${item.reportType eq 'FINAL'}">
+                            ${item.content}
+                        </c:if>
+                    </c:forEach>
+                </textarea>
             </div>
         </div>
         <div class="panel panel-default">
@@ -182,18 +176,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>建议xxxxxxxxxx</td><td>统一</td><td>张三</td><td>审批通过</td><td>2017-10-02</td>
-                    </tr>
-                    <tr>
-                        <td>建议xxxxxxxxxx</td><td>统一</td><td>张三</td><td>审批通过</td><td>2017-10-02</td>
-                    </tr>
-                    <tr>
-                        <td></td><td></td><td>张三</td><td>待审批</td><td></td>
-                    </tr>
-                    <tr>
-                        <td></td><td></td><td>张三</td><td>待审批</td><td></td>
-                    </tr>
+                    <c:forEach items="${applyDetailDTO.reportExamineProgresses}" var="item">
+                        <tr>
+                            <td>${item.advise}</td>
+                            <td>${item.ret}</td>
+                            <td>${item.examinePeopleName}</td>
+                            <td>${item.result}</td>
+                            <td>${item.passTime}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -201,10 +192,56 @@
     </div>
 </div>
 <script src="${ctx}/assets/build/js/jquery.min.js"></script>
+<script src="${ctx}/assets/vendors/jquery.print/jquery.PrintArea.js"></script>
+<script src="${ctx}/assets/build/js/mine.js"></script>
 <script>
     $('.normal').addClass('active');
     $('.normal ul').show();
     $('.normal ul .home').addClass('current-page');
+    $('#days').text(DateDiff($('#startTime').text(),$('#endTime').text()) + 1);
+    $('#printArea').click(function () {
+        $('#content').printArea();
+    })
+//    var hkey_root,hkey_path,hkey_key;
+//    hkey_root="HKEY_CURRENT_USER";
+//    hkey_path="\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+//
+//    // 设置网页打印的页眉页脚为空
+//    function pagesetup_null()
+//    {
+//        try{
+//            var RegWsh = new ActiveXObject("WScript.Shell");
+//            hkey_key="header";
+//            RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"");
+//            hkey_key="footer";
+//            RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"");
+//        }catch(e){ alert(e); }
+    }
+    $('#print').click(function () {
+//       pagesetup_null();
+       window.print();
+    });
+//    $('#print').click(function () {
+//        window.print();
+////        $('#content').print({
+////            //Use Global styles
+////            globalStyles: true,
+////            //Add link with attrbute media=print
+////            mediaPrint : false,
+////            //Custom stylesheet
+////            stylesheet : null,
+////            //Print in a hidden iframe
+////            iframe : true,
+////            //Don't print this
+////            noPrintSelector : null,
+////            //Add this at top
+////            prepend : null,
+////            //Add this on bottom
+////            append : null,
+////            //Log to console when printing is done via a deffered callback
+////            deferred: $.Deferred()
+////        });
+//    });
 </script>
 </body>
 </html>

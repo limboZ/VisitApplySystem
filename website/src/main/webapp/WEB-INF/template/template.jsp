@@ -42,12 +42,16 @@
             color:#31b0d5;
         }
     </style>
+
+    <style type="text/css" media=print>
+        .noprint{display : none }
+    </style>
 </head>
 
 <body class="nav-md">
 <div class="container body">
     <div class="main_container">
-        <div class="col-md-3 left_col">
+        <div class="col-md-3 left_col noprint">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
                     <a href="${ctx}/user/list" class="site_title">
@@ -75,7 +79,7 @@
                 <br />
 
                 <!-- sidebar menu -->
-                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu noprint">
                     <div class="menu_section">
                         <ul class="nav side-menu">
                             <%--<c:if test="${sessionScope.current_user.role == 'USER'}">--%>
@@ -102,14 +106,14 @@
         </div>
 
         <!-- top navigation -->
-        <div class="top_nav">
-            <div class="nav_menu">
+        <div class="top_nav noprint">
+            <div class="nav_menu noprint">
                 <nav>
                     <div class="nav toggle">
                         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                     </div>
 
-                    <ul class="nav navbar-nav navbar-right">
+                    <ul class="nav navbar-nav navbar-right noprint">
                         <li class="">
                             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <img src="${ctx}/assets/images/boy.jpeg" alt="">${sessionScope.current_user.userName}
@@ -146,7 +150,7 @@
 
         <!-- footer content -->
         <footer>
-            <div class="pull-right">
+            <div class="pull-right noprint">
                 四川航空股份有限公司---出访申请系统 v1.0
             </div>
             <div class="clearfix"></div>

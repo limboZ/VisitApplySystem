@@ -40,11 +40,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${applyPreviewList.applyPreviews}" var="item" varStatus="no">
+                <c:forEach items="${applyPreviewListDTO}" var="item" varStatus="no">
                     <tr>
                         <td>${no.count}</td>
                         <td>${item.teamName}</td>
-                        <td>${item.applyCreateTime}</td>
+                        <td><fmt:formatDate value="${item.applyCreateTime}" pattern="yyyy-MM-dd"></fmt:formatDate> </td>
                         <td>${item.applyExamineStatus}</td>
                         <td>${item.isFilledReport}</td>
                         <td>${item.reportExamineStatus}</td>
@@ -52,43 +52,11 @@
                             <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#summary">填写</button>
                         </td>
                         <td>
-                            <a href="${ctx}/user/show" class="btn btn-xs btn-primary">详情</a>
+                            <a href="${ctx}/user/show/${item.id}" class="btn btn-xs btn-primary">详情</a>
                             <a href="#" class="btn btn-xs btn-success">提交审批</a>
                         </td>
                     </tr>
                 </c:forEach>
-                    <tr>
-                        <td>1</td>
-                        <td>关于邹江华等2人去美国、加拿大的出国申请</td>
-                        <td>2017-09-20</td>
-                        <td>未审批</td>
-                        <td>未填写</td>
-                        <td>未审批</td>
-                        <td>
-                            <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#summary">填写</button>
-                        </td>
-                        <td>
-                            <a href="${ctx}/user/show" class="btn btn-xs btn-primary">详情</a>
-                            <%--<a href="${ctx}/user/edit" class="btn btn-xs btn-info">编辑</a>--%>
-                            <a href="#" class="btn btn-xs btn-success">提交审批</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>关于黄龙翔等2人去日本、泰国的出国申请</td>
-                        <td>2017-09-20</td>
-                        <td>未审批</td>
-                        <td>已填写</td>
-                        <td>未审批</td>
-                        <td>
-                            <a class="btn btn-xs btn-info" href="#">填写</a>
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-xs btn-primary">详情</a>
-                            <%--<a href="#" class="btn btn-xs btn-info">编辑</a>--%>
-                            <a href="#" class="btn btn-xs btn-success">提交审批</a>
-                        </td>
-                    </tr>
                 <tr>
                     <td colspan="8">
                         <div class="btn-toolbar pull-right">

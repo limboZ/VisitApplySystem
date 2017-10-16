@@ -136,7 +136,7 @@
                     <%--</div>--%>
                 <%--</div>--%>
                 <div class="ln_solid"></div>
-                <button type="button" class="btn btn-success pull-right" id="createButton"><i class="fa fa-plus"></i>添加</button>
+                <button type="button" class="btn btn-success pull-right" id="createButton"><i class="fa fa-plus"></i>保存</button>
             </form>
         </div>
     </div><%--遮罩背景层--%>
@@ -362,7 +362,7 @@
                         }
                     }
                 }else {
-                    alert('任务类型拉取失败，请刷新页面后重试！');
+                    alert("任务类型拉取失败：" + data.tip);
                 }
             }
         });
