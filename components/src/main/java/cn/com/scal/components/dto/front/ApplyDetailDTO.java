@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class ApplyDetailDTO {
     private Integer id;
+    private String totalStatus;
     private String teamName;
     private String applyUserName;
     private String commissionType;
@@ -39,6 +40,14 @@ public class ApplyDetailDTO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTotalStatus() {
+        return totalStatus;
+    }
+
+    public void setTotalStatus(String totalStatus) {
+        this.totalStatus = totalStatus;
     }
 
     public String getTeamName() {

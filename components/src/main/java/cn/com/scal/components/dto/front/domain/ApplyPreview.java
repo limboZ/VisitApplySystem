@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class ApplyPreview {
     private Integer id;
+    private String totalStatus;
     private String teamName;
     private Date applyCreateTime;
     private String applyExamineStatus;
@@ -19,6 +20,14 @@ public class ApplyPreview {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTotalStatus() {
+        return totalStatus;
+    }
+
+    public void setTotalStatus(String totalStatus) {
+        this.totalStatus = totalStatus;
     }
 
     public String getTeamName() {

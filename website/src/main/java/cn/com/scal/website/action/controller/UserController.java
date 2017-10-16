@@ -62,6 +62,14 @@ public class UserController {
     private final String SHOW = "/user/show";
     private final String EDIT = "/user/edit";
 
+    /**
+     * 首页，列表展示
+     * @param request
+     * @param user
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/list")
     public String list(HttpServletRequest request, CurrentUser user, Model model) throws Exception {
         ArrayList<ApplyPreview> applyPreviewList = new ArrayList<>();
@@ -78,6 +86,7 @@ public class UserController {
                 ApplyPreview applyPreview = new ApplyPreview();
 
                 applyPreview.setId(applyEntity.getId());
+                applyPreview.setTotalStatus(applyEntity.getApplyStatus().name());
                 applyPreview.setApplyCreateTime(applyEntity.getCreateTime());
                 applyPreview.setTeamName(applyEntity.getTeamName());
 
@@ -130,17 +139,32 @@ public class UserController {
         return LIST;
     }
 
+    /**
+     * 跳转到添加新申请的页面
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/add")
     public String add(Model model) throws Exception {
-
         return ADD;
     }
 
+    /**
+     * 创建新的申请
+     * @param applyDTO
+     * @param user
+     * @param session
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> create(@RequestBody ApplyDTO applyDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> create(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
         Api<Object> api = new Api<>();
-        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, DateUtil.getCurrentTime());
 
@@ -152,6 +176,14 @@ public class UserController {
         return api;
     }
 
+    /**
+     * 显示某一条申请的详细信息
+     * @param applyId
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/show/{applyId}")
     public String show(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
         ApplyDetailDTO applyDetailDTO = null;
@@ -165,6 +197,7 @@ public class UserController {
 
             for (TApplyEntity entity : applyEntities) {
                 applyDetailDTO.setId(entity.getId());
+                applyDetailDTO.setTotalStatus(entity.getApplyStatus().name());
                 applyDetailDTO.setTeamName(entity.getTeamName());
                 applyDetailDTO.setApplyUserName(entity.getApplyUserName());
                 applyDetailDTO.setCommissionType(entity.getCommissionType());
@@ -245,6 +278,14 @@ public class UserController {
         return SHOW;
     }
 
+    /**
+     * 从某条申请的详细信息页面编辑出访申请信息时需要的信息
+     * @param applyId
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/edit/{applyId}")
     public String edit(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
         ApplyDetailDTO applyDetailDTO = null;
@@ -285,7 +326,7 @@ public class UserController {
                     teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
                     teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
                     teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
-                    teamMate.setEmployeeDept(tTeamEntity.getEmployeePost());
+                    teamMate.setEmployeePost(tTeamEntity.getEmployeePost());
 
                     teamMates[i] = teamMate;
                 }
@@ -338,6 +379,15 @@ public class UserController {
         return EDIT;
     }
 
+    /**
+     * 提交从详细页面进行编辑后的结果
+     * @param applyDTO
+     * @param session
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/submitEdit", method = RequestMethod.POST)
     @ResponseBody
     public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
@@ -373,6 +423,15 @@ public class UserController {
         return api;
     }
 
+    /**
+     * 提交新增的report
+     * @param reportDTO
+     * @param session
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/submitReport", method = RequestMethod.POST)
     @ResponseBody
     public Api<Object> submitReport(@RequestBody ReportDTO reportDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
