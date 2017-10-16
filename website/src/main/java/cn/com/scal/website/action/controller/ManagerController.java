@@ -117,13 +117,36 @@ public class ManagerController {
 
             for (TApplyEntity entity : applyEntities) {
                 applyDetailDTO.setId(entity.getId());
-                applyDetailDTO.setTotalStatus(entity.getApplyStatus().name());
                 applyDetailDTO.setTeamName(entity.getTeamName());
                 applyDetailDTO.setApplyUserName(entity.getApplyUserName());
                 applyDetailDTO.setCommissionType(entity.getCommissionType());
                 applyDetailDTO.setStartTime(entity.getStartTime());
                 applyDetailDTO.setEndTime(entity.getEndTime());
                 applyDetailDTO.setReason(entity.getReason());
+
+                // 这里是在生成申请审批进度和总结审批进度
+                String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
+                String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
+                if(ApplyStatusEnum.DRAT.name().equals(entity.getApplyStatus().name())){
+                    // 如果这个申请的总状态是草稿状态，则这里显示为""
+                    applyExamineStatus = "未提交";
+                    reportExamineStatus = "未提交";
+                }
+                for (TExamineEntity examineEntity : entity.getExamineEntities()) {
+                    ApplyStatusEnum result = examineEntity.getResult();
+                    if (ExamineTypeEnum.APPLY.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
+                        // 如果其中一个是待审批，那么整个申请审批进度就是审批中
+                        applyExamineStatus = ApplyStatusEnum.PROCESSING.name();
+                        continue;
+                    }
+                    if (ExamineTypeEnum.REPORT.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
+                        reportExamineStatus = ApplyStatusEnum.PROCESSING.name();
+                        continue;
+                    }
+                }
+
+                applyDetailDTO.setApplyExamineStatus(applyExamineStatus);
+                applyDetailDTO.setReportExamineStatus(reportExamineStatus);
 
                 // 将目的地和队员信息取出
                 Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
@@ -145,7 +168,7 @@ public class ManagerController {
                     teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
                     teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
                     teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
-                    teamMate.setEmployeeDept(tTeamEntity.getEmployeePost());
+                    teamMate.setEmployeePost(tTeamEntity.getEmployeePost());
 
                     teamMates[i] = teamMate;
                 }
@@ -191,11 +214,11 @@ public class ManagerController {
         } catch (OtherException e) {
             e.printStackTrace();
             model.addAttribute("applyDetailDTO", applyDetailDTO);
-            return SHOW;
+            return EDIT;
         }
 
         model.addAttribute("applyDetailDTO", applyDetailDTO);
-        return SHOW;
+        return EDIT;
     }
 
     @RequestMapping("/edit")
