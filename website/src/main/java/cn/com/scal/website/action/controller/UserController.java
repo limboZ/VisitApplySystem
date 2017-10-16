@@ -510,6 +510,32 @@ public class UserController {
         return api;
     }
 
+    /**
+     * 提交申请，就是将此条申请又草稿状态变成un_config状态
+     * @param applyId
+     * @param session
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/submitApply/{applyId}", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitApply(@PathVariable Integer applyId, HttpSession session, HttpServletRequest request, Model model){
+        Api<Object> api = new Api<>();
+        try {
+            TApplyEntity tApplyEntity = new TApplyEntity();
+            tApplyEntity.setId(applyId);
+            tApplyEntity.setApplyStatus(ApplyStatusEnum.UN_CONFIG);
+            applyService.update(tApplyEntity);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+
+        return api;
+    }
+
+
     private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, CurrentUser user, Timestamp currentTime) {
         TApplyEntity tApplyEntity = new TApplyEntity();
 
