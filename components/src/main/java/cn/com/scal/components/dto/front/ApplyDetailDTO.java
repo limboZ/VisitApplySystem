@@ -24,6 +24,7 @@ public class ApplyDetailDTO {
     private ExaminePeople[] applyExaminePeoples;
 
     private ExamineProgress[] applyExamineProgresses;
+    private String applyExamineStatus;
 
     private Report[] reports;
 
@@ -31,7 +32,25 @@ public class ApplyDetailDTO {
 
     private ExamineProgress[] reportExamineProgresses;
 
+    private String reportExamineStatus;
+
     public ApplyDetailDTO() {
+    }
+
+    public String getApplyExamineStatus() {
+        return applyExamineStatus;
+    }
+
+    public void setApplyExamineStatus(String applyExamineStatus) {
+        this.applyExamineStatus = applyExamineStatus;
+    }
+
+    public String getReportExamineStatus() {
+        return reportExamineStatus;
+    }
+
+    public void setReportExamineStatus(String reportExamineStatus) {
+        this.reportExamineStatus = reportExamineStatus;
     }
 
     public Integer getId() {

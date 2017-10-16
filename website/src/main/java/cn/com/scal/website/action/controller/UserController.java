@@ -178,16 +178,17 @@ public class UserController {
     }
 
     /**
-     * 显示某一条申请的详细信息
+     * 从某条申请的详细信息页面编辑出访申请信息时需要的信息
      * @param applyId
      * @param request
      * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping("/show/{applyId}")
-    public String show(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
+    @RequestMapping("/edit/{applyId}")
+    public String edit(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
         ApplyDetailDTO applyDetailDTO = null;
+        String message = null;
         try {
             applyDetailDTO = new ApplyDetailDTO();
 
@@ -197,6 +198,8 @@ public class UserController {
             List<TApplyEntity> applyEntities = applyService.query(applyCommand);
 
             for (TApplyEntity entity : applyEntities) {
+                message = entity.getApplyStatus().name();   // 如果总的状态是草稿，运行用户修改，其他的不允许修改
+
                 applyDetailDTO.setId(entity.getId());
                 applyDetailDTO.setTotalStatus(entity.getApplyStatus().name());
                 applyDetailDTO.setTeamName(entity.getTeamName());
@@ -231,64 +234,32 @@ public class UserController {
                     teamMates[i] = teamMate;
                 }
 
-                ArrayList<ExamineProgress> applyExamineProgresses = new ArrayList<>();
-                ArrayList<ExamineProgress> reportExamineProgresses = new ArrayList<>();
-                for (int i = 0; i < entity.getExamineEntities().size(); i++) {
-                    TExamineEntity examineEntity = entity.getExamineEntities().get(i);
-                    ExamineProgress progress = new ExamineProgress();
-                    progress.setId(examineEntity.getId());
-                    progress.setAdvise(examineEntity.getAdvise());
-                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
-                    progress.setPassTime(examineEntity.getPassTime());
-                    progress.setRet(examineEntity.getResult().name());
-                    progress.setResult(examineEntity.getExamineResult().name());
-                    if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.APPLY.name())) {
-                        applyExamineProgresses.add(progress);
-                    } else if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.REPORT.name())) {
-                        reportExamineProgresses.add(progress);
-                    }
-                }
-
-                Report[] reports = new Report[entity.getReportEntities().size()];
-                for (int i = 0; i < entity.getReportEntities().size(); i++) {
-                    TReportEntity tReportEntity = entity.getReportEntities().get(i);
-                    Report report = new Report();
-                    report.setId(tReportEntity.getId());
-                    report.setContent(tReportEntity.getContent());
-                    report.setReportDate(tReportEntity.getReportDate());
-                    report.setReportSlot(tReportEntity.getReportSlot().name());
-                    report.setReportType(tReportEntity.getReportType().name());
-
-                    reports[i] = report;
-                }
-
 
                 applyDetailDTO.setDestinations(destinations);
                 applyDetailDTO.setTeamMates(teamMates);
-                applyDetailDTO.setApplyExamineProgresses(applyExamineProgresses.toArray(new ExamineProgress[applyExamineProgresses.size()]));
-                applyDetailDTO.setApplyExamineProgresses(reportExamineProgresses.toArray(new ExamineProgress[reportExamineProgresses.size()]));
-                applyDetailDTO.setReports(reports);
             }
         } catch (OtherException e) {
             e.printStackTrace();
             model.addAttribute("applyDetailDTO", applyDetailDTO);
+            model.addAttribute("message", message);
             return SHOW;
         }
 
         model.addAttribute("applyDetailDTO", applyDetailDTO);
+        model.addAttribute("message", message);
         return SHOW;
     }
 
     /**
-     * 从某条申请的详细信息页面编辑出访申请信息时需要的信息
+     * 显示某一条申请的详细信息
      * @param applyId
      * @param request
      * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping("/edit/{applyId}")
-    public String edit(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
+    @RequestMapping("/show/{applyId}")
+    public String show(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
         ApplyDetailDTO applyDetailDTO = null;
         try {
             applyDetailDTO = new ApplyDetailDTO();
@@ -306,6 +277,30 @@ public class UserController {
                 applyDetailDTO.setStartTime(entity.getStartTime());
                 applyDetailDTO.setEndTime(entity.getEndTime());
                 applyDetailDTO.setReason(entity.getReason());
+
+                // 这里是在生成申请审批进度和总结审批进度
+                String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
+                String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
+                if(ApplyStatusEnum.DRAT.name().equals(entity.getApplyStatus().name())){
+                    // 如果这个申请的总状态是草稿状态，则这里显示为""
+                    applyExamineStatus = "";
+                    reportExamineStatus = "";
+                }
+                for (TExamineEntity examineEntity : entity.getExamineEntities()) {
+                    ApplyStatusEnum result = examineEntity.getResult();
+                    if (ExamineTypeEnum.APPLY.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
+                        // 如果其中一个是待审批，那么整个申请审批进度就是审批中
+                        applyExamineStatus = ApplyStatusEnum.PROCESSING.name();
+                        continue;
+                    }
+                    if (ExamineTypeEnum.REPORT.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
+                        reportExamineStatus = ApplyStatusEnum.PROCESSING.name();
+                        continue;
+                    }
+                }
+
+                applyDetailDTO.setApplyExamineStatus(applyExamineStatus);
+                applyDetailDTO.setReportExamineStatus(reportExamineStatus);
 
                 // 将目的地和队员信息取出
                 Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
