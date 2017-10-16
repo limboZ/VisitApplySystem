@@ -430,7 +430,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "/report{applyId}")
+    @RequestMapping(value = "/report/{applyId}")
     @ResponseBody
     public Api<Object> directToReport(@PathVariable Integer applyId, HttpSession session){
         Api<Object> api = new Api<>();
