@@ -279,22 +279,22 @@ public class UserController {
                 applyDetailDTO.setReason(entity.getReason());
 
                 // 这里是在生成申请审批进度和总结审批进度
-                String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
+                String applyExamineStatus = ApplyStatusEnum.COMPLETE.getText();
+                String reportExamineStatus = ApplyStatusEnum.COMPLETE.getText();
                 if(ApplyStatusEnum.DRAT.name().equals(entity.getApplyStatus().name())){
                     // 如果这个申请的总状态是草稿状态，则这里显示为""
-                    applyExamineStatus = "";
-                    reportExamineStatus = "";
+                    applyExamineStatus = "未提交";
+                    reportExamineStatus = "未提交";
                 }
                 for (TExamineEntity examineEntity : entity.getExamineEntities()) {
                     ApplyStatusEnum result = examineEntity.getResult();
                     if (ExamineTypeEnum.APPLY.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
                         // 如果其中一个是待审批，那么整个申请审批进度就是审批中
-                        applyExamineStatus = ApplyStatusEnum.PROCESSING.name();
+                        applyExamineStatus = ApplyStatusEnum.PROCESSING.getText();
                         continue;
                     }
                     if (ExamineTypeEnum.REPORT.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
-                        reportExamineStatus = ApplyStatusEnum.PROCESSING.name();
+                        reportExamineStatus = ApplyStatusEnum.PROCESSING.getText();
                         continue;
                     }
                 }
