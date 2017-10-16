@@ -390,9 +390,9 @@ public class UserController {
      */
     @RequestMapping(value = "/submitEdit", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
         Api<Object> api = new Api<>();
-        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
