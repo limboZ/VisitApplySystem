@@ -1,6 +1,7 @@
 package cn.com.scal.website.action.controller;
 
 import cn.com.scal.components.command.ApplyCommand;
+import cn.com.scal.components.command.ReportCommand;
 import cn.com.scal.components.domain.*;
 import cn.com.scal.components.dto.Api;
 import cn.com.scal.components.dto.TApplyDTO;
@@ -420,6 +421,46 @@ public class UserController {
             api.setCode(Api.ERROR_CODE);
             api.setTip(e.getMessage());
         }
+        return api;
+    }
+
+    /**
+     * 跳转到新增report页面
+     * @param applyId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/report{applyId}")
+    @ResponseBody
+    public Api<Object> directToReport(@PathVariable Integer applyId, HttpSession session){
+        Api<Object> api = new Api<>();
+        ReportDTO reportDTO = new ReportDTO();
+
+        try {
+            ReportCommand reportCommand = new ReportCommand();
+            reportCommand.setApplyId(applyId);
+            reportCommand.setDataMark("1");
+            List<TReportEntity> reportEntities = reportService.query(reportCommand);
+
+
+            ArrayList<Report> reportList = new ArrayList<>();
+            reportDTO.setApplyId(applyId);
+            for(TReportEntity tReportEntity: reportEntities){
+                Report report = new Report();
+                report.setId(tReportEntity.getId());
+                report.setContent(tReportEntity.getContent());
+                report.setReportDate(tReportEntity.getReportDate());
+                report.setReportSlot(tReportEntity.getReportSlot().name());
+                report.setReportType(tReportEntity.getReportType().name());
+                reportList.add(report);
+            }
+            reportDTO.setReports(reportList.toArray(new Report[reportList.size()]));
+            api.setData(reportDTO);
+        } catch (OtherException e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+
         return api;
     }
 
