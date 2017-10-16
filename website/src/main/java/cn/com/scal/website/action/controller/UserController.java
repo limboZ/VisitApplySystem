@@ -242,12 +242,12 @@ public class UserController {
             e.printStackTrace();
             model.addAttribute("applyDetailDTO", applyDetailDTO);
             model.addAttribute("message", message);
-            return SHOW;
+            return EDIT;
         }
 
         model.addAttribute("applyDetailDTO", applyDetailDTO);
         model.addAttribute("message", message);
-        return SHOW;
+        return EDIT;
     }
 
     /**
@@ -368,11 +368,11 @@ public class UserController {
         } catch (OtherException e) {
             e.printStackTrace();
             model.addAttribute("applyDetailDTO", applyDetailDTO);
-            return EDIT;
+            return SHOW;
         }
 
         model.addAttribute("applyDetailDTO", applyDetailDTO);
-        return EDIT;
+        return SHOW;
     }
 
     /**
