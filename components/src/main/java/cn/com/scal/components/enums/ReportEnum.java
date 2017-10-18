@@ -32,5 +32,19 @@ public enum ReportEnum {
         throw new Exception("类型未找到！");
 
     }
+
+    public static ReportEnum EnumFormName(String name) throws Exception {
+
+        ReportEnum[] enums = ReportEnum.values();
+        for (ReportEnum enumo : enums) {
+
+            if(enumo.name().equals(name)){
+                return enumo;
+            }
+        }
+
+        throw new Exception("类型未找到！");
+
+    }
 }
 
