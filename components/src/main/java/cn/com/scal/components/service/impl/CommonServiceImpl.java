@@ -4,6 +4,7 @@ import cn.com.scal.components.command.BaseCommand;
 import cn.com.scal.components.dao.ICommonDao;
 import cn.com.scal.components.domain.Base;
 import cn.com.scal.components.dto.BaseDTO;
+import cn.com.scal.components.exception.DAOException;
 import cn.com.scal.components.exception.OtherException;
 import cn.com.scal.components.service.ICommonService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -87,5 +88,10 @@ public class CommonServiceImpl<T extends Base<T>, K extends BaseDTO<K , T>, PK e
     @Override
     public K loadDTO(String sql,BaseCommand<T,K> command,Class<K> clazz) throws OtherException{
         return dao.loadDTO(sql, command, clazz);
+    }
+
+    @Override
+    public List<T> findFlexible(String conditions, String orders, int page, int pageSize, Class<T> clazz) throws DAOException {
+        return dao.findFlexible(conditions,orders,page,pageSize,clazz);
     }
 }

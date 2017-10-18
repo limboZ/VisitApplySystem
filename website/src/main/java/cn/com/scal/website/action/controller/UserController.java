@@ -22,6 +22,8 @@ import cn.com.scal.components.service.ITeamService;
 import cn.com.scal.components.service.impl.CommonServiceImpl;
 import cn.com.scal.components.utils.DTFormatUtil;
 import cn.com.scal.components.utils.DateUtil;
+import cn.com.scal.components.utils.Pagination;
+import cn.com.scal.components.utils.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,9 @@ import java.util.List;
 @RequestMapping("/user")
 @Controller
 public class UserController {
+
+    private static final int PAGESIZE = 10;  //此处的pagesize应该与pagization里面的pagezi一样，默认为10
+    private  int currentPage = 1;
 
     @Resource(name = "commonServiceImpl")
     private CommonServiceImpl<TApplyEntity, TApplyDTO, Integer> applyService;
@@ -73,13 +78,16 @@ public class UserController {
      */
     @RequestMapping("/list")
     public String list(HttpServletRequest request, CurrentUser user, Model model) throws Exception {
+        String currPage = request.getParameter("currentPage");
+        currentPage = StringUtil.isEmpty(currPage) ? 1 : Integer.valueOf(currPage);
         ArrayList<ApplyPreview> applyPreviewList = new ArrayList<>();
         try {
             ApplyCommand applyCommand = new ApplyCommand();
             applyCommand.setApplyUserId(user.getEmpNo());
             applyCommand.setDataMark("1");
 
-            List<TApplyEntity> applyEntityList = applyService.query(applyCommand);
+//            List<TApplyEntity> applyEntityList = applyService.query(applyCommand);
+            List<TApplyEntity> applyEntityList = applyService.findFlexible(" and dataMark=1 "," id desc ",currentPage,PAGESIZE,TApplyEntity.class);
 
 
             for (int i = 0; i < applyEntityList.size(); i++) {
@@ -94,7 +102,7 @@ public class UserController {
                 // 这里是在生成申请审批进度和总结审批进度
                 String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
                 String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                if(ApplyStatusEnum.DRAT.name().equals(applyEntity.getApplyStatus().name())){
+                if(ApplyStatusEnum.DRAFT.name().equals(applyEntity.getApplyStatus().name())){
                     // 如果这个申请的总状态是草稿状态，则这里显示为""
                     applyExamineStatus = "";
                     reportExamineStatus = "";
@@ -136,6 +144,11 @@ public class UserController {
             return LIST;
         }
 
+        Pagination pagination = new Pagination();
+        model.addAttribute("pageCommand",pagination);
+        model.addAttribute("currentPage",currentPage);
+        model.addAttribute("pagesize",PAGESIZE);
+        model.addAttribute("count",applyService.findFlexible(" and dataMark=1 "," id desc ",0,0,TApplyEntity.class).size());
         model.addAttribute("applyPreviewListDTO", applyPreviewList);
         return LIST;
     }
@@ -168,7 +181,6 @@ public class UserController {
 //        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, DateUtil.getCurrentTime());
-
             applyService.create(tApplyEntity);
         } catch (OtherException e) {
             api.setCode(Api.ERROR_CODE);
@@ -281,7 +293,7 @@ public class UserController {
                 // 这里是在生成申请审批进度和总结审批进度
                 String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
                 String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                if(ApplyStatusEnum.DRAT.name().equals(entity.getApplyStatus().name())){
+                if(ApplyStatusEnum.DRAFT.name().equals(entity.getApplyStatus().name())){
                     // 如果这个申请的总状态是草稿状态，则这里显示为""
                     applyExamineStatus = "未提交";
                     reportExamineStatus = "未提交";
@@ -486,9 +498,11 @@ public class UserController {
                 tReportEntity.setId(report.getId());
                 tReportEntity.setApplyId(applyEntity);
                 tReportEntity.setContent(report.getContent());
-                tReportEntity.setCreatorId(user.getEmpNo());
+//                tReportEntity.setCreatorId(user.getEmpNo());
+                tReportEntity.setCreatorId("007955");
                 tReportEntity.setDataMark("1");
                 tReportEntity.setReportDate(DTFormatUtil.strToDate(DTFormatUtil.getCurrentDate(DTFormatUtil.SDF_YY_MM_DD)));
+//                tReportEntity.setReportDate(new Date());
                 tReportEntity.setReportSlot(ReportSlotEnum.EnumFormText(report.getReportSlot()));
                 tReportEntity.setReportType(ReportEnum.EnumFormText(report.getReportType()));
 
@@ -552,13 +566,15 @@ public class UserController {
 
         tApplyEntity.setId(applyDTO.getId());
         tApplyEntity.setTeamName(teamName);
-        tApplyEntity.setApplyUserId(user.getEmpNo());
-        tApplyEntity.setApplyUserName(user.getUserName());
+//        tApplyEntity.setApplyUserId(user.getEmpNo());
+        tApplyEntity.setApplyUserId("015074");
+//        tApplyEntity.setApplyUserName(user.getUserName());
+        tApplyEntity.setApplyUserName("邹江华");
         tApplyEntity.setCommissionType(applyDTO.getCommissionType());
         tApplyEntity.setStartTime(applyDTO.getStartTime());
         tApplyEntity.setEndTime(applyDTO.getEndTime());
         tApplyEntity.setReason(applyDTO.getReason());
-        tApplyEntity.setApplyStatus(ApplyStatusEnum.DRAT);
+        tApplyEntity.setApplyStatus(ApplyStatusEnum.DRAFT);
         tApplyEntity.setCreateTime(currentTime);
         tApplyEntity.setUpdateTime(currentTime);
         tApplyEntity.setDataMark("1");

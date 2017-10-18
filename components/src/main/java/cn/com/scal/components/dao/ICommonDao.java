@@ -44,4 +44,7 @@ public interface ICommonDao<T extends Base<T>,K extends BaseDTO<K,T>, PK extends
     public List<T> queryBySql(String sql, BaseCommand<T,K> command) throws DAOException;
 
     public K loadDTO(String sql, BaseCommand<T,K> command, Class<K> clazz) throws DAOException;
+
+    List<T> findFlexible(String conditions, String orders, int page, int pageSize, Class<T> clazz) throws DAOException;
+
 }

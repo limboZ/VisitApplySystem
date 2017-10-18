@@ -3,6 +3,7 @@ package cn.com.scal.components.service;
 import cn.com.scal.components.command.BaseCommand;
 import cn.com.scal.components.domain.Base;
 import cn.com.scal.components.dto.BaseDTO;
+import cn.com.scal.components.exception.DAOException;
 import cn.com.scal.components.exception.OtherException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,4 +40,7 @@ public interface ICommonService<T extends Base<T>,K extends BaseDTO<K,T>,PK exte
     public List<K> queryDTO(String sql, BaseCommand<T,K> command, Class<K> clazz) throws OtherException;
 
     public K loadDTO(String sql, BaseCommand<T,K> command, Class<K> clazz) throws OtherException;
+
+    List<T> findFlexible(String conditions, String orders, int page, int pageSize, Class<T> clazz) throws DAOException;
+
 }

@@ -181,6 +181,24 @@ public class CommonDaoImpl<T extends Base<T>, K extends BaseDTO<K, T>, PK extend
         return (K) query.uniqueResult();
     }
 
+    @Override
+    public List<T> findFlexible(String conditions, String orders, int page, int pageSize, Class<T> clazz) throws DAOException {
+        StringBuilder hqlBuilder = new StringBuilder(from(clazz.getName()));
+        if (conditions != null && !conditions.isEmpty()) {
+            hqlBuilder.append(" where 1 = 1 ").append(conditions);
+        }
+        if (orders != null && !orders.isEmpty()) {
+            hqlBuilder.append(" order by ").append(orders);
+        }
+        Query query = getCurrentSession().createQuery(hqlBuilder.toString());
+        if (page > 0 && pageSize > 0) {
+            int firstResult = (page - 1) * pageSize;
+            query.setFirstResult(firstResult);
+            query.setMaxResults(pageSize);
+        }
+        return query.list();
+    }
+
     private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
