@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: limboZ
@@ -35,31 +36,22 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1</td>
-                <td>关于邹江华等2人去美国、加拿大的出国申请</td>
-                <td>2017-09-20</td>
-                <td>未审批</td>
-                <td>未填写</td>
-                <td>未审批</td>
-                <td>
-                    <a href="${ctx}/manager/show" class="btn btn-xs btn-primary">详情</a>
-                    <button type="button" class="btn btn-danger btn-xs delete">删除</button>
-                    <a href="${ctx}/leader/show" class="btn btn-xs btn-info">领导审批</a>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>关于黄龙翔等2人去日本、泰国的出国申请</td>
-                <td>2017-09-20</td>
-                <td>未审批</td>
-                <td>已填写</td>
-                <td>未审批</td>
-                <td>
-                    <a href="#" class="btn btn-xs btn-primary">详情</a>
-                    <button type="button" class="btn btn-danger btn-xs delete">删除</button>
-                </td>
-            </tr>
+            <c:forEach items="${applyPreviewListDTO}" var="item" varStatus="no">
+                <tr>
+                    <td>${no.count}</td>
+                    <td>${item.teamName}</td>
+                    <td><fmt:formatDate value="${item.applyCreateTime}" pattern="yyyy-MM-dd"></fmt:formatDate> </td>
+                    <td>${item.applyExamineStatus}</td>
+                    <td>${item.isFilledReport}</td>
+                    <td>${item.reportExamineStatus}</td>
+                    <td>
+                        <a href="${ctx}/manager/show/${item.id}" class="btn btn-xs btn-primary">详情</a>
+                        <c:if test="${item.totalStatus eq 'COMPLETE'}">
+                            <a href="#" class="btn btn-xs btn-danger">删除</a>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
             <tr>
                 <td colspan="8">
                         <%--<c:if test="${taskFlag != '1'}">--%>

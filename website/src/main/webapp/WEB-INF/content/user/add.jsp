@@ -292,10 +292,10 @@
                 }
             }
             if(destinations.length == 0){
-                message += '请选择出访目的地！';
+                message += '请填写出访目的地！';
             }
             if(visitors.length == 0){
-                message += '请选择出访团组成员！';
+                message += '请填写出访团组成员！';
             }
             if(isEmpty(message)){
                 //拼接出访信息传至后台
@@ -342,7 +342,7 @@
                         $('#warning').hide();
                     },
                     error:function () {
-                        alert('连接服务器失败！');
+                        alert('操作失败！');
                         $('#warning').hide();
                     }
                 });

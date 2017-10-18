@@ -19,10 +19,14 @@
     <div class="x_title">
         <h2>出访团组信息</h2>
         <div class="pull-right">
-            <a href="${ctx}/user/edit/${applyDetailDTO.id}" class="btn btn-info noprint">编辑</a>
-            <button type="button" class="btn btn-success noprint">提交审批</button>
-            <button type="button" class="btn btn-primary noprint" id="print" >打印表单</button>
-            <button type="button" class="btn btn-primary noprint" id="printArea" >打印表单</button>
+            <c:if test="${applyDetailDTO.totalStatus eq 'DRAFT'}">
+                <a href="${ctx}/user/edit/${applyDetailDTO.id}" class="btn btn-info noprint">编辑</a>
+            </c:if>
+            <button type="button" class="btn btn-success noprint" id="submitApply">提交审批</button>
+            <c:if test="${applyDetailDTO.totalStatus eq 'COMPLETE'}">
+                <button type="button" class="btn btn-primary noprint" id="print" >打印表单</button>
+            </c:if>
+            <%--<button type="button" class="btn btn-primary noprint" id="printArea" >打印表单</button>--%>
             <button type="button" class="btn btn-warning noprint" onclick="history.back()">返回</button>
         </div>
         <div class="clearfix"></div>
@@ -92,8 +96,8 @@
                 </table>
             </div>
         </div>
-        <%--<c:if test="${applyDetailDTO}"></c:if>--%>
-        <div class="panel panel-default">
+        <c:if test="${applyDetailDTO.totalStatus != 'DRAFT' && applyDetailDTO.totalStatus != 'UN_CONFIG' && applyDetailDTO.totalStatus != 'CONFIGURED_NOT_SUBMIT'}">
+            <div class="panel panel-default">
             <div class="panel-heading" data-toggle="collapse" id="applyCheck"  href="#applyCheckC" aria-expanded="true" aria-controls="applyCheckC">
                 <h4 class="panel-title">出访申请审批</h4>
             </div>
@@ -123,7 +127,7 @@
                 </table>
             </div>
         </div>
-        <div class="panel panel-default">
+            <div class="panel panel-default">
             <div class="panel-heading" data-toggle="collapse" id="summary"  href="#summaryC" aria-expanded="true" aria-controls="summaryC">
                 <h4 class="panel-title">出访总结</h4>
             </div>
@@ -159,7 +163,7 @@
                 </textarea>
             </div>
         </div>
-        <div class="panel panel-default">
+            <div class="panel panel-default">
             <div class="panel-heading" data-toggle="collapse" id="summaryCheck"  href="#summaryCheckC" aria-expanded="true" aria-controls="summaryCheckC">
                 <h4 class="panel-title">出访总结审批</h4>
             </div>
@@ -189,6 +193,7 @@
                 </table>
             </div>
         </div>
+        </c:if>
     </div>
 </div>
 <script src="${ctx}/assets/build/js/jquery.min.js"></script>
@@ -199,49 +204,25 @@
     $('.normal ul').show();
     $('.normal ul .home').addClass('current-page');
     $('#days').text(DateDiff($('#startTime').text(),$('#endTime').text()) + 1);
-    $('#printArea').click(function () {
-        $('#content').printArea();
-    })
-//    var hkey_root,hkey_path,hkey_key;
-//    hkey_root="HKEY_CURRENT_USER";
-//    hkey_path="\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
-//
-//    // 设置网页打印的页眉页脚为空
-//    function pagesetup_null()
-//    {
-//        try{
-//            var RegWsh = new ActiveXObject("WScript.Shell");
-//            hkey_key="header";
-//            RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"");
-//            hkey_key="footer";
-//            RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"");
-//        }catch(e){ alert(e); }
-    }
     $('#print').click(function () {
-//       pagesetup_null();
        window.print();
     });
-//    $('#print').click(function () {
-//        window.print();
-////        $('#content').print({
-////            //Use Global styles
-////            globalStyles: true,
-////            //Add link with attrbute media=print
-////            mediaPrint : false,
-////            //Custom stylesheet
-////            stylesheet : null,
-////            //Print in a hidden iframe
-////            iframe : true,
-////            //Don't print this
-////            noPrintSelector : null,
-////            //Add this at top
-////            prepend : null,
-////            //Add this on bottom
-////            append : null,
-////            //Log to console when printing is done via a deffered callback
-////            deferred: $.Deferred()
-////        });
-//    });
+    //提交审批
+    $('#submitApply').click(function () {
+       $.ajax({
+           url:'${ctx}/user/submitApply/${applyDetailDTO.id}',
+           method:'post',
+           success:function (data) {
+               alert(data.tip);
+               if(data.code == 0){
+                   location.reload();
+               }
+           },
+           error:function () {
+               alert('提交审核错误！');
+           }
+       })
+    });
 </script>
 </body>
 </html>

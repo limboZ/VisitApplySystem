@@ -17,7 +17,8 @@
             <h2>我的申请</h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li>
-                    <button type="button" id="addApply" class="btn btn-info"><i class="fa fa-plus"></i> 创建出访申请</button>
+                    <%--<a href="${ctx}/user/add" class="btn btn-info"><i class="fa fa-plus"></i> 创建出访申请</a>--%>
+                    <button id="addApply" class="btn btn-info"><i class="fa fa-plus"></i> 创建出访申请</button>
                 </li>
             </ul>
             <div class="clearfix"></div>
@@ -49,30 +50,19 @@
                         <td>${item.isFilledReport}</td>
                         <td>${item.reportExamineStatus}</td>
                         <td>
-                            <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#summary">填写</button>
+                            <%--<c:if test="${item.applyExamineStatus eq 'COMPLETE'}">--%>
+                                <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#summary" onclick="pullSummary(${item.id})">填写</button>
+                            <%--</c:if>--%>
+                            <%--<c:if test="${item.applyExamineStatus != 'COMPLETE'}">等待中</c:if>--%>
                         </td>
                         <td>
                             <a href="${ctx}/user/show/${item.id}" class="btn btn-xs btn-primary">详情</a>
-                            <a href="#" class="btn btn-xs btn-success">提交审批</a>
+                            <c:if test="${item.totalStatus eq 'COMPLETE'}">
+                                <a href="#" class="btn btn-xs btn-success">提交审批</a>
+                            </c:if>
                         </td>
                     </tr>
                 </c:forEach>
-                <tr>
-                    <td colspan="8">
-                        <div class="btn-toolbar pull-right">
-                            <div class="btn-group">
-                                <button class="btn btn-info" type="button">1</button>
-                                <button class="btn btn-info active" type="button">2</button>
-                                <button class="btn btn-info" type="button">3</button>
-                                <button class="btn btn-info" type="button">4</button>
-                                <button class="btn btn-info" type="button">5</button>
-                                <button class="btn btn-info" type="button">6</button>
-                                <button class="btn btn-info" type="button">7</button>
-                                <button class="btn btn-info" type="button">8</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
                 <tr>
                     <td colspan="8">
                         <tags:pagination pagination="${pageCommand}" currentPage="${currentPage}" count="${count}" />
@@ -131,6 +121,7 @@
                                 <h2>新增行程</h2>
                                 <div class="ln_solid"></div>
                                 <form class="form-horizontal form-label-left">
+                                    <input type="hidden" id="id" >
                                     <div class="form-group">
                                         <label class="control-label col-sm-2 col-xs-12">日期<span class="required">*</span>
                                         </label>
@@ -184,6 +175,28 @@
     <script src="${ctx}/assets/build/js/sort.summary.js"></script>
     <script>
         $('#add').hide();
+        //拉取该条申请的出访总结
+        function pullSummary(id) {
+            $('#id').val(id);
+            if(!isEmpty(id)){
+                $.ajax({
+                    url:'${ctx}/user/report/' + id,
+                    success:function (data) {
+                        if(data.code == 0){
+                            for(var i=0;i<data.data.reports.length;i++){
+                                var op = '<tr><td class="tDate">' + data.data.reports[i].reportDate + '</td>';
+                                op += '<td class="tTime">' + data.data.reports[i].reportSlot + '</td>';
+                                op += '<td class="tDetail">' + data.data.reports[i].content + '</td>';
+                                op += '<td><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i>移除行程</button></td>';
+                                $('#summaryList').append(op);
+                            }
+                        }else {
+                            alert(data.tip);
+                        }
+                    }
+                });
+            }
+        }
         $('#addApply').click(function () {
             window.location.href = '${ctx}/user/add';
         });
@@ -253,6 +266,7 @@
                 if(summary.length > 1000){
                     alert('出访总结不能超过1000字！');
                 }else {
+                    var id = $('#id').val();
                     var content = {};
                     content.content = summary;
                     content.reportType = 'FINAL';
@@ -269,15 +283,20 @@
                             tripList.push(one);
                         });
 //                        console.log(tripList);
+                        var report = {};
+                        report.applyId = id;
+                        report.reports = tripList;
                         //ajax提交数据
                         $.ajax({
-                            url:'${ctx}/',
+                            url:'${ctx}/user/submitReport',
                             method:'post',
-                            data:{},
+                            data:JSON.stringify(report),
+                            dataype:'json',
+                            contentType:"application/json",
                             success:function (data) {
                                 alert(data.tip);
                                 if(data.code == 0){
-
+                                    location.href = '${ctx}/user/show/' + id;
                                 }
                             },
                             error:function (data) {

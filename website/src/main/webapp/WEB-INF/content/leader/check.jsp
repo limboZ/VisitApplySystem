@@ -10,6 +10,8 @@
 <%@ include file="/WEB-INF/content/taglib.jsp" %>
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=7"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
     <title>领导审批</title>
     <!-- Bootstrap -->
     <link href="${ctx}/assets/build/css/bootstrap.min.css" rel="stylesheet">
@@ -31,6 +33,7 @@
 </head>
 <body style="background: #EDEDED;">
     <div style="margin:30px auto;width:60%;background: white;padding: 20px;">
+        <h3 style="color:red;text-align:center;margin-bottom: 20px;">出访申请审批</h3>
         <table class="table table-th table-bordered">
             <tbody>
             <tr>
@@ -200,6 +203,18 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" id="check"  href="#checkC" aria-expanded="true" aria-controls="checkC">
+                <h4 class="panel-title">审批操作</h4>
+            </div>
+            <div class="panel-body" id="checkC" role="tabpanel" aria-labelledby="check">
+                <label>审核意见：</label>
+                <div>
+                    <textarea style="width:80%;" rows="10"></textarea>
+                </div>
+                <button type="button" class="btn btn-success" style="margin:10px 0;">通过审批</button>
             </div>
         </div>
     </div>
