@@ -70,7 +70,7 @@ public class ManagerController {
         ArrayList<ApplyPreview> applyPreviewList = new ArrayList<>();
         try {
             ApplyCommand applyCommand = new ApplyCommand();
-            applyCommand.setApplyStatus(ApplyStatusEnum.DRAT.name());
+            applyCommand.setApplyStatus(ApplyStatusEnum.DRAFT.name());
             applyCommand.setDataMark("1");
 
             List<TApplyEntity> applyEntityList = applyService.query(applyCommand);
@@ -368,6 +368,16 @@ public class ManagerController {
         return EDIT;
     }
 
+    /**
+     * 将管理员配置的审批流存储到数据库里
+     * @param applyDetailDTO
+     * @param user
+     * @param session
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/saveConfig", method = RequestMethod.POST)
     @ResponseBody
     public Api<Object> saveConfig(@RequestBody ApplyDetailDTO applyDetailDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
@@ -414,6 +424,33 @@ public class ManagerController {
             api.setCode(Api.ERROR_CODE);
             api.setTip(e.getMessage());
         }
+        return api;
+    }
+
+    /**
+     * 当用于点击 提交申请 按钮的时候：
+     * 1、发出OA
+     * 2、将状态改为 PROCESSING
+     * @param applyId
+     * @param session
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/submitConfig/{applyId}", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitConfig(@PathVariable Integer applyId, HttpSession session, HttpServletRequest request, Model model){
+        Api<Object> api = new Api<>();
+        try {
+            TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
+            tApplyEntity.setApplyStatus(ApplyStatusEnum.PROCESSING);
+            tApplyEntity.setId(applyId);
+            applyService.update(tApplyEntity);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+
         return api;
     }
 

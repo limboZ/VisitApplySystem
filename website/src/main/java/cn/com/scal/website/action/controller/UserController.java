@@ -252,13 +252,11 @@ public class UserController {
             }
         } catch (OtherException e) {
             e.printStackTrace();
-            model.addAttribute("applyDetailDTO", applyDetailDTO);
             model.addAttribute("message", message);
             return EDIT;
         }
 
         model.addAttribute("applyDetailDTO", applyDetailDTO);
-        model.addAttribute("message", message);
         return EDIT;
     }
 
@@ -501,10 +499,14 @@ public class UserController {
 //                tReportEntity.setCreatorId(user.getEmpNo());
                 tReportEntity.setCreatorId("007955");
                 tReportEntity.setDataMark("1");
-                tReportEntity.setReportDate(DTFormatUtil.strToDate(DTFormatUtil.getCurrentDate(DTFormatUtil.SDF_YY_MM_DD)));
-//                tReportEntity.setReportDate(new Date());
-                tReportEntity.setReportSlot(ReportSlotEnum.EnumFormText(report.getReportSlot()));
-                tReportEntity.setReportType(ReportEnum.EnumFormText(report.getReportType()));
+                tReportEntity.setReportDate(new Date());
+                tReportEntity.setReportType(ReportEnum.EnumFormName(report.getReportType()));
+                if(StringUtil.isEmpty(report.getReportSlot()) && ReportEnum.TRIP.name().equals(report.getReportType())){
+                    throw new Exception("行程时段不能为空！");
+                }else if(!StringUtil.isEmpty(report.getReportSlot()) && ReportEnum.TRIP.name().equals(report.getReportType())){
+                    tReportEntity.setReportSlot(ReportSlotEnum.EnumFormText(report.getReportSlot()));
+                }
+
 
                 if(tReportEntity.getId() != null){
                     // 如果这个report本来就存在的话，就不更新create_time
@@ -537,8 +539,7 @@ public class UserController {
     public Api<Object> submitApply(@PathVariable Integer applyId, HttpSession session, HttpServletRequest request, Model model){
         Api<Object> api = new Api<>();
         try {
-            TApplyEntity tApplyEntity = new TApplyEntity();
-            tApplyEntity.setId(applyId);
+            TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
             tApplyEntity.setApplyStatus(ApplyStatusEnum.UN_CONFIG);
             applyService.update(tApplyEntity);
         } catch (Exception e) {
