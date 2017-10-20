@@ -1,6 +1,7 @@
 package cn.com.scal.components.domain;
 
-import cn.com.scal.components.enums.ApplyStatusEnum;
+import cn.com.scal.components.enums.ApplyAndReportExamineStatusEnum;
+import cn.com.scal.components.enums.StageEnum;
 import cn.com.scal.components.enums.ExamineResultEnum;
 import cn.com.scal.components.enums.ExamineTypeEnum;
 
@@ -20,7 +21,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
     private String examinePeoplePost;
     private Integer orders;
     private ExamineResultEnum examineResult;    // 领导审批的结果（同意， 不同意）
-    private ApplyStatusEnum result;     // 审批的状态（待审批，审批通过）
+    private ApplyAndReportExamineStatusEnum status;     // 审批的状态（待审批，审批通过）
     private String advise;
     private Date passTime;
     private Timestamp createTime;
@@ -114,14 +115,14 @@ public class TExamineEntity extends Base<TExamineEntity>{
     }
 
     @Basic
-    @Column(name = "result")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    public ApplyStatusEnum getResult() {
-        return result;
+    public ApplyAndReportExamineStatusEnum getStatus() {
+        return status;
     }
 
-    public void setResult(ApplyStatusEnum result) {
-        this.result = result;
+    public void setStatus(ApplyAndReportExamineStatusEnum status) {
+        this.status = status;
     }
 
 
@@ -146,7 +147,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "create_time", updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }
@@ -193,55 +194,5 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     public void setF2(String f2) {
         this.f2 = f2;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TExamineEntity that = (TExamineEntity) o;
-
-        if (id != that.id) return false;
-        if (examineType != that.examineType) return false;
-        if (examinePeopleId != null ? !examinePeopleId.equals(that.examinePeopleId) : that.examinePeopleId != null)
-            return false;
-        if (examinePeopleName != null ? !examinePeopleName.equals(that.examinePeopleName) : that.examinePeopleName != null)
-            return false;
-        if (examinePeoplePost != null ? !examinePeoplePost.equals(that.examinePeoplePost) : that.examinePeoplePost != null)
-            return false;
-        if (orders != null ? !orders.equals(that.orders) : that.orders != null) return false;
-        if (examineResult != null ? !examineResult.equals(that.examineResult) : that.examineResult != null)
-            return false;
-        if (result != that.result) return false;
-        if (advise != null ? !advise.equals(that.advise) : that.advise != null) return false;
-        if (passTime != null ? !passTime.equals(that.passTime) : that.passTime != null) return false;
-        if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
-        if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
-        if (dataMark != null ? !dataMark.equals(that.dataMark) : that.dataMark != null) return false;
-        if (f1 != null ? !f1.equals(that.f1) : that.f1 != null) return false;
-        if (f2 != null ? !f2.equals(that.f2) : that.f2 != null) return false;
-        return applyId != null ? applyId.equals(that.applyId) : that.applyId == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result1 = id;
-        result1 = 31 * result1 + (examineType != null ? examineType.hashCode() : 0);
-        result1 = 31 * result1 + (examinePeopleId != null ? examinePeopleId.hashCode() : 0);
-        result1 = 31 * result1 + (examinePeopleName != null ? examinePeopleName.hashCode() : 0);
-        result1 = 31 * result1 + (examinePeoplePost != null ? examinePeoplePost.hashCode() : 0);
-        result1 = 31 * result1 + (orders != null ? orders.hashCode() : 0);
-        result1 = 31 * result1 + (examineResult != null ? examineResult.hashCode() : 0);
-        result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
-        result1 = 31 * result1 + (advise != null ? advise.hashCode() : 0);
-        result1 = 31 * result1 + (passTime != null ? passTime.hashCode() : 0);
-        result1 = 31 * result1 + (createTime != null ? createTime.hashCode() : 0);
-        result1 = 31 * result1 + (updateTime != null ? updateTime.hashCode() : 0);
-        result1 = 31 * result1 + (dataMark != null ? dataMark.hashCode() : 0);
-        result1 = 31 * result1 + (f1 != null ? f1.hashCode() : 0);
-        result1 = 31 * result1 + (f2 != null ? f2.hashCode() : 0);
-        result1 = 31 * result1 + (applyId != null ? applyId.hashCode() : 0);
-        return result1;
     }
 }

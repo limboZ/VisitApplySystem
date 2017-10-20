@@ -1,6 +1,9 @@
 package cn.com.scal.components.domain;
 
-import cn.com.scal.components.enums.ApplyStatusEnum;
+import cn.com.scal.components.enums.ApplyAndReportExamineStatusEnum;
+import cn.com.scal.components.enums.ApplyAndReportTotalExamineStatusEnum;
+import cn.com.scal.components.enums.ReportFillStatusEnum;
+import cn.com.scal.components.enums.StageEnum;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -21,7 +24,10 @@ public class TApplyEntity extends Base<TApplyEntity>{
     private Date startTime;
     private Date endTime;
     private String reason;
-    private ApplyStatusEnum applyStatus;  // 这条申请总的状态(草稿，待审批，审批中，审批通过)
+    private StageEnum stage;  // 这条记录所处的阶段(未提交，申请审批，出访总结，总结审批，完成)
+    private ApplyAndReportTotalExamineStatusEnum applyStatus;
+    private ReportFillStatusEnum reportFillStatus;
+    private ApplyAndReportTotalExamineStatusEnum reportStatus;
     private Timestamp createTime;
     private Timestamp updateTime;
     private String dataMark;
@@ -161,18 +167,51 @@ public class TApplyEntity extends Base<TApplyEntity>{
     }
 
     @Basic
+    @Column(name = "stage")
+    @Enumerated(EnumType.STRING)
+    public StageEnum getStage() {
+        return stage;
+    }
+
+    public void setStage(StageEnum stage) {
+        this.stage = stage;
+    }
+
+    @Basic
     @Column(name = "apply_status")
     @Enumerated(EnumType.STRING)
-    public ApplyStatusEnum getApplyStatus() {
+    public ApplyAndReportTotalExamineStatusEnum getApplyStatus() {
         return applyStatus;
     }
 
-    public void setApplyStatus(ApplyStatusEnum applyStatus) {
+    public void setApplyStatus(ApplyAndReportTotalExamineStatusEnum applyStatus) {
         this.applyStatus = applyStatus;
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "report_fill_status")
+    @Enumerated(EnumType.STRING)
+    public ReportFillStatusEnum getReportFillStatus() {
+        return reportFillStatus;
+    }
+
+    public void setReportFillStatus(ReportFillStatusEnum reportFillStatus) {
+        this.reportFillStatus = reportFillStatus;
+    }
+
+    @Basic
+    @Column(name = "report_status")
+    @Enumerated(EnumType.STRING)
+    public ApplyAndReportTotalExamineStatusEnum getReportStatus() {
+        return reportStatus;
+    }
+
+    public void setReportStatus(ApplyAndReportTotalExamineStatusEnum reportStatus) {
+        this.reportStatus = reportStatus;
+    }
+
+    @Basic
+    @Column(name = "create_time", updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }
@@ -236,7 +275,7 @@ public class TApplyEntity extends Base<TApplyEntity>{
         if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null) return false;
         if (endTime != null ? !endTime.equals(that.endTime) : that.endTime != null) return false;
         if (reason != null ? !reason.equals(that.reason) : that.reason != null) return false;
-        if (applyStatus != null ? !applyStatus.equals(that.applyStatus) : that.applyStatus != null) return false;
+        if (stage != null ? !stage.equals(that.stage) : that.stage != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
         if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
         if (dataMark != null ? !dataMark.equals(that.dataMark) : that.dataMark != null) return false;
@@ -255,7 +294,7 @@ public class TApplyEntity extends Base<TApplyEntity>{
         result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
         result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
         result = 31 * result + (reason != null ? reason.hashCode() : 0);
-        result = 31 * result + (applyStatus != null ? applyStatus.hashCode() : 0);
+        result = 31 * result + (stage != null ? stage.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
         result = 31 * result + (dataMark != null ? dataMark.hashCode() : 0);

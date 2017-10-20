@@ -72,7 +72,7 @@ public class TAdministratorEntity extends Base<TAdministratorEntity>{
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "create_time", updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }

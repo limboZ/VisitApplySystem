@@ -41,7 +41,7 @@ public class TCommissionTypeEnumEntity extends Base<TCommissionTypeEnumEntity>{
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "create_time", updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }

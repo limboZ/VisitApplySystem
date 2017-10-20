@@ -98,7 +98,7 @@ public class TReportEntity extends Base<TReportEntity>{
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "create_time", updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }

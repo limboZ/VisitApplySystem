@@ -8,19 +8,14 @@ import cn.com.scal.components.dto.TApplyDTO;
 import cn.com.scal.components.dto.TReportDTO;
 import cn.com.scal.components.dto.front.ApplyDTO;
 import cn.com.scal.components.dto.front.ApplyDetailDTO;
-import cn.com.scal.components.dto.front.ApplyPreviewListDTO;
 import cn.com.scal.components.dto.front.ReportDTO;
 import cn.com.scal.components.dto.front.domain.*;
-import cn.com.scal.components.enums.ApplyStatusEnum;
-import cn.com.scal.components.enums.ExamineTypeEnum;
-import cn.com.scal.components.enums.ReportEnum;
-import cn.com.scal.components.enums.ReportSlotEnum;
+import cn.com.scal.components.enums.*;
 import cn.com.scal.components.exception.OtherException;
 import cn.com.scal.components.service.IDestinationService;
 import cn.com.scal.components.service.IReportService;
 import cn.com.scal.components.service.ITeamService;
 import cn.com.scal.components.service.impl.CommonServiceImpl;
-import cn.com.scal.components.utils.DTFormatUtil;
 import cn.com.scal.components.utils.DateUtil;
 import cn.com.scal.components.utils.Pagination;
 import cn.com.scal.components.utils.StringUtil;
@@ -81,6 +76,7 @@ public class UserController {
         String currPage = request.getParameter("currentPage");
         currentPage = StringUtil.isEmpty(currPage) ? 1 : Integer.valueOf(currPage);
         ArrayList<ApplyPreview> applyPreviewList = new ArrayList<>();
+        String message;
         try {
             ApplyCommand applyCommand = new ApplyCommand();
             applyCommand.setApplyUserId(user.getEmpNo());
@@ -95,52 +91,19 @@ public class UserController {
                 ApplyPreview applyPreview = new ApplyPreview();
 
                 applyPreview.setId(applyEntity.getId());
-                applyPreview.setTotalStatus(applyEntity.getApplyStatus().name());
+                applyPreview.setTotalStatus(applyEntity.getStage().name());
                 applyPreview.setApplyCreateTime(applyEntity.getCreateTime());
                 applyPreview.setTeamName(applyEntity.getTeamName());
-
-                // 这里是在生成申请审批进度和总结审批进度
-                String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                if(ApplyStatusEnum.DRAFT.name().equals(applyEntity.getApplyStatus().name())){
-                    // 如果这个申请的总状态是草稿状态，则这里显示为""
-                    applyExamineStatus = "";
-                    reportExamineStatus = "";
-                }
-                for (TExamineEntity entity : applyEntity.getExamineEntities()) {
-                    ApplyStatusEnum result = entity.getResult();
-                    if (ExamineTypeEnum.APPLY.name().equals(entity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
-                        // 如果其中一个是待审批，那么整个申请审批进度就是审批中
-                        applyExamineStatus = ApplyStatusEnum.PROCESSING.name();
-                        continue;
-                    }
-                    if (ExamineTypeEnum.REPORT.name().equals(entity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
-                        reportExamineStatus = ApplyStatusEnum.PROCESSING.name();
-                        continue;
-                    }
-                }
-
-                // 生成报告填写进度
-                String isFilledReport = "填写中";
-                if(applyEntity.getReportEntities().size() == 0){
-                    isFilledReport = "未填写";
-                }
-                for(TReportEntity reportEntity: applyEntity.getReportEntities()){
-                    if(ReportEnum.FINAL.equals(reportEntity.getReportType().name())){
-                        isFilledReport = "已填写";
-                    }
-                }
-
-                applyPreview.setIsFilledReport(isFilledReport);
-                applyPreview.setApplyExamineStatus(applyExamineStatus);
-                applyPreview.setReportExamineStatus(reportExamineStatus);
+                applyPreview.setIsFilledReport(applyEntity.getReportFillStatus().getText());
+                applyPreview.setApplyExamineStatus(applyEntity.getApplyStatus().getText());
+                applyPreview.setReportExamineStatus(applyEntity.getReportStatus().getText());
 
                 applyPreviewList.add(applyPreview);
             }
 
         } catch (OtherException e) {
-            e.printStackTrace();
-            model.addAttribute("applyPreviewListDTO", applyPreviewList);
+            message = e.getMessage();
+            model.addAttribute("message", message);
             return LIST;
         }
 
@@ -169,14 +132,12 @@ public class UserController {
      * @param applyDTO
      * @param user
      * @param session
-     * @param request
-     * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> create(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> create(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
 //        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
@@ -192,64 +153,59 @@ public class UserController {
     /**
      * 从某条申请的详细信息页面编辑出访申请信息时需要的信息
      * @param applyId
-     * @param request
      * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping("/edit/{applyId}")
-    public String edit(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
+    public String edit(@PathVariable Integer applyId, Model model) throws Exception {
         ApplyDetailDTO applyDetailDTO = null;
         String message = null;
         try {
             applyDetailDTO = new ApplyDetailDTO();
 
-            ApplyCommand applyCommand = new ApplyCommand();
-            applyCommand.setApplyId(applyId);
-            applyCommand.setDataMark("1");
-            List<TApplyEntity> applyEntities = applyService.query(applyCommand);
+            TApplyEntity entity = applyService.load(TApplyEntity.class, applyId);
 
-            for (TApplyEntity entity : applyEntities) {
-                message = entity.getApplyStatus().name();   // 如果总的状态是草稿，运行用户修改，其他的不允许修改
+            message = entity.getStage().name();
 
-                applyDetailDTO.setId(entity.getId());
-                applyDetailDTO.setTotalStatus(entity.getApplyStatus().name());
-                applyDetailDTO.setTeamName(entity.getTeamName());
-                applyDetailDTO.setApplyUserName(entity.getApplyUserName());
-                applyDetailDTO.setCommissionType(entity.getCommissionType());
-                applyDetailDTO.setStartTime(entity.getStartTime());
-                applyDetailDTO.setEndTime(entity.getEndTime());
-                applyDetailDTO.setReason(entity.getReason());
+            applyDetailDTO.setId(entity.getId());
+            applyDetailDTO.setTotalStatus(entity.getStage().name());
+            applyDetailDTO.setTeamName(entity.getTeamName());
+            applyDetailDTO.setApplyUserName(entity.getApplyUserName());
+            applyDetailDTO.setCommissionType(entity.getCommissionType());
+            applyDetailDTO.setStartTime(entity.getStartTime());
+            applyDetailDTO.setEndTime(entity.getEndTime());
+            applyDetailDTO.setReason(entity.getReason());
 
-                // 将目的地和队员信息取出
-                Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
-                for (int i = 0; i < entity.getDestinationEntities().size(); i++) {
-                    TDestinationEntity tDestinationEntity = entity.getDestinationEntities().get(i);
-                    Destination destination = new Destination();
+            // 将目的地和队员信息取出
+            Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
+            for (int i = 0; i < entity.getDestinationEntities().size(); i++) {
+                TDestinationEntity tDestinationEntity = entity.getDestinationEntities().get(i);
+                Destination destination = new Destination();
 
-                    destination.setId(tDestinationEntity.getId());
-                    destination.setDestination(tDestinationEntity.getDestination());
-                    destination.setNation(tDestinationEntity.getNation());
+                destination.setId(tDestinationEntity.getId());
+                destination.setDestination(tDestinationEntity.getDestination());
+                destination.setNation(tDestinationEntity.getNation());
 
-                    destinations[i] = destination;
-                }
-                TeamMate[] teamMates = new TeamMate[entity.gettTeamEntities().size()];
-                for (int i = 0; i < entity.gettTeamEntities().size(); i++) {
-                    TTeamEntity tTeamEntity = entity.gettTeamEntities().get(i);
-                    TeamMate teamMate = new TeamMate();
-                    teamMate.setId(tTeamEntity.getId());
-                    teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
-                    teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
-                    teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
-                    teamMate.setEmployeeDept(tTeamEntity.getEmployeePost());
-
-                    teamMates[i] = teamMate;
-                }
-
-
-                applyDetailDTO.setDestinations(destinations);
-                applyDetailDTO.setTeamMates(teamMates);
+                destinations[i] = destination;
             }
+            TeamMate[] teamMates = new TeamMate[entity.gettTeamEntities().size()];
+            for (int i = 0; i < entity.gettTeamEntities().size(); i++) {
+                TTeamEntity tTeamEntity = entity.gettTeamEntities().get(i);
+                TeamMate teamMate = new TeamMate();
+                teamMate.setId(tTeamEntity.getId());
+                teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
+                teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
+                teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
+                teamMate.setEmployeeDept(tTeamEntity.getEmployeePost());
+
+                teamMates[i] = teamMate;
+            }
+
+
+            applyDetailDTO.setDestinations(destinations);
+            applyDetailDTO.setTeamMates(teamMates);
+
         } catch (OtherException e) {
             e.printStackTrace();
             model.addAttribute("message", message);
@@ -263,121 +219,95 @@ public class UserController {
     /**
      * 显示某一条申请的详细信息
      * @param applyId
-     * @param request
      * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping("/show/{applyId}")
-    public String show(@PathVariable Integer applyId, HttpServletRequest request, Model model) throws Exception {
+    public String show(@PathVariable Integer applyId, Model model) throws Exception {
         ApplyDetailDTO applyDetailDTO = null;
+        String message;
         try {
             applyDetailDTO = new ApplyDetailDTO();
-
-            ApplyCommand applyCommand = new ApplyCommand();
-            applyCommand.setApplyId(applyId);
-            applyCommand.setDataMark("1");
-            List<TApplyEntity> applyEntities = applyService.query(applyCommand);
-
-            for (TApplyEntity entity : applyEntities) {
-                applyDetailDTO.setId(entity.getId());
-                applyDetailDTO.setTeamName(entity.getTeamName());
-                applyDetailDTO.setApplyUserName(entity.getApplyUserName());
-                applyDetailDTO.setCommissionType(entity.getCommissionType());
-                applyDetailDTO.setStartTime(entity.getStartTime());
-                applyDetailDTO.setEndTime(entity.getEndTime());
-                applyDetailDTO.setReason(entity.getReason());
-
-                // 这里是在生成申请审批进度和总结审批进度
-                String applyExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                String reportExamineStatus = ApplyStatusEnum.COMPLETE.name();
-                if(ApplyStatusEnum.DRAFT.name().equals(entity.getApplyStatus().name())){
-                    // 如果这个申请的总状态是草稿状态，则这里显示为""
-                    applyExamineStatus = "未提交";
-                    reportExamineStatus = "未提交";
-                }
-                for (TExamineEntity examineEntity : entity.getExamineEntities()) {
-                    ApplyStatusEnum result = examineEntity.getResult();
-                    if (ExamineTypeEnum.APPLY.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
-                        // 如果其中一个是待审批，那么整个申请审批进度就是审批中
-                        applyExamineStatus = ApplyStatusEnum.PROCESSING.name();
-                        continue;
-                    }
-                    if (ExamineTypeEnum.REPORT.name().equals(examineEntity.getExamineType().name()) && ApplyStatusEnum.WAITING.equals(result.name())) {
-                        reportExamineStatus = ApplyStatusEnum.PROCESSING.name();
-                        continue;
-                    }
-                }
-
-                applyDetailDTO.setApplyExamineStatus(applyExamineStatus);
-                applyDetailDTO.setReportExamineStatus(reportExamineStatus);
-
-                // 将目的地和队员信息取出
-                Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
-                for (int i = 0; i < entity.getDestinationEntities().size(); i++) {
-                    TDestinationEntity tDestinationEntity = entity.getDestinationEntities().get(i);
-                    Destination destination = new Destination();
-
-                    destination.setId(tDestinationEntity.getId());
-                    destination.setDestination(tDestinationEntity.getDestination());
-                    destination.setNation(tDestinationEntity.getNation());
-
-                    destinations[i] = destination;
-                }
-                TeamMate[] teamMates = new TeamMate[entity.gettTeamEntities().size()];
-                for (int i = 0; i < entity.gettTeamEntities().size(); i++) {
-                    TTeamEntity tTeamEntity = entity.gettTeamEntities().get(i);
-                    TeamMate teamMate = new TeamMate();
-                    teamMate.setId(tTeamEntity.getId());
-                    teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
-                    teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
-                    teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
-                    teamMate.setEmployeePost(tTeamEntity.getEmployeePost());
-
-                    teamMates[i] = teamMate;
-                }
-
-                ArrayList<ExamineProgress> applyExamineProgresses = new ArrayList<>();
-                ArrayList<ExamineProgress> reportExamineProgresses = new ArrayList<>();
-                for (int i = 0; i < entity.getExamineEntities().size(); i++) {
-                    TExamineEntity examineEntity = entity.getExamineEntities().get(i);
-                    ExamineProgress progress = new ExamineProgress();
-                    progress.setId(examineEntity.getId());
-                    progress.setAdvise(examineEntity.getAdvise());
-                    progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
-                    progress.setPassTime(examineEntity.getPassTime());
-                    progress.setRet(examineEntity.getResult().name());
-                    progress.setResult(examineEntity.getExamineResult().name());
-                    if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.APPLY.name())) {
-                        applyExamineProgresses.add(progress);
-                    } else if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.REPORT.name())) {
-                        reportExamineProgresses.add(progress);
-                    }
-                }
-
-                Report[] reports = new Report[entity.getReportEntities().size()];
-                for (int i = 0; i < entity.getReportEntities().size(); i++) {
-                    TReportEntity tReportEntity = entity.getReportEntities().get(i);
-                    Report report = new Report();
-                    report.setId(tReportEntity.getId());
-                    report.setContent(tReportEntity.getContent());
-                    report.setReportDate(tReportEntity.getReportDate());
-                    report.setReportSlot(tReportEntity.getReportSlot().name());
-                    report.setReportType(tReportEntity.getReportType().name());
-
-                    reports[i] = report;
-                }
+            TApplyEntity entity = applyService.load(TApplyEntity.class, applyId);
 
 
-                applyDetailDTO.setDestinations(destinations);
-                applyDetailDTO.setTeamMates(teamMates);
-                applyDetailDTO.setApplyExamineProgresses(applyExamineProgresses.toArray(new ExamineProgress[applyExamineProgresses.size()]));
-                applyDetailDTO.setApplyExamineProgresses(reportExamineProgresses.toArray(new ExamineProgress[reportExamineProgresses.size()]));
-                applyDetailDTO.setReports(reports);
+            applyDetailDTO.setId(entity.getId());
+            applyDetailDTO.setTeamName(entity.getTeamName());
+            applyDetailDTO.setApplyUserName(entity.getApplyUserName());
+            applyDetailDTO.setCommissionType(entity.getCommissionType());
+            applyDetailDTO.setStartTime(entity.getStartTime());
+            applyDetailDTO.setEndTime(entity.getEndTime());
+            applyDetailDTO.setReason(entity.getReason());
+            applyDetailDTO.setApplyExamineStatus(entity.getApplyStatus().getText());
+            applyDetailDTO.setReportExamineStatus(entity.getReportStatus().getText());
+
+            // 将目的地和队员信息取出
+            Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
+            for (int i = 0; i < entity.getDestinationEntities().size(); i++) {
+                TDestinationEntity tDestinationEntity = entity.getDestinationEntities().get(i);
+                Destination destination = new Destination();
+
+                destination.setId(tDestinationEntity.getId());
+                destination.setDestination(tDestinationEntity.getDestination());
+                destination.setNation(tDestinationEntity.getNation());
+
+                destinations[i] = destination;
             }
+            TeamMate[] teamMates = new TeamMate[entity.gettTeamEntities().size()];
+            for (int i = 0; i < entity.gettTeamEntities().size(); i++) {
+                TTeamEntity tTeamEntity = entity.gettTeamEntities().get(i);
+                TeamMate teamMate = new TeamMate();
+                teamMate.setId(tTeamEntity.getId());
+                teamMate.setEmployeeId(tTeamEntity.getEmployeeId());
+                teamMate.setEmployeeName(tTeamEntity.getEmployeeName());
+                teamMate.setEmployeeDept(tTeamEntity.getEmployeeDept());
+                teamMate.setEmployeePost(tTeamEntity.getEmployeePost());
+
+                teamMates[i] = teamMate;
+            }
+
+            ArrayList<ExamineProgress> applyExamineProgresses = new ArrayList<>();
+            ArrayList<ExamineProgress> reportExamineProgresses = new ArrayList<>();
+            for (int i = 0; i < entity.getExamineEntities().size(); i++) {
+                TExamineEntity examineEntity = entity.getExamineEntities().get(i);
+                ExamineProgress progress = new ExamineProgress();
+                progress.setId(examineEntity.getId());
+                progress.setAdvise(examineEntity.getAdvise());
+                progress.setExaminePeopleName(examineEntity.getExaminePeopleName());
+                progress.setPassTime(examineEntity.getPassTime());
+                progress.setRet(examineEntity.getStatus().getText());
+                progress.setResult(examineEntity.getExamineResult().getText());
+                if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.APPLY.name())) {
+                    applyExamineProgresses.add(progress);
+                } else if (examineEntity.getExamineType().name().equals(ExamineTypeEnum.REPORT.name())) {
+                    reportExamineProgresses.add(progress);
+                }
+            }
+
+            Report[] reports = new Report[entity.getReportEntities().size()];
+            for (int i = 0; i < entity.getReportEntities().size(); i++) {
+                TReportEntity tReportEntity = entity.getReportEntities().get(i);
+                Report report = new Report();
+                report.setId(tReportEntity.getId());
+                report.setContent(tReportEntity.getContent());
+                report.setReportDate(tReportEntity.getReportDate());
+                report.setReportSlot(tReportEntity.getReportSlot().name());
+                report.setReportType(tReportEntity.getReportType().name());
+
+                reports[i] = report;
+            }
+
+
+            applyDetailDTO.setDestinations(destinations);
+            applyDetailDTO.setTeamMates(teamMates);
+            applyDetailDTO.setApplyExamineProgresses(applyExamineProgresses.toArray(new ExamineProgress[applyExamineProgresses.size()]));
+            applyDetailDTO.setApplyExamineProgresses(reportExamineProgresses.toArray(new ExamineProgress[reportExamineProgresses.size()]));
+            applyDetailDTO.setReports(reports);
+
         } catch (OtherException e) {
-            e.printStackTrace();
-            model.addAttribute("applyDetailDTO", applyDetailDTO);
+            message = e.getMessage();
+            model.addAttribute("message", message);
             return SHOW;
         }
 
@@ -389,20 +319,20 @@ public class UserController {
      * 提交从详细页面进行编辑后的结果
      * @param applyDTO
      * @param session
-     * @param request
-     * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/submitEdit", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
 //        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
             TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, currentTime);
+            tApplyEntity.setStage(StageEnum.APPLY_EXAMINE);
+            tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.WAITING_CONFIG);
 
             for(TDestinationEntity entity : tApplyEntity.getDestinationEntities()){
                 // 如果这条记录本身就存在于数据库中，那么就不要生成create_time
@@ -432,12 +362,11 @@ public class UserController {
     /**
      * 跳转到新增report页面
      * @param applyId
-     * @param session
      * @return
      */
     @RequestMapping(value = "/report/{applyId}")
     @ResponseBody
-    public Api<Object> directToReport(@PathVariable Integer applyId, HttpSession session){
+    public Api<Object> directToReport(@PathVariable Integer applyId){
         Api<Object> api = new Api<>();
         ReportDTO reportDTO = new ReportDTO();
 
@@ -473,24 +402,23 @@ public class UserController {
      * 提交新增的report
      * @param reportDTO
      * @param session
-     * @param request
-     * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/submitReport", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveReport", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitReport(@RequestBody ReportDTO reportDTO, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> saveReport(@RequestBody ReportDTO reportDTO, CurrentUser user, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
-        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         Timestamp currentTime = DateUtil.getCurrentTime();
 
         try {
             Integer applyId = reportDTO.getApplyId();
-            TApplyEntity applyEntity = new TApplyEntity();
-            applyEntity.setId(applyId);
+            TApplyEntity applyEntity = applyService.load(TApplyEntity.class, applyId);
+            applyEntity.setReportFillStatus(ReportFillStatusEnum.UN_SUBMIT);
 
             Report[] reports = reportDTO.getReports();
+            ArrayList<TReportEntity> tReportEntities = new ArrayList<>();
             for (Report report : reports) {
                 TReportEntity tReportEntity = new TReportEntity();
                 tReportEntity.setId(report.getId());
@@ -506,18 +434,40 @@ public class UserController {
                 }else if(!StringUtil.isEmpty(report.getReportSlot()) && ReportEnum.TRIP.name().equals(report.getReportType())){
                     tReportEntity.setReportSlot(ReportSlotEnum.EnumFormText(report.getReportSlot()));
                 }
-
-
-                if(tReportEntity.getId() != null){
-                    // 如果这个report本来就存在的话，就不更新create_time
-                    tReportEntity.setCreateTime(currentTime);
-                }
+                tReportEntity.setCreateTime(currentTime);
                 tReportEntity.setUpdateTime(currentTime);
-
-                reportService.createOrUpdate(tReportEntity);
+                tReportEntities.add(tReportEntity);
             }
+            applyEntity.setReportEntities(tReportEntities);
+            applyService.create(applyEntity);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
 
-            myReportService.delete(applyId, currentTime);
+        return api;
+    }
+
+    /**
+     * 提交新增的report
+     * @param reportDTO
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/submitReport", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitReport(@RequestBody ReportDTO reportDTO, CurrentUser user, HttpSession session) throws Exception {
+        Api<Object> api = new Api<>();
+//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        Timestamp currentTime = DateUtil.getCurrentTime();
+
+        try {
+            Integer applyId = reportDTO.getApplyId();
+            TApplyEntity applyEntity = applyService.load(TApplyEntity.class, applyId);
+            applyEntity.setReportFillStatus(ReportFillStatusEnum.SUBMIT);
+            applyEntity.setReportStatus(ApplyAndReportTotalExamineStatusEnum.WAITING_CONFIG);
+            applyService.update(applyEntity);
         } catch (Exception e) {
             api.setCode(Api.ERROR_CODE);
             api.setTip(e.getMessage());
@@ -529,18 +479,16 @@ public class UserController {
     /**
      * 提交申请，就是将此条申请又草稿状态变成un_config状态
      * @param applyId
-     * @param session
-     * @param request
-     * @param model
      * @return
      */
     @RequestMapping(value = "/submitApply/{applyId}", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitApply(@PathVariable Integer applyId, HttpSession session, HttpServletRequest request, Model model){
+    public Api<Object> submitApply(@PathVariable Integer applyId){
         Api<Object> api = new Api<>();
         try {
             TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
-            tApplyEntity.setApplyStatus(ApplyStatusEnum.UN_CONFIG);
+            tApplyEntity.setStage(StageEnum.APPLY_EXAMINE);
+            tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.WAITING_CONFIG);
             applyService.update(tApplyEntity);
         } catch (Exception e) {
             api.setCode(Api.ERROR_CODE);
@@ -575,7 +523,7 @@ public class UserController {
         tApplyEntity.setStartTime(applyDTO.getStartTime());
         tApplyEntity.setEndTime(applyDTO.getEndTime());
         tApplyEntity.setReason(applyDTO.getReason());
-        tApplyEntity.setApplyStatus(ApplyStatusEnum.DRAFT);
+        tApplyEntity.setStage(StageEnum.DRAFT);
         tApplyEntity.setCreateTime(currentTime);
         tApplyEntity.setUpdateTime(currentTime);
         tApplyEntity.setDataMark("1");

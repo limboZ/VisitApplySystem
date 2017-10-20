@@ -1,7 +1,7 @@
 package cn.com.scal.components.dto;
 
 import cn.com.scal.components.domain.TApplyEntity;
-import cn.com.scal.components.enums.ApplyStatusEnum;
+import cn.com.scal.components.enums.StageEnum;
 
 import java.util.Date;
 import java.sql.Timestamp;
@@ -14,7 +14,7 @@ public class TApplyDTO extends BaseDTO<TApplyDTO, TApplyEntity> {
     private Date startTime;
     private Date endTime;
     private String reason;
-    private ApplyStatusEnum applyStatus;
+    private StageEnum applyStatus;
     private Timestamp createTime;
     private Timestamp updateTime;
     private String dataMark;
@@ -77,11 +77,11 @@ public class TApplyDTO extends BaseDTO<TApplyDTO, TApplyEntity> {
         this.reason = reason;
     }
 
-    public ApplyStatusEnum getApplyStatus() {
+    public StageEnum getApplyStatus() {
         return applyStatus;
     }
 
-    public void setApplyStatus(ApplyStatusEnum applyStatus) {
+    public void setApplyStatus(StageEnum applyStatus) {
         this.applyStatus = applyStatus;
     }
 

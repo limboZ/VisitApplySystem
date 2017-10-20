@@ -14,9 +14,9 @@ public class ExamineServiceImpl implements IExamineService {
     IExamineDao examineDao;
 
     @Override
-    public void delete(int applyId, Timestamp currentTime) {
+    public void delete(int applyId, Timestamp currentTime, String examineType) {
         String timestamp = DTFormatUtil.convertTimestampToStr(currentTime);
-        String sql = String.format("update t_examine set data_mark='0' where apply_id='%s' and update_time < '%s'", applyId, timestamp);
+        String sql = String.format("update t_examine set data_mark='0' where apply_id='%s' and examine_type='%s' and update_time < '%s'", applyId, examineType, timestamp);
         examineDao.delete(sql);
     }
 }

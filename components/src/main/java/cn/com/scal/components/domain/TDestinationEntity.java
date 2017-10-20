@@ -85,7 +85,7 @@ public class TDestinationEntity extends Base<TDestinationEntity>{
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "create_time", updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }

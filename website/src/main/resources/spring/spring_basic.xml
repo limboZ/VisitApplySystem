@@ -23,7 +23,7 @@
     </context:component-scan>
 
     <context:property-placeholder
-            location="classpath*:env/database.properties,classpath*:env/log4j.properties,classpath*:env/spy.properties"
+            location="classpath*:env/database.properties,classpath*:env/log4j.properties,classpath*:env/spy.properties,classpath*:env/webservice.properties"
             ignore-unresolvable="true"/>
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
