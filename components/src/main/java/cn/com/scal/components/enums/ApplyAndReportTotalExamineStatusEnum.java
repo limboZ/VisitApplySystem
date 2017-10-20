@@ -1,7 +1,7 @@
 package cn.com.scal.components.enums;
 
 public enum ApplyAndReportTotalExamineStatusEnum {
-    WAITING_CONFIG("待配置"), CONFIGURED_NOT_SUBMIT("配置未提交"), PROCESSING("审批中"), COMPLETE("审批通过");
+    NO("初始值"), WAITING_CONFIG("待配置"), CONFIGURED_NOT_SUBMIT("配置未提交"), PROCESSING("审批中"), COMPLETE("审批通过");
     private String text;
     ApplyAndReportTotalExamineStatusEnum(String text){
         this.text = text;

@@ -6,4 +6,5 @@ import cn.com.scal.components.webservice.WFInterfaceEntity;
 public interface IOAService {
     TeamMate getInfoFromOA(String OANum);
     boolean createOAItem(WFInterfaceEntity entity);
+    boolean completeOAItem(String examineId);
 }

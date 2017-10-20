@@ -5,6 +5,7 @@ public class ExaminePeople {
     private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
+    private String examinePeopleDept;
     private Integer orders;
 
     public ExaminePeople() {
@@ -40,6 +41,14 @@ public class ExaminePeople {
 
     public void setExaminePeoplePost(String examinePeoplePost) {
         this.examinePeoplePost = examinePeoplePost;
+    }
+
+    public String getExaminePeopleDept() {
+        return examinePeopleDept;
+    }
+
+    public void setExaminePeopleDept(String examinePeopleDept) {
+        this.examinePeopleDept = examinePeopleDept;
     }
 
     public Integer getOrders() {

@@ -1,7 +1,7 @@
 package cn.com.scal.components.enums;
 
 public enum ReportFillStatusEnum {
-    UN_SUBMIT("未提交"), SUBMIT("已提交");
+    NO("初始值"), UN_SUBMIT("未提交"), SUBMIT("已提交");
     private String text;
     ReportFillStatusEnum(String text){
         this.text = text;

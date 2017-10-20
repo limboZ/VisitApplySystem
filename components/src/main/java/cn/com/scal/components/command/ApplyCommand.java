@@ -6,7 +6,6 @@ import cn.com.scal.components.utils.StringUtil;
 
 public class ApplyCommand extends BaseCommand<TApplyEntity, TApplyDTO>{
     private String applyUserId;
-    private Integer applyId;
     private String stage;
     private String dataMark;
 
@@ -19,14 +18,6 @@ public class ApplyCommand extends BaseCommand<TApplyEntity, TApplyDTO>{
 
     public void setApplyUserId(String applyUserId) {
         this.applyUserId = applyUserId;
-    }
-
-    public Integer getApplyId() {
-        return applyId;
-    }
-
-    public void setApplyId(Integer applyId) {
-        this.applyId = applyId;
     }
 
     public String getStage() {
@@ -51,10 +42,6 @@ public class ApplyCommand extends BaseCommand<TApplyEntity, TApplyDTO>{
         if(!StringUtil.isEmpty(applyUserId)){
             queryHql.append(" and ").append("apply_user_id = :applyUserId");
             queryMap.put("applyUserId", applyUserId);
-        }
-        if(applyId != null){
-            queryHql.append(" and ").append("id = :applyId");
-            queryMap.put("applyId", applyId);
         }
         if(!StringUtil.isEmpty(stage)){
             queryHql.append(" and ").append("apply_status != :stage");

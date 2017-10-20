@@ -41,8 +41,9 @@ public class CxfUtils {
         String address = "http://172.31.48.32/wfi/OaWfWebService.asmx?wsdl";
         OaWfWebServiceSoap oaWfWebServiceSoap = (OaWfWebServiceSoap) CxfUtils.createInterface(address, OaWfWebServiceSoap.class);
         WFInterfaceEntity entity = new WFInterfaceEntity();
-        entity.setInstanceID("vas120171018abcd");
-        entity.setStepID("vas120171018abcd");
+//        entity.setInstanceID("vas120171018abcd");
+        entity.setInstanceID("vas12345");
+        entity.setStepID("vas12345");
         entity.setProjectCode("VAS");
         entity.setProjectName("出访申请审批系统");
         entity.setInstanceTitle("测试OA接口");
@@ -56,7 +57,7 @@ public class CxfUtils {
         entity.setCreatID("015073");
         entity.setCreatName("李程鹏");
         entity.setCreatDeptName("信息服务部");
-        entity.setCreatPhone("15680069632");
+//        entity.setCreatPhone("15680069632");
         entity.setCreatTime("2017-10-17 15:12:20");
         String s = oaWfWebServiceSoap.insertNewWFInstanceByEntity("VAS", "VAS", "1234", entity);
         System.out.println(s);

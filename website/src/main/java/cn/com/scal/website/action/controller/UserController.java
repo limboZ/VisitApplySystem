@@ -142,6 +142,9 @@ public class UserController {
 //        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, DateUtil.getCurrentTime());
+            tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.NO);
+            tApplyEntity.setReportStatus(ApplyAndReportTotalExamineStatusEnum.NO);
+            tApplyEntity.setReportFillStatus(ReportFillStatusEnum.NO);
             applyService.create(tApplyEntity);
         } catch (OtherException e) {
             api.setCode(Api.ERROR_CODE);
@@ -334,18 +337,6 @@ public class UserController {
             tApplyEntity.setStage(StageEnum.APPLY_EXAMINE);
             tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.WAITING_CONFIG);
 
-            for(TDestinationEntity entity : tApplyEntity.getDestinationEntities()){
-                // 如果这条记录本身就存在于数据库中，那么就不要生成create_time
-                if(entity.getId() != null){
-                    entity.setCreateTime(null);
-                }
-            }
-            for(TTeamEntity entity : tApplyEntity.gettTeamEntities()){
-                // 如果这条记录本身就存在于数据库中，那么就不要生成create_time
-                if(entity.getId() != null){
-                    entity.setCreateTime(null);
-                }
-            }
             applyService.createOrUpdate(tApplyEntity);
 
             // 将要删除的申请的destination和teammates的datamark置为0

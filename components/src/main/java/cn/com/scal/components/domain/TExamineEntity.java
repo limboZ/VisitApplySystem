@@ -19,6 +19,7 @@ public class TExamineEntity extends Base<TExamineEntity>{
     private String examinePeopleId;
     private String examinePeopleName;
     private String examinePeoplePost;
+    private String examineDept;
     private Integer orders;
     private ExamineResultEnum examineResult;    // 领导审批的结果（同意， 不同意）
     private ApplyAndReportExamineStatusEnum status;     // 审批的状态（待审批，审批通过）
@@ -91,6 +92,16 @@ public class TExamineEntity extends Base<TExamineEntity>{
 
     public void setExaminePeoplePost(String examinePeoplePost) {
         this.examinePeoplePost = examinePeoplePost;
+    }
+
+    @Basic
+    @Column(name = "examine_people_dept")
+    public String getExamineDept() {
+        return examineDept;
+    }
+
+    public void setExamineDept(String examineDept) {
+        this.examineDept = examineDept;
     }
 
     @Basic

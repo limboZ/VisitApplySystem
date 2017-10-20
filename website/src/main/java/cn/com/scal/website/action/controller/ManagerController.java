@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,11 +34,11 @@ import java.util.List;
 @Controller
 public class ManagerController {
 
-    @Value("{AES_KEY}")
-    private String aesKey;
-
     @Value("{URL}")
     private String url;
+
+    @Value("{AES_KEY}")
+    private String aes_key;
 
     @Resource(name = "commonServiceImpl")
     private CommonServiceImpl<TApplyEntity, TApplyDTO, Integer> applyService;
@@ -339,6 +340,7 @@ public class ManagerController {
                 examineEntity.setExaminePeopleId(people.getExaminePeopleId());
                 examineEntity.setExaminePeopleName(people.getExaminePeopleName());
                 examineEntity.setExaminePeoplePost(people.getExaminePeoplePost());
+                examineEntity.setExamineDept(people.getExaminePeopleDept());
                 examineEntity.setOrders(i);
 
                 // 设置一些通用的信息到实体中
@@ -397,6 +399,7 @@ public class ManagerController {
                 examineEntity.setExaminePeopleId(people.getExaminePeopleId());
                 examineEntity.setExaminePeopleName(people.getExaminePeopleName());
                 examineEntity.setExaminePeoplePost(people.getExaminePeoplePost());
+                examineEntity.setExamineDept(people.getExaminePeopleDept());
                 examineEntity.setOrders(i);
 
                 // 设置一些通用的信息到实体中
@@ -430,40 +433,131 @@ public class ManagerController {
      *
      * @param applyId
      * @param session
-     * @param request
-     * @param model
      * @return
      */
     @RequestMapping(value = "/submitApplyConfig/{applyId}", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitConfig(@PathVariable Integer applyId, HttpSession session, HttpServletRequest request, Model model) {
+    public Api<Object> submitConfig(@PathVariable Integer applyId, HttpSession session, CurrentUser user) {
         Api<Object> api = new Api<>();
         try {
             TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
-            if (StageEnum.APPLY_EXAMINE.equals(tApplyEntity.getStage().name())) {
-                // 如果当前这条申请处于配置了审批流但未提交状态，则可以改变发送oa待办事项，并修改状态
 
-                // 向oa发送代办事项
-                TExamineEntity examinePeople = tApplyEntity.getExamineEntities().get(0);
+            List<TExamineEntity> examineEntities = tApplyEntity.getExamineEntities();
 
-                String examinePeopleId = examinePeople.getExaminePeopleId();// 获取要发送oa的员工的oa号
-                String examinePeopleIdEncrypted = AESUtils.AESEncode(aesKey, examinePeopleId);
-                String examinePeopleName = examinePeople.getExaminePeopleName();
-                String fromUrl = String.format(this.url, examinePeopleIdEncrypted, examinePeopleName, applyId);
+            // 向第一个人oa发送代办事项
+            TExamineEntity examinePeople = examineEntities.get(0);
 
-                // 这个entity中需要配置的属性有：InstanceTitle、FormURL、UserID、UserName、UserDeptName
-                // CreatID、CreatName、CreatDeptName、CreatPhone、CreatTime
-                WFInterfaceEntity entity = new WFInterfaceEntity();
+            // http://loocalhost:8080/show/%d/%d/%d/%s/%d/%s/%s/%s    总的审批人数、当前审批人顺序、本条的出访的id、审批类型、审批item的id、管理员工号、管理员名字、管理员部门
+            String fromUrl = String.format(this.url,
+                    examineEntities.size(),
+                    examinePeople.getOrders(),
+                    applyId,
+                    ExamineTypeEnum.APPLY.name(),
+                    examinePeople.getId(),
+                    AESUtils.AESEncode(this.aes_key, user.getEmpNo()),
+                    user.getUserName(), user.getDeptName());
 
+            // 这个entity中需要配置的属性有：InstanceID、StepID、InstanceTitle、FormURL、UserID、UserName、UserDeptName
+            // CreatID、CreatName、CreatDeptName、CreatTime
+            WFInterfaceEntity entity = new WFInterfaceEntity();
+            entity.setInstanceID(String.valueOf(examinePeople.getId()));
+            entity.setStepID(String.valueOf(examinePeople.getId()));
+            entity.setInstanceTitle(tApplyEntity.getTeamName());
+            entity.setFormURL(fromUrl);
+            entity.setUserID(examinePeople.getExaminePeopleId());
+            entity.setUserName(examinePeople.getExaminePeopleName());
+            entity.setUserDeptName(examinePeople.getExamineDept());
+            entity.setCreatID(user.getEmpNo());
+            entity.setCreatName(user.getUserName());
+            entity.setCreatDeptName(user.getDeptName());
+            entity.setCreatTime(DTFormatUtil.convertStrBySdf(new Date(), DTFormatUtil.SDF_ALL));
 
-                oaService.createOAItem(entity);
+//            entity.setInstanceID("vas20171018abcd");
+//            entity.setStepID("vas20171018abcd");
+//            entity.setCreatID("015073");
+//            entity.setCreatName("李程鹏");
+//            entity.setCreatDeptName("信息服务部");
+//            entity.setCreatTime("2017-10-20 15:12:20");
 
-                // 修改这条申请的状态
-                tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.PROCESSING);
-                tApplyEntity.setId(applyId);
-                applyService.update(tApplyEntity);
-            }
-            throw new Exception("还未配置申请审批流！");
+            oaService.createOAItem(entity);
+
+            //将总的阶段设为申请审批
+            tApplyEntity.setStage(StageEnum.APPLY_EXAMINE);
+
+            // 修改这条申请审批的状态
+            tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.PROCESSING);
+            tApplyEntity.setId(applyId);
+            applyService.update(tApplyEntity);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+
+        return api;
+    }
+
+    /**
+     * 当用户点击 提交总结审批 按钮的时候：
+     * 1、发出OA
+     * 2、将状态改为 PROCESSING
+     *
+     * @param applyId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/submitReportConfig/{applyId}", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitReportConfig(@PathVariable Integer applyId, HttpSession session, CurrentUser user) {
+        Api<Object> api = new Api<>();
+        try {
+            TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
+
+            List<TExamineEntity> examineEntities = tApplyEntity.getExamineEntities();
+
+            // 向第一个人oa发送代办事项
+            TExamineEntity examinePeople = examineEntities.get(0);
+
+            // http://loocalhost:8080/show/%d/%d/%d/%s/%d/%s/%s/%s    总的审批人数、当前审批人顺序、本条的出访的id、审批类型、审批item的id、管理员工号、管理员名字、管理员部门
+            String fromUrl = String.format(this.url,
+                    examineEntities.size(),
+                    examinePeople.getOrders(),
+                    applyId,
+                    ExamineTypeEnum.REPORT.name(),
+                    examinePeople.getId(),
+                    AESUtils.AESEncode(this.aes_key, user.getEmpNo()),
+                    user.getUserName(), user.getDeptName());
+
+            // 这个entity中需要配置的属性有：InstanceID、StepID、InstanceTitle、FormURL、UserID、UserName、UserDeptName
+            // CreatID、CreatName、CreatDeptName、CreatTime
+            WFInterfaceEntity entity = new WFInterfaceEntity();
+            entity.setInstanceID(String.valueOf(examinePeople.getId()));
+            entity.setStepID(String.valueOf(examinePeople.getId()));
+            entity.setInstanceTitle(tApplyEntity.getTeamName());
+            entity.setFormURL(fromUrl);
+            entity.setUserID(examinePeople.getExaminePeopleId());
+            entity.setUserName(examinePeople.getExaminePeopleName());
+            entity.setUserDeptName(examinePeople.getExamineDept());
+            entity.setCreatID(user.getEmpNo());
+            entity.setCreatName(user.getUserName());
+            entity.setCreatDeptName(user.getDeptName());
+            entity.setCreatTime(DTFormatUtil.convertStrBySdf(new Date(), DTFormatUtil.SDF_ALL));
+
+//            entity.setInstanceID("vas20171018abcd");
+//            entity.setStepID("vas20171018abcd");
+//            entity.setCreatID("015073");
+//            entity.setCreatName("李程鹏");
+//            entity.setCreatDeptName("信息服务部");
+//            entity.setCreatTime("2017-10-20 15:12:20");
+
+            oaService.createOAItem(entity);
+
+            //将总的阶段设为申请审批
+            tApplyEntity.setStage(StageEnum.REPORT_EXAMINE);
+
+            // 修改这条总结审批的状态
+            tApplyEntity.setReportStatus(ApplyAndReportTotalExamineStatusEnum.PROCESSING);
+            tApplyEntity.setId(applyId);
+            applyService.update(tApplyEntity);
         } catch (Exception e) {
             api.setCode(Api.ERROR_CODE);
             api.setTip(e.getMessage());

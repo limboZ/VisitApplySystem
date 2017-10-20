@@ -20,6 +20,8 @@ public class TApplyEntity extends Base<TApplyEntity>{
     private String teamName;
     private String applyUserId;
     private String applyUserName;
+    private String applyUserPost;
+    private String applyUserDept;
     private String commissionType;
     private Date startTime;
     private Date endTime;
@@ -124,6 +126,26 @@ public class TApplyEntity extends Base<TApplyEntity>{
 
     public void setApplyUserName(String applyUserName) {
         this.applyUserName = applyUserName;
+    }
+
+    @Basic
+    @Column(name = "apply_user_post")
+    public String getApplyUserPost() {
+        return applyUserPost;
+    }
+
+    public void setApplyUserPost(String applyUserPost) {
+        this.applyUserPost = applyUserPost;
+    }
+
+    @Basic
+    @Column(name = "apply_user_dept")
+    public String getApplyUserDept() {
+        return applyUserDept;
+    }
+
+    public void setApplyUserDept(String applyUserDept) {
+        this.applyUserDept = applyUserDept;
     }
 
     @Basic
