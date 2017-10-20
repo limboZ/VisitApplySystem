@@ -43,26 +43,29 @@ public class LoginController extends AbstractController{
 
     @RequestMapping("/login/{employeeNum}/{fromSystem}")
     public String login(@PathVariable String employeeNum, @PathVariable String fromSystem, HttpSession session) throws IOException, DocumentException {
-        AdministratorCommand administratorCommand = new AdministratorCommand();
-        administratorCommand.setDataMark("1");
-        administratorCommand.setEmployeeNum(employeeNum);
-        List<TAdministratorEntity> tAdministratorEntities = administratorService.query(administratorCommand);
-        if(0 == tAdministratorEntities.size()){
-            TeamMate infoFromOA = oaService.getInfoFromOA(employeeNum);
-            CurrentUser user = new CurrentUser();
-            user.setEmpNo(employeeNum);
-            user.setUserName(infoFromOA.getEmployeeName());
-            user.setDeptName(infoFromOA.getEmployeeDept());
-            session.setAttribute("user", user);
-            return USER_LIST;
-        }else {
-            TAdministratorEntity entity = tAdministratorEntities.get(0);
-            CurrentUser user = new CurrentUser();
-            user.setEmpNo(entity.getEmployeeNum());
-            user.setUserName(entity.getName());
-            user.setDeptName(entity.getDept());
-            session.setAttribute("user", user);
-            return MANAGER_LIST;
+        if(employeeNum != null){
+            AdministratorCommand administratorCommand = new AdministratorCommand();
+            administratorCommand.setDataMark("1");
+            administratorCommand.setEmployeeNum(employeeNum);
+            List<TAdministratorEntity> tAdministratorEntities = administratorService.query(administratorCommand);
+            if(0 == tAdministratorEntities.size()){
+                TeamMate infoFromOA = oaService.getInfoFromOA(employeeNum);
+                CurrentUser user = new CurrentUser();
+                user.setEmpNo(employeeNum);
+                user.setUserName(infoFromOA.getEmployeeName());
+                user.setDeptName(infoFromOA.getEmployeeDept());
+                session.setAttribute("user", user);
+                return USER_LIST;
+            }else {
+                TAdministratorEntity entity = tAdministratorEntities.get(0);
+                CurrentUser user = new CurrentUser();
+                user.setEmpNo(entity.getEmployeeNum());
+                user.setUserName(entity.getName());
+                user.setDeptName(entity.getDept());
+                session.setAttribute("user", user);
+                return MANAGER_LIST;
+            }
         }
+        return null;
     }
 }
