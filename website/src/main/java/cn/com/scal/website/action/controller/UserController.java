@@ -431,6 +431,8 @@ public class UserController {
             }
             applyEntity.setReportEntities(tReportEntities);
             applyService.create(applyEntity);
+
+            myReportService.delete(applyId, currentTime);
         } catch (Exception e) {
             api.setCode(Api.ERROR_CODE);
             api.setTip(e.getMessage());
