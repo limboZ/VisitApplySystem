@@ -41,8 +41,8 @@ public class LoginController extends AbstractController{
     private CommonServiceImpl<TAdministratorEntity, TAdministratorDTO, Integer> administratorService;
 
 
-    @RequestMapping("/login/{fromSystem}/{employeeNum}")
-    public String login(@PathVariable String fromSystem, @PathVariable String employeeNum, HttpSession session) throws IOException, DocumentException {
+    @RequestMapping("/login/{employeeNum}/{fromSystem}")
+    public String login(@PathVariable String employeeNum, @PathVariable String fromSystem, HttpSession session) throws IOException, DocumentException {
         AdministratorCommand administratorCommand = new AdministratorCommand();
         administratorCommand.setDataMark("1");
         administratorCommand.setEmployeeNum(employeeNum);
