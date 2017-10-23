@@ -141,7 +141,7 @@ public class UserController {
         Api<Object> api = new Api<>();
 //        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
-            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, DateUtil.getCurrentTime());
+            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, DateUtil.getCurrentTime(), new TApplyEntity());
             tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.NO);
             tApplyEntity.setReportStatus(ApplyAndReportTotalExamineStatusEnum.NO);
             tApplyEntity.setReportFillStatus(ReportFillStatusEnum.NO);
@@ -242,8 +242,9 @@ public class UserController {
             applyDetailDTO.setStartTime(entity.getStartTime());
             applyDetailDTO.setEndTime(entity.getEndTime());
             applyDetailDTO.setReason(entity.getReason());
-            applyDetailDTO.setApplyExamineStatus(entity.getApplyStatus().getText());
-            applyDetailDTO.setReportExamineStatus(entity.getReportStatus().getText());
+            applyDetailDTO.setTotalStatus(entity.getStage().name());
+            applyDetailDTO.setApplyExamineStatus(entity.getApplyStatus().name());
+            applyDetailDTO.setReportExamineStatus(entity.getReportStatus().name());
 
             // 将目的地和队员信息取出
             Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
@@ -325,7 +326,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/submitEdit", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveEdit", method = RequestMethod.POST)
     @ResponseBody
     public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
@@ -333,9 +334,7 @@ public class UserController {
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
-            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, currentTime);
-            tApplyEntity.setStage(StageEnum.APPLY_EXAMINE);
-            tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.WAITING_CONFIG);
+            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, currentTime, applyService.load(TApplyEntity.class, applyDTO.getId()));
 
             applyService.createOrUpdate(tApplyEntity);
 
@@ -492,8 +491,8 @@ public class UserController {
     }
 
 
-    private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, CurrentUser user, Timestamp currentTime) {
-        TApplyEntity tApplyEntity = new TApplyEntity();
+    private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, CurrentUser user, Timestamp currentTime, TApplyEntity load) {
+        TApplyEntity tApplyEntity = load;
 
         // 拼接出访的团队名字:首个团员的部门名称+首个团员名字+等x人赴+所有目的地国家(多个国家以、隔开)+任务类型+出访申请 例如:信息服务部冯涛等2人赴美国、加拿大国际会议出访申请
         String teamName = "" + applyDTO.getTeamMates()[0].getEmployeeDept() + applyDTO.getTeamMates()[0].getEmployeeName() + "等" + applyDTO.getTeamMates().length + "人赴";

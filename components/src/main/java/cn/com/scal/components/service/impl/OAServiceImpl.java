@@ -57,7 +57,7 @@ public class OAServiceImpl implements IOAService {
     @Override
     public TeamMate getInfoFromOA(String OANum) {
         TeamMate teamMate = null;
-        String sql = String.format("SELECT t1.Employee_ID, t1.Name, t1.Rank, t2.Dept_Name\n" +
+        String sql = String.format("SELECT t1.Employee_ID, t1.Name, t2.Dept_Name, t1.Rank\n" +
                 "FROM OA_Employees t1, OA_DEFINITION_DEPT t2\n" +
                 "WHERE t1.Employee_ID = '%s' and t1.Dept_ID = t2.Dept_ID", OANum);
         List<Object[]> objects = oaDao.queryBySql(sql);

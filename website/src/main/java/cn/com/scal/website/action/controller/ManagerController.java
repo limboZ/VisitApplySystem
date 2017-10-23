@@ -4,7 +4,9 @@ import cn.com.scal.components.command.ApplyCommand;
 import cn.com.scal.components.domain.*;
 import cn.com.scal.components.dto.Api;
 import cn.com.scal.components.dto.TApplyDTO;
+import cn.com.scal.components.dto.front.ApplyDTO;
 import cn.com.scal.components.dto.front.ApplyDetailDTO;
+import cn.com.scal.components.dto.front.ReportDTO;
 import cn.com.scal.components.dto.front.domain.*;
 import cn.com.scal.components.enums.*;
 import cn.com.scal.components.exception.OtherException;
@@ -13,6 +15,7 @@ import cn.com.scal.components.service.impl.CommonServiceImpl;
 import cn.com.scal.components.utils.AESUtils;
 import cn.com.scal.components.utils.DTFormatUtil;
 import cn.com.scal.components.utils.DateUtil;
+import cn.com.scal.components.utils.StringUtil;
 import cn.com.scal.components.webservice.WFInterfaceEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -108,6 +111,88 @@ public class ManagerController {
     }
 
     /**
+     * 提交从详细页面进行编辑后的结果
+     * @param applyDTO
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveEdit", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
+        Api<Object> api = new Api<>();
+//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        try {
+            // 将新的信息插入
+            Timestamp currentTime = DateUtil.getCurrentTime();
+            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, currentTime, applyService.load(TApplyEntity.class, applyDTO.getId()));
+
+            applyService.createOrUpdate(tApplyEntity);
+
+            // 将要删除的申请的destination和teammates的datamark置为0
+            destinationService.delete(applyDTO.getId(), currentTime);
+            teamService.delete(applyDTO.getId(), currentTime);
+
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+        return api;
+    }
+
+    /**
+     * 提交新增的report
+     * @param reportDTO
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveReport", method = RequestMethod.POST)
+    @ResponseBody
+    public Api<Object> saveReport(@RequestBody ReportDTO reportDTO, CurrentUser user, HttpSession session) throws Exception {
+        Api<Object> api = new Api<>();
+//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        Timestamp currentTime = DateUtil.getCurrentTime();
+
+        try {
+            Integer applyId = reportDTO.getApplyId();
+            TApplyEntity applyEntity = applyService.load(TApplyEntity.class, applyId);
+            applyEntity.setReportFillStatus(ReportFillStatusEnum.UN_SUBMIT);
+
+            Report[] reports = reportDTO.getReports();
+            ArrayList<TReportEntity> tReportEntities = new ArrayList<>();
+            for (Report report : reports) {
+                TReportEntity tReportEntity = new TReportEntity();
+                tReportEntity.setId(report.getId());
+                tReportEntity.setApplyId(applyEntity);
+                tReportEntity.setContent(report.getContent());
+//                tReportEntity.setCreatorId(user.getEmpNo());
+                tReportEntity.setCreatorId("007955");
+                tReportEntity.setDataMark("1");
+                tReportEntity.setReportDate(new Date());
+                tReportEntity.setReportType(ReportEnum.EnumFormName(report.getReportType()));
+                if(StringUtil.isEmpty(report.getReportSlot()) && ReportEnum.TRIP.name().equals(report.getReportType())){
+                    throw new Exception("行程时段不能为空！");
+                }else if(!StringUtil.isEmpty(report.getReportSlot()) && ReportEnum.TRIP.name().equals(report.getReportType())){
+                    tReportEntity.setReportSlot(ReportSlotEnum.EnumFormText(report.getReportSlot()));
+                }
+                tReportEntity.setCreateTime(currentTime);
+                tReportEntity.setUpdateTime(currentTime);
+                tReportEntities.add(tReportEntity);
+            }
+            applyEntity.setReportEntities(tReportEntities);
+            applyService.create(applyEntity);
+
+            myReportService.delete(applyId, currentTime);
+        } catch (Exception e) {
+            api.setCode(Api.ERROR_CODE);
+            api.setTip(e.getMessage());
+        }
+
+        return api;
+    }
+
+    /**
      * 显示某条申请的详细信息
      *
      * @param applyId
@@ -131,8 +216,9 @@ public class ManagerController {
             applyDetailDTO.setStartTime(entity.getStartTime());
             applyDetailDTO.setEndTime(entity.getEndTime());
             applyDetailDTO.setReason(entity.getReason());
-            applyDetailDTO.setApplyExamineStatus(entity.getApplyStatus().getText());
-            applyDetailDTO.setReportExamineStatus(entity.getReportStatus().getText());
+            applyDetailDTO.setTotalStatus(entity.getStage().name());
+            applyDetailDTO.setApplyExamineStatus(entity.getApplyStatus().name());
+            applyDetailDTO.setReportExamineStatus(entity.getReportStatus().name());
 
             // 将目的地和队员信息取出
             Destination[] destinations = new Destination[entity.getDestinationEntities().size()];
@@ -564,6 +650,53 @@ public class ManagerController {
         }
 
         return api;
+    }
+
+
+    private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, CurrentUser user, Timestamp currentTime, TApplyEntity load) {
+        TApplyEntity tApplyEntity = load;
+
+        // 拼接出访的团队名字:首个团员的部门名称+首个团员名字+等x人赴+所有目的地国家(多个国家以、隔开)+任务类型+出访申请 例如:信息服务部冯涛等2人赴美国、加拿大国际会议出访申请
+        String teamName = "" + applyDTO.getTeamMates()[0].getEmployeeDept() + applyDTO.getTeamMates()[0].getEmployeeName() + "等" + applyDTO.getTeamMates().length + "人赴";
+        if (applyDTO.getDestinations().length == 1) {
+            teamName = teamName + applyDTO.getDestinations()[0].getNation();
+        } else if (applyDTO.getDestinations().length == 2) {
+            teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[0].getNation();
+        } else if (applyDTO.getDestinations().length == 2) {
+            teamName = teamName + applyDTO.getDestinations()[0].getNation() + "、" + applyDTO.getDestinations()[1].getNation() + "、" + applyDTO.getDestinations()[2].getNation();
+        }
+        teamName = teamName + applyDTO.getCommissionType() + "出访申请";
+
+        tApplyEntity.setId(applyDTO.getId());
+        tApplyEntity.setTeamName(teamName);
+//        tApplyEntity.setApplyUserId(user.getEmpNo());
+        tApplyEntity.setApplyUserId("015074");
+//        tApplyEntity.setApplyUserName(user.getUserName());
+        tApplyEntity.setApplyUserName("邹江华");
+        tApplyEntity.setCommissionType(applyDTO.getCommissionType());
+        tApplyEntity.setStartTime(applyDTO.getStartTime());
+        tApplyEntity.setEndTime(applyDTO.getEndTime());
+        tApplyEntity.setReason(applyDTO.getReason());
+        tApplyEntity.setStage(StageEnum.DRAFT);
+        tApplyEntity.setCreateTime(currentTime);
+        tApplyEntity.setUpdateTime(currentTime);
+        tApplyEntity.setDataMark("1");
+
+        ArrayList<TDestinationEntity> tDestinationEntities = new ArrayList<>();
+        for (int i = 0; i < applyDTO.getDestinations().length; i++) {
+            Destination destination = applyDTO.getDestinations()[i];
+            tDestinationEntities.add(new TDestinationEntity(destination.getId(), i, destination.getNation(), destination.getDestination(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
+        }
+        ArrayList<TTeamEntity> tTeamEntities = new ArrayList<>();
+        for (int i = 0; i < applyDTO.getTeamMates().length; i++) {
+            TeamMate teamMate = applyDTO.getTeamMates()[i];
+            tTeamEntities.add(new TTeamEntity(teamMate.getId(), i, teamMate.getEmployeeId(), teamMate.getEmployeeName(), teamMate.getEmployeeDept(), teamMate.getEmployeePost(), DateUtil.getCurrentTime(), DateUtil.getCurrentTime(), "1", tApplyEntity));
+        }
+
+
+        tApplyEntity.setDestinationEntities(tDestinationEntities);
+        tApplyEntity.settTeamEntities(tTeamEntities);
+        return tApplyEntity;
     }
 
 }
