@@ -41,6 +41,15 @@ public class LoginController extends AbstractController{
     private CommonServiceImpl<TAdministratorEntity, TAdministratorDTO, Integer> administratorService;
 
 
+    /**
+     * 根据从OA链接传过来的工号，从oa数据库中将这个员工的详细信息查询出来，并且将这个人的信息加入到session中，表示这个人已经登陆
+     * @param employeeNum
+     * @param fromSystem
+     * @param session
+     * @return
+     * @throws IOException
+     * @throws DocumentException
+     */
     @RequestMapping("/login/{employeeNum}/{fromSystem}")
     public String login(@PathVariable String employeeNum, @PathVariable String fromSystem, HttpSession session) throws IOException, DocumentException {
         if(employeeNum != null){

@@ -22,6 +22,10 @@ public class CommissionTypeController {
     @Resource(name = "commonServiceImpl")
     private CommonServiceImpl<TCommissionTypeEnumEntity, TCommissionTypeEnumDTO, Integer> commissionTypesService;
 
+    /**
+     * 从数据库获取出访的类型
+     * @return
+     */
     @RequestMapping(value = "/commissionTypes", method = RequestMethod.GET)
     @ResponseBody
     public Api<Object> commissionTypes(){

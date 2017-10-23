@@ -17,6 +17,11 @@ public class OAController {
     @Resource(name = "OAService")
     IOAService oaService;
 
+    /**
+     * 从OA的数据库中根据人员的工号直接获取这个人的详细信息
+     * @param OANum
+     * @return
+     */
     @RequestMapping(value = "/oaPeopleInfo/{OANum}", method = RequestMethod.GET)
     @ResponseBody
     public Api<Object> oaPeopleInfo(@PathVariable String OANum){
