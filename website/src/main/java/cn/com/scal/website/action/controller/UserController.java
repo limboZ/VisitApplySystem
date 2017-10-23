@@ -66,13 +66,13 @@ public class UserController {
     /**
      * 首页，列表展示
      * @param request
-     * @param user
      * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping("/list")
-    public String list(HttpServletRequest request, CurrentUser user, Model model) throws Exception {
+    public String list(HttpServletRequest request, HttpSession session, Model model) throws Exception {
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         String currPage = request.getParameter("currentPage");
         currentPage = StringUtil.isEmpty(currPage) ? 1 : Integer.valueOf(currPage);
         ArrayList<ApplyPreview> applyPreviewList = new ArrayList<>();
@@ -130,16 +130,15 @@ public class UserController {
     /**
      * 创建新的申请
      * @param applyDTO
-     * @param user
      * @param session
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> create(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
+    public Api<Object> create(@RequestBody ApplyDTO applyDTO, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, DateUtil.getCurrentTime(), new TApplyEntity());
             tApplyEntity.setApplyStatus(ApplyAndReportTotalExamineStatusEnum.NO);
@@ -162,7 +161,7 @@ public class UserController {
      */
     @RequestMapping("/edit/{applyId}")
     public String edit(@PathVariable Integer applyId, Model model) throws Exception {
-        ApplyDetailDTO applyDetailDTO = null;
+        ApplyDetailDTO applyDetailDTO;
         String message = null;
         try {
             applyDetailDTO = new ApplyDetailDTO();
@@ -228,7 +227,7 @@ public class UserController {
      */
     @RequestMapping("/show/{applyId}")
     public String show(@PathVariable Integer applyId, Model model) throws Exception {
-        ApplyDetailDTO applyDetailDTO = null;
+        ApplyDetailDTO applyDetailDTO;
         String message;
         try {
             applyDetailDTO = new ApplyDetailDTO();
@@ -320,7 +319,7 @@ public class UserController {
     }
 
     /**
-     * 提交从详细页面进行编辑后的结果
+     * 保存从详细页面进行编辑后的结果
      * @param applyDTO
      * @param session
      * @return
@@ -328,9 +327,9 @@ public class UserController {
      */
     @RequestMapping(value = "/saveEdit", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
@@ -397,9 +396,9 @@ public class UserController {
      */
     @RequestMapping(value = "/saveReport", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> saveReport(@RequestBody ReportDTO reportDTO, CurrentUser user, HttpSession session) throws Exception {
+    public Api<Object> saveReport(@RequestBody ReportDTO reportDTO, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         Timestamp currentTime = DateUtil.getCurrentTime();
 
         try {
@@ -414,8 +413,8 @@ public class UserController {
                 tReportEntity.setId(report.getId());
                 tReportEntity.setApplyId(applyEntity);
                 tReportEntity.setContent(report.getContent());
-//                tReportEntity.setCreatorId(user.getEmpNo());
-                tReportEntity.setCreatorId("007955");
+                tReportEntity.setCreatorId(user.getEmpNo());
+//                tReportEntity.setCreatorId("007955");
                 tReportEntity.setDataMark("1");
                 tReportEntity.setReportDate(new Date());
                 tReportEntity.setReportType(ReportEnum.EnumFormName(report.getReportType()));
@@ -443,17 +442,13 @@ public class UserController {
     /**
      * 提交新增的report
      * @param reportDTO
-     * @param session
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/submitReport", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitReport(@RequestBody ReportDTO reportDTO, CurrentUser user, HttpSession session) throws Exception {
+    public Api<Object> submitReport(@RequestBody ReportDTO reportDTO) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
-        Timestamp currentTime = DateUtil.getCurrentTime();
-
         try {
             Integer applyId = reportDTO.getApplyId();
             TApplyEntity applyEntity = applyService.load(TApplyEntity.class, applyId);
@@ -507,10 +502,10 @@ public class UserController {
 
         tApplyEntity.setId(applyDTO.getId());
         tApplyEntity.setTeamName(teamName);
-//        tApplyEntity.setApplyUserId(user.getEmpNo());
-        tApplyEntity.setApplyUserId("015074");
-//        tApplyEntity.setApplyUserName(user.getUserName());
-        tApplyEntity.setApplyUserName("邹江华");
+        tApplyEntity.setApplyUserId(user.getEmpNo());
+//        tApplyEntity.setApplyUserId("015074");
+        tApplyEntity.setApplyUserName(user.getUserName());
+//        tApplyEntity.setApplyUserName("邹江华");
         tApplyEntity.setCommissionType(applyDTO.getCommissionType());
         tApplyEntity.setStartTime(applyDTO.getStartTime());
         tApplyEntity.setEndTime(applyDTO.getEndTime());

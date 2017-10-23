@@ -54,16 +54,16 @@ public class LoginController extends AbstractController{
                 user.setEmpNo(employeeNum);
                 user.setUserName(infoFromOA.getEmployeeName());
                 user.setDeptName(infoFromOA.getEmployeeDept());
-                session.setAttribute("user", user);
-                return USER_LIST;
+                session.setAttribute("currentUser", user);
+                return "redirect:" + USER_LIST;
             }else {
                 TAdministratorEntity entity = tAdministratorEntities.get(0);
                 CurrentUser user = new CurrentUser();
                 user.setEmpNo(entity.getEmployeeNum());
                 user.setUserName(entity.getName());
                 user.setDeptName(entity.getDept());
-                session.setAttribute("user", user);
-                return MANAGER_LIST;
+                session.setAttribute("currentUser", user);
+                return "redirect:" + MANAGER_LIST;
             }
         }
         return null;

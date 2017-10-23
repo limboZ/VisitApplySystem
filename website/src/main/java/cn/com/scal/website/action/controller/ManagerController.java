@@ -111,7 +111,7 @@ public class ManagerController {
     }
 
     /**
-     * 提交从详细页面进行编辑后的结果
+     * 保存从详细页面进行编辑后的结果
      * @param applyDTO
      * @param session
      * @return
@@ -119,13 +119,13 @@ public class ManagerController {
      */
     @RequestMapping(value = "/saveEdit", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, CurrentUser user, HttpSession session) throws Exception {
+    public Api<Object> submitEdit(@RequestBody ApplyDTO applyDTO, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
-            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, user, currentTime, applyService.load(TApplyEntity.class, applyDTO.getId()));
+            TApplyEntity tApplyEntity = setApplyInfo(applyDTO, currentTime, applyService.load(TApplyEntity.class, applyDTO.getId()));
 
             applyService.createOrUpdate(tApplyEntity);
 
@@ -149,9 +149,9 @@ public class ManagerController {
      */
     @RequestMapping(value = "/saveReport", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> saveReport(@RequestBody ReportDTO reportDTO, CurrentUser user, HttpSession session) throws Exception {
+    public Api<Object> saveReport(@RequestBody ReportDTO reportDTO, HttpSession session) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         Timestamp currentTime = DateUtil.getCurrentTime();
 
         try {
@@ -166,8 +166,7 @@ public class ManagerController {
                 tReportEntity.setId(report.getId());
                 tReportEntity.setApplyId(applyEntity);
                 tReportEntity.setContent(report.getContent());
-//                tReportEntity.setCreatorId(user.getEmpNo());
-                tReportEntity.setCreatorId("007955");
+                tReportEntity.setCreatorId(user.getEmpNo());
                 tReportEntity.setDataMark("1");
                 tReportEntity.setReportDate(new Date());
                 tReportEntity.setReportType(ReportEnum.EnumFormName(report.getReportType()));
@@ -397,18 +396,13 @@ public class ManagerController {
      * 将管理员配置的申请审批流存储到数据库里
      *
      * @param applyDetailDTO
-     * @param user
-     * @param session
-     * @param request
-     * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/saveApplyConfig", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> saveApplyConfig(@RequestBody ApplyDetailDTO applyDetailDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> saveApplyConfig(@RequestBody ApplyDetailDTO applyDetailDTO) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
@@ -456,18 +450,13 @@ public class ManagerController {
      * 将管理员配置的总结审批流存储到数据库里
      *
      * @param applyDetailDTO
-     * @param user
-     * @param session
-     * @param request
-     * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/saveReportConfig", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> saveReportConfig(@RequestBody ApplyDetailDTO applyDetailDTO, CurrentUser user, HttpSession session, HttpServletRequest request, Model model) throws Exception {
+    public Api<Object> saveReportConfig(@RequestBody ApplyDetailDTO applyDetailDTO) throws Exception {
         Api<Object> api = new Api<>();
-//        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         try {
             // 将新的信息插入
             Timestamp currentTime = DateUtil.getCurrentTime();
@@ -523,7 +512,8 @@ public class ManagerController {
      */
     @RequestMapping(value = "/submitApplyConfig/{applyId}", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitConfig(@PathVariable Integer applyId, HttpSession session, CurrentUser user) {
+    public Api<Object> submitConfig(@PathVariable Integer applyId, HttpSession session) {
+        CurrentUser user = (CurrentUser)session.getAttribute("currentUser");
         Api<Object> api = new Api<>();
         try {
             TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
@@ -593,7 +583,8 @@ public class ManagerController {
      */
     @RequestMapping(value = "/submitReportConfig/{applyId}", method = RequestMethod.POST)
     @ResponseBody
-    public Api<Object> submitReportConfig(@PathVariable Integer applyId, HttpSession session, CurrentUser user) {
+    public Api<Object> submitReportConfig(@PathVariable Integer applyId, HttpSession session) {
+        CurrentUser user = (CurrentUser) session.getAttribute("currentUser");
         Api<Object> api = new Api<>();
         try {
             TApplyEntity tApplyEntity = applyService.load(TApplyEntity.class, applyId);
@@ -653,7 +644,7 @@ public class ManagerController {
     }
 
 
-    private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, CurrentUser user, Timestamp currentTime, TApplyEntity load) {
+    private TApplyEntity setApplyInfo(@RequestBody ApplyDTO applyDTO, Timestamp currentTime, TApplyEntity load) {
         TApplyEntity tApplyEntity = load;
 
         // 拼接出访的团队名字:首个团员的部门名称+首个团员名字+等x人赴+所有目的地国家(多个国家以、隔开)+任务类型+出访申请 例如:信息服务部冯涛等2人赴美国、加拿大国际会议出访申请
@@ -669,10 +660,6 @@ public class ManagerController {
 
         tApplyEntity.setId(applyDTO.getId());
         tApplyEntity.setTeamName(teamName);
-//        tApplyEntity.setApplyUserId(user.getEmpNo());
-        tApplyEntity.setApplyUserId("015074");
-//        tApplyEntity.setApplyUserName(user.getUserName());
-        tApplyEntity.setApplyUserName("邹江华");
         tApplyEntity.setCommissionType(applyDTO.getCommissionType());
         tApplyEntity.setStartTime(applyDTO.getStartTime());
         tApplyEntity.setEndTime(applyDTO.getEndTime());
